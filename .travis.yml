@@ -1,0 +1,29 @@
+dist: xenial
+
+language: java
+jdk:
+  - openjdk11
+services:
+  - postgresql
+before_install:
+  - chmod +x mvnw
+addons:
+  postgresql: '9.4'
+before_script:
+  - psql -U postgres -c "create database yourney_db owner postgres"
+script:
+  - mvn test -B
+  - mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+notifications:
+  email:
+    recipients:
+      - edubotdom@alum.us.es
+      - danaremar@alum.us.es
+      - javvazzam@alum.us.es
+      - jossanrui5@alum.us.es
+      - antsuabon@alum.us.es
+      - jesgamlar@alum.us.es
+      - julsoutos@alum.us.es
+
+    on_success: always
+    on_failure: always

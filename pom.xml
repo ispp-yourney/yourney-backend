@@ -15,6 +15,9 @@
 	<description>Backend de Yourney</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.projectKey>ispp-yourney_yourney-backend</sonar.projectKey>
+		<sonar.organization>ispp-yourney</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
