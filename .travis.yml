@@ -13,6 +13,7 @@ before_script:
   - psql -U postgres -c "create database yourney_db owner postgres"
 script:
   - mvn test -B
+  - mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 notifications:
   email:
     recipients:
