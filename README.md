@@ -10,7 +10,7 @@
 ## Introducción
 Desde Yourney, ofrecemos   la   posibilidad   de   compartir   rutas   turísticas   entre   usuarios   de   todo   el   mundo   y promocionarlas por parte de establecimientos e instituciones, con el fin de enriquecer la experiencia que obtengan en sus viajes nuestros usuarios, y de aportar valor a las organizaciones que colaboren con nuestra organización.
 
-Para obtener más información acerca del proyecto, invitamos a revisar nuestra landing page, en la que podrá obtener información acerca de nuestro proyecto, objetivos, e integrantes.
+Para obtener más información acerca del proyecto, invitamos a revisar nuestra landing page, en la que podrá obtener información acerca de nuestro proyecto, objetivos, e integrantes. [Yourney](ispp-yourney.github.io)
 
 ## Estructura del código
 En este repositorio, se encuentra el código fuente de la parte de backend correspondiente al proyecto Yourney. 
