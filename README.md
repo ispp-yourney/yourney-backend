@@ -4,8 +4,28 @@
  **Estado de Travis CI en rama master:** [![Build Status](https://travis-ci.org/ispp-yourney/yourney-backend.svg?branch=master)](https://travis-ci.org/ispp-yourney/yourney-backend)
  **Estado de Travis CI en rama develop:** [![Build Status](https://travis-ci.org/ispp-yourney/yourney-backend.svg?branch=develop)](https://travis-ci.org/ispp-yourney/yourney-backend)
 
-### Codacy
-**Calidad de código:** [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0e08d33bb0f40dcac3dd907761943f6)](https://www.codacy.com/gh/ispp-yourney/yourney-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ispp-yourney/yourney-backend&amp;utm_campaign=Badge_Grade)
+### SonarCloud
+**Bugs:** [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=bugs)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Code Smells:** [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Cobertura de pruebas:** [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Líneas duplicadas** [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Líneas de código** [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=ncloc)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Mantenibilidad** [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Calidad de código** [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Confiabilidad** [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Seguridad** [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=security_rating)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Deuda técnica** [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
+
+**Vulnerabilidades** [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ispp-yourney_yourney-backend&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=ispp-yourney_yourney-backend)
 
 ## Introducción
 Desde Yourney, ofrecemos   la   posibilidad   de   compartir   rutas   turísticas   entre   usuarios   de   todo   el   mundo   y promocionarlas por parte de establecimientos e instituciones, con el fin de enriquecer la experiencia que obtengan en sus viajes nuestros usuarios, y de aportar valor a las organizaciones que colaboren con nuestra organización.
