@@ -1,0 +1,2 @@
+# yourney-backend
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/21e7cb70672841bd980f2a3ea28f555a)](https://app.codacy.com/gh/ispp-yourney/yourney-backend?utm_source=github.com&utm_medium=referral&utm_content=ispp-yourney/yourney-backend&utm_campaign=Badge_Grade_Settings)
