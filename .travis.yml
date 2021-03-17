@@ -5,6 +5,8 @@ jdk:
   - openjdk11
 services:
   - postgresql
+before_install:
+  - chmod +x mvnw
 addons:
   postgresql: '9.4'
 before_script:
