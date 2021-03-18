@@ -31,6 +31,9 @@ public class Activity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(nullable = false)
+	private Integer position;
+	
 	@NotBlank
 	@Column(nullable = false)
 	@Length(max=50)
@@ -44,7 +47,7 @@ public class Activity {
 	private Integer day;
 	
 	@Range(min=0)
-	private Integer view;
+	private Integer views;
 	
 	@OneToOne
 	private Landmark landmark;
