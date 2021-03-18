@@ -1,7 +1,17 @@
 -- USERS
-INSERT INTO users(id, username, name, last_name, email, password, country, sector, creation_date, delete_date, last_connection, active) 
-    VALUES(0, 'testuser', 'Test', 'User', 'testuser@mail.es', 'testpass', 'ES', 'Ingenieria', '2021-01-31 12:25:01', NULL, '2021-01-31 12:25:01', true);
 
+INSERT INTO roles(id, role_type) VALUES(0, 'ROLE_ADMIN');
+INSERT INTO roles(id, role_type) VALUES(1, 'ROLE_USER');
+
+INSERT INTO users (id,email,first_name,last_name,"password",username) VALUES
+	 (0,'test222@ewfwef.com','Name 1','Surname 1','$2a$10$dAafQE2iuRN/4xYGe4ZrgumRIPLsCGb7JctCNIl65QnFIxJ7B1U3e','test_username1'),
+	 (1,'test224@ewfwef.com','Name 2','Surname 2','$2a$10$8ZFfWr6Z83inxQ6xzBdYj.VIkDLXShRfGY0PUST8/uAQ6fdJijWI2','test_username2'),
+	 (2,'test225@ewfwef.com','Name 3','Surname 3','$2a$10$ZHkeSGh5QKBpUCORZB3P8ewUFb5UAsBIxxOXV/2KIobtMCilJDSHy','test_username3');
+
+INSERT INTO users_roles(user_id, role_id) VALUES
+	(0,0),
+	(1,1),
+	(2,1);
 
 -- SEASON TYPES
 INSERT INTO seasons(id, recommended_season) VALUES(0, 'WINTER');
