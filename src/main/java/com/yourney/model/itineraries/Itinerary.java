@@ -23,6 +23,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.yourney.model.activities.Activity;
 import com.yourney.model.activities.Image;
+import com.yourney.security.entity.User;
 
 import lombok.Data;
 
@@ -80,6 +81,6 @@ public class Itinerary {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity> activities;
 	
-	//@OneToOne
-	//private User author;
+	@OneToOne
+	private User author;
 }
