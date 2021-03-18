@@ -1,4 +1,4 @@
-package com.yourney.rest;
+package com.yourney.controller;
 
 import javax.validation.Valid;
 

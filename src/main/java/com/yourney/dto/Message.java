@@ -1,4 +1,4 @@
-package com.yourney.exceptions.dto;
+package com.yourney.dto;
 
 import javax.validation.constraints.NotBlank;
 
@@ -10,6 +10,6 @@ import lombok.Data;
 public class Message {
 
 	@NotBlank
-	String message;
+	private String text;
 	
 }
