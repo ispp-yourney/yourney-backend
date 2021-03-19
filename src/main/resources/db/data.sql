@@ -20,8 +20,8 @@ INSERT INTO seasons(id, recommended_season) VALUES(2, 'SUMMER');
 INSERT INTO seasons(id, recommended_season) VALUES(3, 'FALL');
 
 -- ITINERARIES
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, main_image_id) 
-    VALUES(0, 'itinerary test', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, NULL);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, main_image_id, author_id) 
+    VALUES(0, 'itinerary test', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, NULL, 1);
 
 INSERT INTO itineraries_recommended_seasons(itinerary_id, season_id)
     VALUES(0, 0);
