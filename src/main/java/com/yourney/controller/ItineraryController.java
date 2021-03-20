@@ -57,7 +57,7 @@ public class ItineraryController {
 
 			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario indicado, ha sido previamente eliminado."));
-			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&&foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
+			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 			}else {
 				ItineraryProjection foundItineraryProjection = itineraryService.findOneItineraryProjection(id).orElse(null);
@@ -104,6 +104,8 @@ public class ItineraryController {
 
 			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No existe el itinerario indicado"));
+			}else if(foundItinerary.getStatus().equals(StatusType.DRAFT)){
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede eliminar un itinerario no publicado"));
 			}else if(!foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
