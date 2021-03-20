@@ -119,6 +119,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<appName>be-dev-yourney</appName>
+					<jdkVersion>11.0.10</jdkVersion>
+					<processTypes>
+     					<web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+  					</processTypes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
