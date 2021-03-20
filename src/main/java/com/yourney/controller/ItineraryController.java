@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javassist.NotFoundException;
+
+import java.io.ObjectInputFilter.Status;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
+import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.ItineraryProjection;
@@ -45,8 +50,22 @@ public class ItineraryController {
 
 	
 	@GetMapping("/show/{id}")
-	public ResponseEntity<Itinerary> showItinerary(@PathVariable("id") long id) {
-		return ResponseEntity.ok(itineraryService.findById(id).orElse(null));
+	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {	
+		if(itineraryService.existsById(id)){
+
+			Itinerary foundItinerary = itineraryService.findById(id).get();
+
+			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario indicado, ha sido previamente eliminado."));
+			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
+			}else {
+				ItineraryProjection foundItineraryProjection = itineraryService.findOneItineraryProjection(id).orElse(null);
+				return ResponseEntity.ok(foundItineraryProjection);
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+		}
 	}
 	
 	@PostMapping("/create")
@@ -80,9 +99,20 @@ public class ItineraryController {
     public ResponseEntity<?> deleteItinerary(@PathVariable("id") long id) {
         if (!itineraryService.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No exites el itinerario indicado"));
-        }
+        } else {
+			Itinerary foundItinerary = itineraryService.findById(id).get();
 
-        itineraryService.deleteById(id);
+			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No existe el itinerario indicado"));
+			}else if(foundItinerary.getStatus().equals(StatusType.DRAFT)){
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede eliminar un itinerario no publicado"));
+			}else if(!foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede borrar un itinerario que no es suyo"));
+			} else {
+			foundItinerary.setStatus(StatusType.DELETED);
+			itineraryService.save(foundItinerary);
+		}	}
+		
         return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
     }
 

@@ -21,4 +21,9 @@ public class ItineraryDto {
     private Double budget;
 	private Integer	estimatedDays;  
     private List<Long> activities;
+    private LocalDateTime deleteDate;
+	private LocalDateTime updateDate;
+    private LocalDateTime createDate; 
+    private Integer	views;
+    private Long author;    
 }
