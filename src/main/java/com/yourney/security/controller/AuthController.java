@@ -1,11 +1,21 @@
 package com.yourney.security.controller;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
+
+import com.yourney.model.dto.Message;
+import com.yourney.security.jwt.JwtProvider;
+import com.yourney.security.model.Role;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
+import com.yourney.security.model.dto.JwtDto;
+import com.yourney.security.model.dto.LoginUser;
+import com.yourney.security.model.dto.NewUser;
+import com.yourney.security.service.RoleService;
+import com.yourney.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,17 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.yourney.model.dto.Message;
-import com.yourney.security.jwt.JwtProvider;
-import com.yourney.security.model.Role;
-import com.yourney.security.model.RoleType;
-import com.yourney.security.model.User;
-import com.yourney.security.model.dto.JwtDto;
-import com.yourney.security.model.dto.LoginUser;
-import com.yourney.security.model.dto.NewUser;
-import com.yourney.security.service.RoleService;
-import com.yourney.security.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
