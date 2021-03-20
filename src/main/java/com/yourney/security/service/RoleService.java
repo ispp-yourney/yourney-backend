@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yourney.security.entity.Role;
-import com.yourney.security.enums.RoleType;
+import com.yourney.security.model.Role;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.repository.RoleRepository;
 
 @Service

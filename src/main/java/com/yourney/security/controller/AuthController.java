@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yourney.dto.Message;
-import com.yourney.security.dto.JwtDto;
-import com.yourney.security.dto.LoginUser;
-import com.yourney.security.dto.NewUser;
-import com.yourney.security.entity.Role;
-import com.yourney.security.entity.User;
-import com.yourney.security.enums.RoleType;
+import com.yourney.model.dto.Message;
 import com.yourney.security.jwt.JwtProvider;
+import com.yourney.security.model.Role;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
+import com.yourney.security.model.dto.JwtDto;
+import com.yourney.security.model.dto.LoginUser;
+import com.yourney.security.model.dto.NewUser;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
 
@@ -57,15 +57,15 @@ public class AuthController {
 	@PostMapping("/new")
 	public ResponseEntity<Object> newUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("Error en el formato de la petición"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
 		
 		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("El usuario indicado ya existe"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Existing username"), HttpStatus.BAD_REQUEST);
 		}
 		
 		if (userService.existsByEmail(newUser.getEmail())) {
-			return new ResponseEntity<>(new Message("El email indicado ya existe"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Existing email"), HttpStatus.BAD_REQUEST);
 		}
 		
 		User user = new User(newUser.getUsername(), passwordEncoder.encode(newUser.getPassword()), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName());
@@ -78,14 +78,14 @@ public class AuthController {
 		user.setRoles(roles);
 		userService.save(user);
 		
-		return new ResponseEntity<>(new Message("Usuario creado correctamente"), HttpStatus.CREATED);
+		return new ResponseEntity<>(new Message("Created user"), HttpStatus.CREATED);
 	}
 	
 	
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestBody @Valid LoginUser loginUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("El usuario o la contraseña es incorrecto"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
 		
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));

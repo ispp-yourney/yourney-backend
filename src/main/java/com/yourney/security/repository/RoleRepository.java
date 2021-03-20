@@ -2,11 +2,11 @@ package com.yourney.security.repository;
 
 import java.util.Optional;
 
+import com.yourney.security.model.Role;
+import com.yourney.security.model.RoleType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import com.yourney.security.entity.Role;
-import com.yourney.security.enums.RoleType;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {

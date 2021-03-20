@@ -2,13 +2,13 @@ package com.yourney.security.jwt;
 
 import java.util.Date;
 
+import com.yourney.security.model.PrincipalUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import com.yourney.security.entity.PrincipalUser;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
