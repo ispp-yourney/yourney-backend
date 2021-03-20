@@ -4,6 +4,8 @@ package com.yourney.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ws.rs.NotFoundException;
+
 import com.yourney.model.Itinerary;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
@@ -28,6 +30,10 @@ public class ItineraryService {
 	public Optional<Itinerary> findById(final Long id) {
 		return itineraryRepository.findById(id);
 	}
+
+	public Optional<ItineraryProjection> findOneItineraryProjection(final Long id) {
+		return itineraryRepository.findOneItineraryProjection(id);
+	}    
 
     public void save(Itinerary itinerary) {
         itineraryRepository.save(itinerary);
