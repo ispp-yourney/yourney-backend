@@ -15,6 +15,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class PrincipalUser implements UserDetails {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 
@@ -22,7 +26,7 @@ public class PrincipalUser implements UserDetails {
 	private String firstName;
 	private String lastName;
 
-	private Collection<? extends GrantedAuthority> authorities;
+	private Collection<GrantedAuthority> authorities;
 
 	public static PrincipalUser build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()

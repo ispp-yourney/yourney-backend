@@ -7,3 +7,8 @@ INSERT INTO users (id,email,first_name,last_name,"password",username) VALUES
 	 (0,'test222@ewfwef.com','Name 1','Surname 1','test_password1','test_username1'),
 	 (1,'test224@ewfwef.com','Name 2','Surname 2','test_password2','test_username2'),
 	 (2,'test225@ewfwef.com','Name 3','Surname 3','test_password3','test_username3');
+
+INSERT INTO users_roles(user_id, role_id) VALUES
+	(0,0),
+	(1,1),
+	(2,1);

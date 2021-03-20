@@ -11,6 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -41,6 +44,7 @@ public class Itinerary {
 	@Length(max = 255)
 	private String	description;
 
+	// TODO Solo mostrar públicos
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private StatusType	status;
@@ -62,7 +66,16 @@ public class Itinerary {
 
 	private Integer	views;
 
+	@ManyToMany
+	@JoinTable(
+			name = "itineraries_recommended_seasons",
+			joinColumns = @JoinColumn(name = "itinerary_id"), 
+			inverseJoinColumns = @JoinColumn(name = "season_id"))
+	private Collection<Season> recommendedSeasons;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity>	activities;
 
+	@OneToOne
+	private User author;
 }
