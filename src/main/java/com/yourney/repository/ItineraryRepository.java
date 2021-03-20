@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.yourney.model.Itinerary;
+import com.yourney.model.StatusType;
 import com.yourney.model.projection.ItineraryProjection;
 
 
@@ -27,4 +28,5 @@ public interface ItineraryRepository extends CrudRepository<Itinerary, Long> {
     
     Page<Itinerary> findAll(Pageable pageable);
 
+    Page<Itinerary> findByStatus(StatusType status, Pageable pageable);
 }

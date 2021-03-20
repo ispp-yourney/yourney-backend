@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.yourney.model.Itinerary;
+import com.yourney.model.StatusType;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
 
@@ -28,7 +29,7 @@ public class ItineraryService {
     }
 
     public Page<Itinerary> findPublishedItineraryPages(Pageable pageable) {
-        return itineraryRepository.findAll(pageable);
+        return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
     }
     
 	public Optional<Itinerary> findById(final Long id) {
