@@ -17,10 +17,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 import com.yourney.security.model.User;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
@@ -75,7 +77,14 @@ public class Itinerary {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity>	activities;
-
+	
 	@OneToOne
 	private User author;
+	
+	private Integer	points;
+	
+	public void setPoints() {
+        this.points = (int)this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
+    }
+
 }

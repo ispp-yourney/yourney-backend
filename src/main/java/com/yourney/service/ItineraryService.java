@@ -24,6 +24,10 @@ public class ItineraryService {
     public List<ItineraryProjection> findAllItineraryProjections() {
         return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjections();
     }
+    
+    public List<ItineraryProjection> findAllItineraryProjectionsOrdered() {
+        return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjectionsOrdered();
+    }
 
 	public Optional<Itinerary> findById(final Long id) {
 		return itineraryRepository.findById(id);
@@ -40,4 +44,5 @@ public class ItineraryService {
     public boolean existsById(long id) {
 		return itineraryRepository.existsById(id);
     }
-}   
+
+}

@@ -8,4 +8,5 @@ public interface ItineraryProjection {
     String getName();
 
     List<ActivityProjection> getActivities();
+    void setPoints();
 }

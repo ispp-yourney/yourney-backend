@@ -4,8 +4,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
 
-import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
@@ -38,12 +33,16 @@ public class ItineraryController {
 	private ItineraryService itineraryService;
 
 	@GetMapping("/list")
-	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() { 
-		Iterable<ItineraryProjection> itinerariesList = itineraryService.findAllItineraryProjections();
-		return new ResponseEntity<>(itinerariesList, HttpStatus.OK);
+	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() {
+		Iterable<Itinerary> itinerariesList = itineraryService.findAll();
+		for (Itinerary it : itinerariesList) {
+			it.setPoints();
+			itineraryService.save(it);
+		}
+		Iterable<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered();
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
 
-	
 	@GetMapping("/show/{id}")
 	public ResponseEntity<Itinerary> showItinerary(@PathVariable("id") long id) {
 		return ResponseEntity.ok(itineraryService.findById(id).orElse(null));
