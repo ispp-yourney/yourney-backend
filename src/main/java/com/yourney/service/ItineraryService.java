@@ -18,8 +18,12 @@ public class ItineraryService {
     @Autowired
     private ItineraryRepository itineraryRepository;
 
-    public List<Itinerary> findAll(){
-        return (List<Itinerary>) itineraryRepository.findAll();
+//    public List<Itinerary> findAll(){
+//        return (List<Itinerary>) itineraryRepository.findAll();
+//    }
+    
+    public List<Itinerary> findAllItinerary() {
+        return (List<Itinerary>) itineraryRepository.findAllItinerary();
     }
 
     public List<ItineraryProjection> findAllItineraryProjections() {
@@ -45,5 +49,21 @@ public class ItineraryService {
     public boolean existsById(long id) {
 		return itineraryRepository.existsById(id);
     }
+    
+    public List<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena){
+    	return (List<ItineraryProjection>) itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
+    }
 
+    public List<Itinerary> findSearchItinerary(String cadena){
+    	return (List<Itinerary>) itineraryRepository.findSearchItinerary(cadena);
+    }
+    
+    public List<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId){
+    	return (List<ItineraryProjection>) itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
+    }
+
+    public List<Itinerary> findUserItinerary(Long userId){
+    	return (List<Itinerary>) itineraryRepository.findUserItinerary(userId);
+    }
+    
 }

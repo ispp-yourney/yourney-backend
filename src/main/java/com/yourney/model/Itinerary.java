@@ -24,6 +24,7 @@ import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 import lombok.Data;
 
@@ -68,6 +69,13 @@ public class Itinerary {
 
 	private Integer	views;
 
+	@OneToOne
+	private Image mainImage;
+	
+	public String getImageUrl() {
+		return this.mainImage.getImageUrl();
+	}
+	
 	@ManyToMany
 	@JoinTable(
 			name = "itineraries_recommended_seasons",
@@ -80,6 +88,10 @@ public class Itinerary {
 	
 	@OneToOne
 	private User author;
+	
+	public String getUsername() {
+		return this.author.getUsername();
+	}
 	
 	private Integer	points;
 	

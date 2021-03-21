@@ -20,6 +20,7 @@ import java.util.List;
 import com.yourney.model.Itinerary;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
+import com.yourney.model.dto.Search;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ItineraryService;
@@ -36,12 +37,25 @@ public class ItineraryController {
 
 	@GetMapping("/list/{page}")
 	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries(@PathVariable("page") int page) {
-		Iterable<Itinerary> itinerariesList = itineraryService.findAll();
-		for (Itinerary it : itinerariesList) {
-			it.setPoints();
-			itineraryService.save(it);
-		}
-		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered(PageRequest.of(page-1, 2));
+		Iterable<Itinerary> itinerariesList = itineraryService.findAllItinerary();
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered(PageRequest.of(page-1, 10));
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
+	}
+	
+	@PostMapping("/search/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getSearchItineraries(@PathVariable("page") int page, @RequestBody Search cadena) {
+		Iterable<Itinerary> itinerariesList = itineraryService.findSearchItinerary(cadena.getCadena());
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findSearchItineraryProjectionsOrdered(PageRequest.of(page-1, 10), cadena.getCadena());
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
+	}
+	
+	@PostMapping("/user/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getUserItineraries(@PathVariable("page") int page, @RequestBody Search userId) {
+		Iterable<Itinerary> itinerariesList = itineraryService.findUserItinerary(userId.getUserId());
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findUserItineraryProjectionsOrdered(PageRequest.of(page-1, 10), userId.getUserId());
 		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
 	
@@ -85,6 +99,13 @@ public class ItineraryController {
 
         itineraryService.deleteById(id);
         return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
+    }
+	
+	private void itinerariesSetPoints(Iterable<Itinerary> itinerariesList) {
+        for (Itinerary it : itinerariesList) {
+            it.setPoints();
+            itineraryService.save(it);
+        }
     }
 
 }

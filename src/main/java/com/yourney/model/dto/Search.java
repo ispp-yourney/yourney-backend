@@ -1,14 +1,16 @@
 package com.yourney.model.dto;
 
 import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
+public class Search {
 
-	private String text;
+	private String cadena;
+	private Long userId;
 	
 }

@@ -19,17 +19,20 @@ INSERT INTO seasons(id, recommended_season) VALUES(1, 'SPRING');
 INSERT INTO seasons(id, recommended_season) VALUES(2, 'SUMMER');
 INSERT INTO seasons(id, recommended_season) VALUES(3, 'FALL');
 
+-- IMAGES
+INSERT INTO images(id, name, image_url, image_id) VALUES (1, 'imagen principal', 'https://multimedia.andalucia.org/media/0BC700DB844F4EDFBE00C1FA9B493D71/img/1112772E6D5945A1B89C26E539DD0D99/SE_Catedral_01.jpg?responsive', 1);
+
 -- ITINERARIES
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(0, 'itinerary test 0', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-20 12:25:01', NULL, NULL, 0, 1);
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(1, 'itinerary test 1', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-26 12:25:01', NULL, NULL, 0, 1);
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(2, 'itinerary test 2', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-25 12:25:01', NULL, NULL, 0, 1);
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(3, 'itinerary test 3', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, 1);
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(4, 'itinerary test 4', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-15 12:25:01', NULL, NULL, 0, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, main_image_id) 
+    VALUES(0, 'itinerary test 0', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-20 12:25:01', NULL, NULL, 0, 2, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, main_image_id) 
+    VALUES(1, 'itinerary test 1', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-26 12:25:01', NULL, NULL, 0, 2, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, main_image_id) 
+    VALUES(2, 'itinerary test 2', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-25 12:25:01', NULL, NULL, 0, 1, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, main_image_id) 
+    VALUES(3, 'itinerary test 3', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, 1, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, main_image_id) 
+    VALUES(4, 'itinerary test 4', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-15 12:25:01', NULL, NULL, 0, 1, 1);
 
 INSERT INTO itineraries_recommended_seasons(itinerary_id, season_id)
     VALUES(0, 0);
@@ -90,6 +93,4 @@ INSERT INTO landmarks_categories(landmark_id, category_id)
 
 
 
-
--- IMAGES
 
