@@ -1,12 +1,7 @@
-package com.yourney.model.projection;
-
-import java.time.LocalDateTime;
-import java.util.List;
+package com.yourney.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import com.yourney.model.StatusType;
 
 @Data
 @AllArgsConstructor

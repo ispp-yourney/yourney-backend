@@ -3,7 +3,6 @@ package com.yourney.model.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.yourney.model.Activity;
 import com.yourney.model.StatusType;
 
 import lombok.AllArgsConstructor;
