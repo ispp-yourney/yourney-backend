@@ -19,9 +19,13 @@ INSERT INTO seasons(id, recommended_season) VALUES(1, 'SPRING');
 INSERT INTO seasons(id, recommended_season) VALUES(2, 'SUMMER');
 INSERT INTO seasons(id, recommended_season) VALUES(3, 'FALL');
 
+-- IMAGES
+INSERT INTO images(id, name, image_id, image_url)
+    VALUES(0, 'Imagen de la giralda', NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/La_Giralda_August_2012_Seville_Spain.jpg/240px-La_Giralda_August_2012_Seville_Spain.jpg');
+
 -- ITINERARIES
-INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id) 
-    VALUES(0, 'itinerary test', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, 1);
+INSERT INTO itineraries(id, name, description, status, budget, estimated_days, create_date, update_date, delete_date, views, author_id, image_id) 
+    VALUES(0, 'itinerary test', 'lorem ipsum', 'PUBLISHED', 0., 2, '2021-01-31 12:25:01', NULL, NULL, 0, 1, 0);
 
 INSERT INTO itineraries_recommended_seasons(itinerary_id, season_id)
     VALUES(0, 0);
@@ -31,6 +35,8 @@ INSERT INTO itineraries_recommended_seasons(itinerary_id, season_id)
 -- CONTACTS
 INSERT INTO contact_infos(id, email, instagram, phone, twitter, website) 
     VALUES(0, 'giralda@email.com', NULL, 123456789, NULL, NULL);
+
+
 
 -- LANDMARKS
 INSERT INTO landmarks(id, name, description, price, country, city, latitude, longitude, contact_info_id) 
@@ -70,6 +76,4 @@ INSERT INTO landmarks_categories(landmark_id, category_id)
 
 
 
-
--- IMAGES
 
