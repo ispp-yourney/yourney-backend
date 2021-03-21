@@ -1,9 +1,7 @@
 package com.yourney.model.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-import org.glassfish.jersey.server.Uri;
 import org.hibernate.validator.constraints.URL;
 
 import lombok.AllArgsConstructor;

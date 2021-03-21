@@ -16,6 +16,8 @@ import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 
 @Data
@@ -39,6 +41,7 @@ public class Activity {
 
 	private LocalDateTime createDate;
 
+	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Itinerary itinerary;
 

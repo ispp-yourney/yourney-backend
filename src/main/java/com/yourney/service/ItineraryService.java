@@ -4,14 +4,15 @@ package com.yourney.service;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.yourney.model.Itinerary;
+import com.yourney.model.StatusType;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ItineraryService {
@@ -27,6 +28,17 @@ public class ItineraryService {
         return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjections();
     }
 
+    public Page<Itinerary> findPublishedItineraryPages(Pageable pageable) {
+        return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
+    }
+    
+    public Page<Itinerary> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
+
+    	
+        return itineraryRepository.findByActivitiesLandmarkCountry(country,pageable);
+    }
+
+    
 	public Optional<Itinerary> findById(final Long id) {
 		return itineraryRepository.findById(id);
 	}
