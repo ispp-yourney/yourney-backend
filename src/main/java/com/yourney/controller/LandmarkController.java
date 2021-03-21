@@ -25,6 +25,10 @@ public class LandmarkController {
     public ResponseEntity<Iterable<String>> listCitiesByCountry(@PathVariable("name") String name) {
         return ResponseEntity.ok(landmarkService.findCitiesByCountry(name));
     }
+    @GetMapping("/city/list")
+    public ResponseEntity<Iterable<String>> listCities() {
+        return ResponseEntity.ok(landmarkService.findAllCities());
+    }
 
  
 }

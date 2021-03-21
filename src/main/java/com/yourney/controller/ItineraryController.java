@@ -61,6 +61,25 @@ public class ItineraryController {
 
 		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
 	}
+	@GetMapping("/listByCountry/{name}")
+	public ResponseEntity<Page<Itinerary>> getListPublishedItinerariesByCountries(
+				@PathVariable("name") String countryName,
+				@RequestParam(defaultValue = "0") int page,
+				@RequestParam(defaultValue = "10") int size,
+				@RequestParam(defaultValue = "views") String order,
+				@RequestParam(defaultValue = "true") boolean asc) { 
+
+		Sort sort = Sort.by(order);
+		if(!asc){
+			sort = sort.descending();
+		}
+
+		
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<Itinerary> itineraries = itineraryService.findPublishedItineraryPagesByCountry(countryName, pageable);
+
+		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
+	}
 
 	
 	@GetMapping("/show/{id}")

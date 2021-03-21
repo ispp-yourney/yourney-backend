@@ -17,6 +17,9 @@ public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
     @Query("select distinct l.city from Landmark l where l.country=:name order by city")
     Iterable<String> findCitiesByCountry(@Param("name") String name);
 
+    @Query("select distinct l.city from Landmark l order by city")
+	Iterable<String> findAllCities();
+ 
 
 	
 }

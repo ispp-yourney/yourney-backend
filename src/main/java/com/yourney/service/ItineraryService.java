@@ -32,6 +32,13 @@ public class ItineraryService {
         return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
     }
     
+    public Page<Itinerary> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
+
+    	
+        return itineraryRepository.findByActivitiesLandmarkCountry(country,pageable);
+    }
+
+    
 	public Optional<Itinerary> findById(final Long id) {
 		return itineraryRepository.findById(id);
 	}

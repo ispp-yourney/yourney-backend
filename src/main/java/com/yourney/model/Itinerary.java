@@ -3,6 +3,7 @@ package com.yourney.model;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,11 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yourney.security.model.User;
 
 import lombok.Data;
@@ -71,6 +74,9 @@ public class Itinerary {
 			inverseJoinColumns = @JoinColumn(name = "season_id"))
 	private Collection<Season> recommendedSeasons;
 	
+	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
+	private Collection<Activity>	activities;
 
 	@ManyToOne()
 	private User author;

@@ -20,4 +20,8 @@ public class LandmarkService {
     public List<String> findCitiesByCountry(String name) {
     	return (List<String>) landmarkRepository.findCitiesByCountry(name);
     }
+    public List<String> findAllCities() {
+        return (List<String>) landmarkRepository.findAllCities();
+    }
+
 }

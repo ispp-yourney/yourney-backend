@@ -4,9 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ import com.yourney.model.projection.ItineraryProjection;
 
 
 @Repository
-public interface ItineraryRepository extends CrudRepository<Itinerary, Long> {
+public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
     @Query("select it from Itinerary it")
 	Iterable<ItineraryProjection> findAllItineraryProjections();
@@ -24,9 +23,10 @@ public interface ItineraryRepository extends CrudRepository<Itinerary, Long> {
     @Query("select it from Itinerary it where it.id=:id")
 	Optional<ItineraryProjection> findOneItineraryProjection(@Param("id") long idItinerario);
 
-    Iterable<Itinerary> findAll(Sort sort);
-    
-    Page<Itinerary> findAll(Pageable pageable);
 
     Page<Itinerary> findByStatus(StatusType status, Pageable pageable);
+    
+    Page<Itinerary> findByActivitiesLandmarkCountry(String country, Pageable pageable);
+    
+ 
 }
