@@ -18,5 +18,7 @@ public interface ItineraryProjection {
 	LocalDateTime getUpdateDate(); 
     LocalDateTime getCreateDate(); 
     Integer getViews();
-    AuthorProjection getAuthor();          
+    AuthorProjection getAuthor();
+    List<SeasonProjection> getRecommendedSeasons();    
+    ImageProjection getImage();   
 }

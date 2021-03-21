@@ -24,5 +24,7 @@ public class ItineraryDto {
 	private LocalDateTime updateDate;
     private LocalDateTime createDate; 
     private Integer	views;
-    private Long author;    
+    private Long author;
+    private List<Long> recommendedSeasons;   
+    private String image; 
 }

@@ -47,8 +47,9 @@ public class ItineraryService {
 		return itineraryRepository.findOneItineraryProjection(id);
 	}    
 
-    public void save(Itinerary itinerary) {
-        itineraryRepository.save(itinerary);
+    public Itinerary save(Itinerary itinerary) {
+        Itinerary newItinerary = itineraryRepository.save(itinerary);
+        return newItinerary;
     }
 
     public void deleteById(long id) {

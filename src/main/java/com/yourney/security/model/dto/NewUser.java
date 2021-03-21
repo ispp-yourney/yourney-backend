@@ -24,6 +24,7 @@ public class NewUser {
 	private String lastName;
 	
 	@Email
+	@NotBlank
 	private String email;
 	
 	private Set<String> roles = new HashSet<>();
