@@ -79,4 +79,7 @@ public class Itinerary {
 
 	@ManyToOne()
 	private User author;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private Image image;
 }

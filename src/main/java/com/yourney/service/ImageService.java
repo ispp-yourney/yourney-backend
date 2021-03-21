@@ -36,4 +36,8 @@ public class ImageService {
         imageRepository.deleteById(id);
     }
 
+    public Optional<Image> findByURL(String url) {
+        return imageRepository.findByImageUrl(url);
+    }
+
 }
