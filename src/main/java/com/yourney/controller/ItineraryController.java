@@ -59,7 +59,7 @@ public class ItineraryController {
 	@Autowired
 	private ImageService imageService;
 
-	@GetMapping("/list")
+	@GetMapping("/list_all")
 	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() { 
 		Iterable<ItineraryProjection> itinerariesList = itineraryService.findAllItineraryProjections();
 		return new ResponseEntity<>(itinerariesList, HttpStatus.OK);
