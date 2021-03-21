@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -25,6 +24,7 @@ public class NewUser {
 	private String lastName;
 	
 	@Email
+	@NotBlank
 	private String email;
 	
 	private Set<String> roles = new HashSet<>();

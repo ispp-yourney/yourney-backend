@@ -11,20 +11,26 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+
 import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.yourney.security.model.User;
 
 import lombok.Data;
 
@@ -69,7 +75,7 @@ public class Itinerary {
 
 	private Integer	views;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Image mainImage;
 	
 	public String getImageUrl() {
@@ -83,10 +89,11 @@ public class Itinerary {
 			inverseJoinColumns = @JoinColumn(name = "season_id"))
 	private Collection<Season> recommendedSeasons;
 	
+	@JsonManagedReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity>	activities;
 	
-	@OneToOne
+	@ManyToOne
 	private User author;
 	
 	public String getUsername() {
@@ -98,5 +105,6 @@ public class Itinerary {
 	public void setPoints() {
         this.points = (int)this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
     }
+
 
 }

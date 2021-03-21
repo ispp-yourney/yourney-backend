@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import com.yourney.model.Image;
 import com.yourney.model.dto.ImageDto;
@@ -29,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @RestController
 @RequestMapping("/image")

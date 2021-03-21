@@ -1,19 +1,28 @@
 package com.yourney.repository;
 
-import com.yourney.model.Itinerary;
-import com.yourney.model.projection.ItineraryProjection;
+import java.util.Optional;
+
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.yourney.model.Itinerary;
+import com.yourney.model.StatusType;
+import com.yourney.model.projection.ItineraryProjection;
+
 
 @Repository
-public interface ItineraryRepository extends CrudRepository<Itinerary, Long> {
+public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
     @Query("select it from Itinerary it where it.status = 'PUBLISHED'")
 	Iterable<Itinerary> findAllItinerary();
@@ -36,4 +45,14 @@ public interface ItineraryRepository extends CrudRepository<Itinerary, Long> {
     @Query("select it from Itinerary it where it.status = 'PUBLISHED' and it.author.id =:userId")
 	List<Itinerary> findUserItinerary(Long userId);
 
+    @Query("select it from Itinerary it where it.id=:id")
+	Optional<ItineraryProjection> findOneItineraryProjection(@Param("id") long idItinerario);
+
+
+
+    Page<Itinerary> findByStatus(StatusType status, Pageable pageable);
+    
+    Page<Itinerary> findByActivitiesLandmarkCountry(String country, Pageable pageable);
+    
+ 
 }
