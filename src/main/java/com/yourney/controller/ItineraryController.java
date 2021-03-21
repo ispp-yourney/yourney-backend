@@ -2,6 +2,7 @@ package com.yourney.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.yourney.model.Itinerary;
 import com.yourney.model.dto.ItineraryDto;
@@ -32,17 +34,17 @@ public class ItineraryController {
 	@Autowired
 	private ItineraryService itineraryService;
 
-	@GetMapping("/list")
-	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() {
+	@GetMapping("/list/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries(@PathVariable("page") int page) {
 		Iterable<Itinerary> itinerariesList = itineraryService.findAll();
 		for (Itinerary it : itinerariesList) {
 			it.setPoints();
 			itineraryService.save(it);
 		}
-		Iterable<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered();
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered(PageRequest.of(page-1, 2));
 		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
-
+	
 	@GetMapping("/show/{id}")
 	public ResponseEntity<Itinerary> showItinerary(@PathVariable("id") long id) {
 		return ResponseEntity.ok(itineraryService.findById(id).orElse(null));

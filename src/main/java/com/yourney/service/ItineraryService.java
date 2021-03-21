@@ -9,6 +9,7 @@ import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,8 +26,8 @@ public class ItineraryService {
         return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjections();
     }
     
-    public List<ItineraryProjection> findAllItineraryProjectionsOrdered() {
-        return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjectionsOrdered();
+    public List<ItineraryProjection> findAllItineraryProjectionsOrdered(Pageable pageable) {
+        return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjectionsOrdered(pageable);
     }
 
 	public Optional<Itinerary> findById(final Long id) {
