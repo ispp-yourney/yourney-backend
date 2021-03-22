@@ -76,10 +76,10 @@ public class Itinerary {
 	private Integer	views;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private Image mainImage;
+	private Image image;
 	
 	public String getImageUrl() {
-		return this.mainImage.getImageUrl();
+		return this.image.getImageUrl();
 	}
 	
 	@ManyToMany

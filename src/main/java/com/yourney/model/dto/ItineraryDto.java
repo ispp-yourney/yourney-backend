@@ -29,6 +29,6 @@ public class ItineraryDto {
     private Integer	views;
     private Long author;
     private List<Long> recommendedSeasons;   
-    private String mainImage; 
+    private String image; 
 
 }
