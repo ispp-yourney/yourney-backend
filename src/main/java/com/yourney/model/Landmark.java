@@ -47,6 +47,8 @@ public class Landmark {
 	
 	private Double longitude;
 	
+	private boolean promoted;
+	
 	@ManyToMany
 	@JoinTable(
 			name = "landmarks_categories",
