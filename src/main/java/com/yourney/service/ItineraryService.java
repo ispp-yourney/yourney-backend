@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
-import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
 
@@ -61,10 +60,6 @@ public class ItineraryService {
 	public Optional<ItineraryProjection> findOneItineraryProjection(final Long id) {
 		return itineraryRepository.findOneItineraryProjection(id);
 	}    
-
-    public Optional<ItineraryDetailsProjection> findOneItineraryDetailsProjection(final Long id) {
-		return itineraryRepository.findOneItineraryDetailsProjection(id);
-	}
 
     public Itinerary save(Itinerary itinerary) {
         Itinerary newItinerary = itineraryRepository.save(itinerary);
