@@ -18,9 +18,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+
+import com.yourney.security.model.User;
+
+import org.hibernate.annotations.Formula;
+
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yourney.security.model.User;
@@ -68,6 +75,13 @@ public class Itinerary {
 
 	private Integer	views;
 
+	@OneToOne(cascade = CascadeType.ALL)
+	private Image image;
+	
+	public String getImageUrl() {
+		return this.image.getImageUrl();
+	}
+	
 	@ManyToMany
 	@JoinTable(
 			name = "itineraries_recommended_seasons",
@@ -78,10 +92,19 @@ public class Itinerary {
 	@JsonManagedReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity>	activities;
-
-	@ManyToOne()
+	
+	@ManyToOne
 	private User author;
+	
+	public String getUsername() {
+		return this.author.getUsername();
+	}
+	
+	private Integer	points;
+	
+	public void setPoints() {
+        this.points = (int)this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
+    }
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Image image;
+
 }

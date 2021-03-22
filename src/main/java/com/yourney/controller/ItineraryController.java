@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,16 +28,19 @@ import java.io.ObjectInputFilter.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Image;
+
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
+import com.yourney.model.dto.Search;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
@@ -101,7 +106,30 @@ public class ItineraryController {
 
 		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
 	}
-
+  
+  @GetMapping("/list/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries(@PathVariable("page") int page) {
+		Iterable<Itinerary> itinerariesList = itineraryService.findAllItinerary();
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered(PageRequest.of(page-1, 10));
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
+	}
+	
+	@PostMapping("/search/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getSearchItineraries(@PathVariable("page") int page, @RequestBody Search cadena) {
+		Iterable<Itinerary> itinerariesList = itineraryService.findSearchItinerary(cadena.getCadena());
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findSearchItineraryProjectionsOrdered(PageRequest.of(page-1, 10), cadena.getCadena());
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
+	}
+	
+	@PostMapping("/user/{page}")
+	public ResponseEntity<Iterable<ItineraryProjection>> getUserItineraries(@PathVariable("page") int page, @RequestBody Search userId) {
+		Iterable<Itinerary> itinerariesList = itineraryService.findUserItinerary(userId.getUserId());
+		itinerariesSetPoints(itinerariesList);
+		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findUserItineraryProjectionsOrdered(PageRequest.of(page-1, 10), userId.getUserId());
+		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
+	}
 	
 	@GetMapping("/show/{id}")
 	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {	
@@ -227,6 +255,13 @@ public class ItineraryController {
 			itineraryService.save(foundItinerary);
 		}	}
         return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
+    }
+	
+	private void itinerariesSetPoints(Iterable<Itinerary> itinerariesList) {
+        for (Itinerary it : itinerariesList) {
+            it.setPoints();
+            itineraryService.save(it);
+        }
     }
 
 }
