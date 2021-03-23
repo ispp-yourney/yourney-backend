@@ -1,9 +1,12 @@
 package com.yourney.security.model;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,8 +36,19 @@ public class User {
 	private String password;
 	
 	private String email;
+	@Column(name="first_name")
 	private String firstName;
+	@Column(name="last_name")
 	private String lastName;
+
+	@Column(name="expiration_date")
+	private LocalDateTime expirationDate;
+
+	//0=Free
+	//1=Basic
+	@Column(nullable = false)
+	private Integer plan;
+
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
