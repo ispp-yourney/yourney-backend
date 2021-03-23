@@ -9,6 +9,6 @@ public class SeasonDto {
     
     private long id;
 
-    private String recommendedSeasons;
+    private String recommendedSeason;
 
 }

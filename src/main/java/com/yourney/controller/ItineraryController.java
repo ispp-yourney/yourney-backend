@@ -42,7 +42,6 @@ import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
-import com.yourney.service.SeasonService;
 
 @RestController
 @RequestMapping("/itinerary")
@@ -53,9 +52,6 @@ public class ItineraryController {
 
 	@Autowired
 	private ItineraryService itineraryService;
-
-	@Autowired
-	private SeasonService seasonService;	
 
 	@Autowired
 	private ImageService imageService;
@@ -159,18 +155,12 @@ public class ItineraryController {
 		Optional<User> usuario = userService.getByUsername(username);
 
 		Itinerary newItinerary = new Itinerary();
-		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "views", "createDate", "updateDate", "deleteDate", "recommendedSeasons");
+		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "views", "createDate", "updateDate", "deleteDate");
 
 		newItinerary.setCreateDate(LocalDateTime.now());
 		newItinerary.setActivities(new ArrayList<>());
 		newItinerary.setAuthor(usuario.get());
 		newItinerary.setViews(0);
-		
-		if(!itineraryDto.getRecommendedSeasons().isEmpty()){
-			newItinerary.setRecommendedSeasons(itineraryDto.getRecommendedSeasons().stream().map(id -> seasonService.findById(id).get()).collect(Collectors.toList()));
-		} else {
-			newItinerary.setRecommendedSeasons(new ArrayList<>());
-		}
 
 		
 		if(itineraryDto.getImage()!=null){
@@ -206,12 +196,6 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de modficación de este itinerario, que no es suyo."));
 		}
         BeanUtils.copyProperties(itineraryDto, itineraryToUpdate, "id", "views", "createDate", "updateDate", "deleteDate");
-
-		if(!itineraryDto.getRecommendedSeasons().isEmpty()){
-			itineraryToUpdate.setRecommendedSeasons(itineraryDto.getRecommendedSeasons().stream().map(id -> seasonService.findById(id).get()).collect(Collectors.toList()));
-		} else {
-			itineraryToUpdate.setRecommendedSeasons(new ArrayList<>());
-		}
 
 		itineraryToUpdate.setUpdateDate(LocalDateTime.now());
 		
