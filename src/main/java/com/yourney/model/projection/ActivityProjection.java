@@ -15,5 +15,5 @@ public interface ActivityProjection {
     LocalDateTime getCreateDate();
     Integer getViews();  
     ItineraryProjection getItinerary(); 
-    Landmark getLandmark();
+    LandmarkProjection getLandmark();
 }

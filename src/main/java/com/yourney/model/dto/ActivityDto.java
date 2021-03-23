@@ -17,7 +17,7 @@ public class ActivityDto {
 
 	private Integer day;
 
-    private Long itineraryId;
+    private Long itinerary;
 
 	private LocalDateTime deleteDate;
 	
@@ -25,7 +25,7 @@ public class ActivityDto {
     
 	private LocalDateTime createDate; 
 
-	private Long landmarkId;
+	private Long landmark;
 
     private Integer	views;	
 }

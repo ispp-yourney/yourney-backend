@@ -96,7 +96,7 @@ public class Itinerary {
 	}
 	
 	private Integer	points;
-	
+
 	public void setPoints() {
         this.points = (int)this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
     }

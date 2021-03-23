@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.yourney.model.Activity;
+import com.yourney.model.projection.ActivityProjection;
 import com.yourney.repository.ActivityRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,21 @@ public class ActivityService {
         return activityRepository.findById(id);
     }
 
-    public void save(Activity activity) {
-        activityRepository.save(activity);
+    public Activity save(Activity activity) {
+        Activity newActivity = activityRepository.save(activity);
+        return newActivity;
+    }
+
+    public Optional<ActivityProjection> findOneActivityProjection(final Long id) {
+		return activityRepository.findOneActivityProjection(id);
+	}
+
+    public List<ActivityProjection> findAllActivityProjections() {
+        return (List<ActivityProjection>) activityRepository.findAllActivityProjections();
+    }
+
+    public List<ActivityProjection> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
+        return (List<ActivityProjection>) activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary, dia);
     }
 
     public void deleteById(long id) {

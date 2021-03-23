@@ -134,9 +134,9 @@ public class ItineraryController {
 			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 			}else {
-				ItineraryDetailsProjection foundItineraryProjection = itineraryService.findOneItineraryDetailsProjection(id).orElse(null);
 				foundItinerary.setViews(foundItinerary.getViews()+1);
 				itineraryService.save(foundItinerary);
+				ItineraryDetailsProjection foundItineraryProjection = itineraryService.findOneItineraryDetailsProjection(id).orElse(null);
 				return ResponseEntity.ok(foundItineraryProjection);
 			}
 		} else {

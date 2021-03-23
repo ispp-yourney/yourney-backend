@@ -1,5 +1,6 @@
 package com.yourney.model;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -70,4 +71,11 @@ public class Landmark {
 	@URL
 	private String twitter;
 	
+	private LocalDateTime deleteDate;
+
+    private LocalDateTime updateDate;
+     
+    private LocalDateTime createDate;  
+	
+	private Long views;
 }
