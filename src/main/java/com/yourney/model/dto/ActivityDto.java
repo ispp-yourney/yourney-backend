@@ -1,5 +1,7 @@
 package com.yourney.model.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,4 +19,13 @@ public class ActivityDto {
 
     private Long itineraryId;
 
+	private LocalDateTime deleteDate;
+	
+	private LocalDateTime updateDate;
+    
+	private LocalDateTime createDate; 
+
+	private Long landmarkId;
+
+    private Integer	views;	
 }

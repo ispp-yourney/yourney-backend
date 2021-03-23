@@ -3,6 +3,7 @@ package com.yourney.model.projection;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.yourney.model.SeasonType;
 import com.yourney.model.StatusType;
 
 public interface ItineraryDetailsProjection {
@@ -19,7 +20,7 @@ public interface ItineraryDetailsProjection {
     LocalDateTime getCreateDate(); 
     Integer getViews();
     AuthorProjection getAuthor();
-    List<SeasonProjection> getRecommendedSeasons();    
+    SeasonType getRecommendedSeason();    
     ImageProjection getImage();   
     
 }

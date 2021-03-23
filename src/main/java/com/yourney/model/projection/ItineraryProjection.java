@@ -9,7 +9,7 @@ import com.yourney.model.StatusType;
 
 public interface ItineraryProjection {
     
-    String getId();
+    Long getId();
     String getName();
 
     String getDescription();

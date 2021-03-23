@@ -53,7 +53,6 @@ public class Itinerary {
 	@Length(max = 255)
 	private String	description;
 
-	// TODO Solo mostrar públicos
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private StatusType	status;
@@ -82,12 +81,8 @@ public class Itinerary {
 		return this.image.getImageUrl();
 	}
 	
-	@ManyToMany
-	@JoinTable(
-			name = "itineraries_recommended_seasons",
-			joinColumns = @JoinColumn(name = "itinerary_id"), 
-			inverseJoinColumns = @JoinColumn(name = "season_id"))
-	private Collection<Season> recommendedSeasons;
+	@Enumerated(EnumType.STRING)
+	private SeasonType recommendedSeason;
 	
 	@JsonManagedReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")

@@ -3,6 +3,7 @@ package com.yourney.model.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.yourney.model.SeasonType;
 import com.yourney.model.StatusType;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class ItineraryDto {
 	  private String description;
     private StatusType	status;
     private Double budget;
-	  private Integer	estimatedDays;  
+	  private Integer	estimatedDays;
     private List<Long> activities;
 
     private Integer points;
@@ -28,7 +29,7 @@ public class ItineraryDto {
     private LocalDateTime createDate; 
     private Integer	views;
     private Long author;
-    private List<Long> recommendedSeasons;   
-    private String image; 
+    private SeasonType recommendedSeason;
+    private String image;
 
 }

@@ -39,7 +39,13 @@ public class Activity {
 	@Column(nullable = false)
 	private Integer day;
 
-	private LocalDateTime createDate;
+    private LocalDateTime deleteDate;
+	
+	private LocalDateTime updateDate;
+    
+	private LocalDateTime createDate; 
+
+    private Integer	views;
 
 	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)

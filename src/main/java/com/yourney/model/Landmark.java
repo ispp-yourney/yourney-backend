@@ -12,10 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
 import lombok.Data;
 
@@ -49,14 +51,23 @@ public class Landmark {
 	
 	private boolean promoted;
 	
-	@ManyToMany
-	@JoinTable(
-			name = "landmarks_categories",
-			joinColumns = @JoinColumn(name = "landmark_id"), 
-			inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private Collection<Category> categories;
+	private String category;
+
+	// Información de contacto
+
+	@Email
+	private String email;
 	
-	@OneToOne
-	private ContactInfo contactInfo;
+	@Length(max=50)
+	private String phone;
+	
+	@URL
+	private String website;
+	
+	@Length(max=50)
+	private String instagram;
+	
+	@URL
+	private String twitter;
 	
 }

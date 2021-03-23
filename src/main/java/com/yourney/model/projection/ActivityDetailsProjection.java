@@ -1,6 +1,6 @@
 package com.yourney.model.projection;
 
-import com.yourney.model.ContactInfo;
+
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -24,9 +24,21 @@ public interface ActivityDetailsProjection {
     @Value("#{target.landmark.description}")
     String getLandmarkDescription();
 
+    @Value("#{target.landmark.category}")
+    String getLandmarkCategory();
+
     @Value("#{target.landmark.price}")
     Double getLandmarkPrice();
 
-    @Value("#{target.landmark.contactInfo}")
-    ContactInfo getContactInfo();
+    @Value("#{target.landmark.email}")
+    String getLandmarkEmail();
+
+    @Value("#{target.landmark.phone}")
+    String getLandmarkPhone();
+
+    @Value("#{target.landmark.instagram}")
+    String getLandmarkInstagram();
+
+    @Value("#{target.landmark.twitter}")
+    String getLandmarkTwitter();
 }

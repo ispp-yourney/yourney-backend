@@ -1,5 +1,6 @@
 package com.yourney.security.model.dto;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ public class JwtDto {
 	private String bearer = "Bearer";
 	
 	private String username;
+
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	
