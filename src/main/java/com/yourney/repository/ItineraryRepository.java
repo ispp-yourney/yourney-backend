@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
+import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 
 
@@ -48,6 +49,8 @@ public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
     @Query("select it from Itinerary it where it.id=:id")
 	Optional<ItineraryProjection> findOneItineraryProjection(@Param("id") long idItinerario);
 
+    @Query("select it from Itinerary it where it.id=:id")
+	Optional<ItineraryDetailsProjection> findOneItineraryDetailsProjection(@Param("id") long idItinerario);
 
 
     Page<Itinerary> findByStatus(StatusType status, Pageable pageable);

@@ -22,10 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javassist.NotFoundException;
-
-import java.io.ObjectInputFilter.Status;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +29,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.yourney.model.Activity;
 import com.yourney.model.Image;
 
 import com.yourney.model.Itinerary;
@@ -41,6 +36,7 @@ import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.dto.Search;
+import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
@@ -142,7 +138,7 @@ public class ItineraryController {
 			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 			}else {
-				ItineraryProjection foundItineraryProjection = itineraryService.findOneItineraryProjection(id).orElse(null);
+				ItineraryDetailsProjection foundItineraryProjection = itineraryService.findOneItineraryDetailsProjection(id).orElse(null);
 				foundItinerary.setViews(foundItinerary.getViews()+1);
 				itineraryService.save(foundItinerary);
 				return ResponseEntity.ok(foundItineraryProjection);
