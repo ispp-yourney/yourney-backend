@@ -57,7 +57,7 @@ public class Activity {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Itinerary itinerary;
 
-	@OneToOne
+	@OneToOne(optional = false)
 	private Landmark landmark;
 
 }

@@ -22,6 +22,7 @@ import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ActivityService;
 import com.yourney.service.LandmarkService;
 
 @RestController
@@ -30,6 +31,9 @@ public class LandmarkController {
 
     @Autowired
     private LandmarkService landmarkService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     private UserService userService;
@@ -71,8 +75,9 @@ public class LandmarkController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateLandMark(@RequestBody LandmarkDto landmarkDto) {
+    @PutMapping("/update/{id_activity}")
+    public ResponseEntity<?> updateLandMark(@RequestBody LandmarkDto landmarkDto,
+            @PathVariable("id_activity") long idActivity) {
 
         String username = userService.getCurrentUsername();
 
@@ -82,9 +87,16 @@ public class LandmarkController {
         }
 
         Landmark landmarkToUpdate = landmarkService.findById(landmarkDto.getId()).orElse(null);
+        Activity activity = activityService.findById(idActivity).orElse(null);
+
+        if (!(landmarkToUpdate.getStatus().equals(StatusType.PUBLISHED)
+                || activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername()))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
+        }
 
         // UN LANDMARK DEBE TENER ASOCIADA UNA ACTIVIDAD
-        Activity activity = landmarkService.findOneActivityByLandmark(landmarkDto.getId()).orElse(null);
+
         if (!activity.getItinerary().getAuthor().getUsername().equals(username)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de editar un itinerario que no es suyo."));
@@ -100,8 +112,9 @@ public class LandmarkController {
         return ResponseEntity.ok(landmarkService.findOneLandmarkProjection(updatedLandmark.getId()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> saveLandMark(@RequestBody LandmarkDto landmarkDto) {
+    @PostMapping("/create/{id_activity}")
+    public ResponseEntity<?> saveLandMark(@RequestBody LandmarkDto landmarkDto,
+            @PathVariable("id_activity") long idActivity) {
 
         String username = userService.getCurrentUsername();
 
@@ -111,6 +124,7 @@ public class LandmarkController {
         }
 
         Landmark newLandmark = new Landmark();
+        Activity activity = activityService.findById(idActivity).orElse(null);
 
         BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "updateDate", "deleteDate",
                 "status", "views");
@@ -118,8 +132,10 @@ public class LandmarkController {
         newLandmark.setStatus(StatusType.PUBLISHED);
         newLandmark.setCreateDate(LocalDateTime.now());
         newLandmark.setViews((long) 0);
+        activity.setLandmark(newLandmark);
 
         Landmark updatedLandmark = landmarkService.save(newLandmark);
+        activityService.save(activity);
 
         return ResponseEntity.ok(landmarkService.findOneLandmarkProjection(updatedLandmark.getId()));
     }
@@ -132,10 +148,19 @@ public class LandmarkController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
             }
+
+            Landmark landmarkToDelete = landmarkService.findById(id).orElse(null);
             Activity activity = landmarkService.findOneActivityByLandmark(id).orElse(null);
+
+            if (!(landmarkToDelete.getStatus().equals(StatusType.PUBLISHED)
+                    || activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername()))) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
+            }
+
             if (!activity.getItinerary().getAuthor().getUsername().equals(username)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("El usuario no tiene permiso de eliminar un itinerario que no es suyo."));
+                        .body(new Message("El usuario no tiene permiso de eliminar un POI que no es suyo."));
             }
 
             Landmark landmark = landmarkService.findById(id).get();

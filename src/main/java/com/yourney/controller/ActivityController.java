@@ -62,7 +62,7 @@ public class ActivityController {
 
             if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("El itinerario indicado para la actividad ha sido borrado");
+                        .body("La actividad no se encuentra publicada en este momento.");
             }
 
             Integer views = foundActivity.getViews();
@@ -135,6 +135,13 @@ public class ActivityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
+        Activity foundActivity = activityService.findById(activityDto.getId()).get();
+
+        if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("La actividad no se encuentra publicada en este momento y por tanto no se puede editar.");
+        }
+
         if (username.equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de actualizar una actividad sin registrarse."));
@@ -185,6 +192,13 @@ public class ActivityController {
 
         if (!activityService.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No exite la actividad indicada"));
+        }
+
+        Activity foundActivity = activityService.findById(id).get();
+
+        if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("La actividad no se encuentra publicada en este momento y por tanto no se puede borrar.");
         }
 
         Itinerary itinerary = itineraryService.findById(activityToDelete.getItinerary().getId()).orElse(null);
