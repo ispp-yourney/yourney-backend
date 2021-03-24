@@ -20,6 +20,9 @@ public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
     @Query("select a from Activity a where a.landmark.id=:id")
     Optional<Activity> findOneActivityByLandmark(@Param("id") long idLandmark);
 
+    @Query("select l from Landmark l where l.status='PUBLISHED'")
+    Iterable<LandmarkProjection> findAllLandmarkProjection();
+
     @Query("select distinct l.country from Landmark l order by country")
     Iterable<String> findAllCountries();
 

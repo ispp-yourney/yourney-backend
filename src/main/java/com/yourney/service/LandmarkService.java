@@ -39,6 +39,10 @@ public class LandmarkService {
         return landmarkRepository.findOneLandmarkProjection(id);
     }
 
+    public Iterable<LandmarkProjection> findAllLandmarkProjection() {
+        return landmarkRepository.findAllLandmarkProjection();
+    }
+
     public List<String> findAllCountries() {
         return (List<String>) landmarkRepository.findAllCountries();
     }

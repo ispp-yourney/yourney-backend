@@ -136,7 +136,16 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND)
 						.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 			} else {
-				foundItinerary.setViews(foundItinerary.getViews() + 1);
+
+				Integer views = foundItinerary.getViews();
+				if (views != null) {
+					foundItinerary.setViews(views + 1);
+					itineraryService.save(foundItinerary);
+				} else {
+					foundItinerary.setViews(1);
+					itineraryService.save(foundItinerary);
+				}
+
 				itineraryService.save(foundItinerary);
 				ItineraryDetailsProjection foundItineraryProjection = itineraryService
 						.findOneItineraryDetailsProjection(id).orElse(null);

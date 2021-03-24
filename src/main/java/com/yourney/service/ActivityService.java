@@ -43,6 +43,10 @@ public class ActivityService {
                 dia);
     }
 
+    public Iterable<ActivityProjection> findAllActivityProjection() {
+        return activityRepository.findAllActivityProjection();
+    }
+
     public void deleteById(long id) {
         activityRepository.deleteById(id);
     }

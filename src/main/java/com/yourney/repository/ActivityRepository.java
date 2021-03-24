@@ -19,6 +19,9 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query("select ac from Activity ac")
     Iterable<ActivityProjection> findAllActivityProjections();
 
+    @Query("select l from Activity l where l.status='PUBLISHED'")
+    Iterable<ActivityProjection> findAllActivityProjection();
+
     @Query("select ac from Activity ac where ac.day=:dia and ac.itinerary.id=:id")
     Iterable<ActivityProjection> findAllActivityProjectionsByDayAndItinerary(@Param("id") long idItinerary,
             @Param("dia") int dia);

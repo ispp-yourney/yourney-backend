@@ -41,7 +41,7 @@ public class ActivityController {
 
     @GetMapping("/list")
     public ResponseEntity<Iterable<ActivityProjection>> listActivities() {
-        Iterable<ActivityProjection> activitiesList = activityService.findAllActivityProjections();
+        Iterable<ActivityProjection> activitiesList = activityService.findAllActivityProjection();
         return new ResponseEntity<>(activitiesList, HttpStatus.OK);
     }
 
@@ -60,9 +60,17 @@ public class ActivityController {
 
             Activity foundActivity = activityService.findById(id).get();
 
+            if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("El itinerario indicado para la actividad ha sido borrado");
+            }
+
             Integer views = foundActivity.getViews();
             if (views != null) {
                 foundActivity.setViews(foundActivity.getViews() + 1);
+                activityService.save(foundActivity);
+            } else {
+                foundActivity.setViews(1);
                 activityService.save(foundActivity);
             }
             ActivityProjection foundActivityProjection = activityService.findOneActivityProjection(id).orElse(null);
@@ -78,7 +86,6 @@ public class ActivityController {
     public ResponseEntity<?> createActivity(@RequestBody ActivityDto activityDto) {
         String username = userService.getCurrentUsername();
         Activity newActivity = new Activity();
-        BeanUtils.copyProperties(activityDto, newActivity, "id");
 
         if (username.equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -94,7 +101,7 @@ public class ActivityController {
 
         if (!username.equals(itinerary.getAuthor().getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("No puedo añadir actividades a un itinerario del que no es dueño."));
+                    .body(new Message("No es posible añadir actividades a un itinerario del que no es dueño."));
         }
 
         if (itinerary != null && itinerary.getStatus().equals(StatusType.DELETED)) {
@@ -107,8 +114,13 @@ public class ActivityController {
                     .body("El itinerario indicado para la actividad no está publicado");
         }
 
+        BeanUtils.copyProperties(activityDto, newActivity, "id", "status", "deleteDate", "updateDate", "createDate",
+                "views");
+
+        newActivity.setViews(0);
         newActivity.setItinerary(itinerary);
         newActivity.setCreateDate(LocalDateTime.now());
+        newActivity.setStatus(StatusType.PUBLISHED);
         Activity createdActivity = activityService.save(newActivity);
         return ResponseEntity.ok(showActivity(createdActivity.getId()));
     }
@@ -192,7 +204,11 @@ public class ActivityController {
                     .body("No se puede eliminar una actividad de un itinerario que está en borrador.");
         }
 
-        activityService.deleteById(id);
+        Activity activity = activityService.findById(id).get();
+        activity.setDeleteDate(LocalDateTime.now());
+        activity.setStatus(StatusType.DELETED);
+        activityService.save(activity);
+
         return ResponseEntity.ok(new Message("Actividad eliminada correctamente"));
     }
 }
