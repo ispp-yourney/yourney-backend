@@ -2,6 +2,7 @@ package com.yourney.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -57,7 +58,7 @@ public class Activity {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Itinerary itinerary;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Landmark landmark;
 
 }
