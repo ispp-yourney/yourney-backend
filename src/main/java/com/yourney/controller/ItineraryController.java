@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.yourney.model.Image;
 
@@ -45,6 +43,7 @@ import com.yourney.service.ItineraryService;
 
 @RestController
 @RequestMapping("/itinerary")
+@CrossOrigin
 public class ItineraryController {
 
 	@Autowired
@@ -57,85 +56,102 @@ public class ItineraryController {
 	private ImageService imageService;
 
 	@GetMapping("/list_all")
-	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() { 
+	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries() {
 		Iterable<ItineraryProjection> itinerariesList = itineraryService.findAllItineraryProjections();
 		return new ResponseEntity<>(itinerariesList, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/list")
-	public ResponseEntity<Page<Itinerary>> getListPublishedItineraries(
-				@RequestParam(defaultValue = "0") int page,
-				@RequestParam(defaultValue = "10") int size,
-				@RequestParam(defaultValue = "views") String order,
-				@RequestParam(defaultValue = "true") boolean asc) { 
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItineraries(
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		Sort sort = Sort.by(order);
-		if(!asc){
-			sort = sort.descending();
-		}
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPages(pageable);
 
-		Pageable pageable = PageRequest.of(page, size, sort);
-		Page<Itinerary> itineraries = itineraryService.findPublishedItineraryPages(pageable);
-
-		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
 	}
+
 	@GetMapping("/listByCountry/{name}")
-	public ResponseEntity<Page<Itinerary>> getListPublishedItinerariesByCountries(
-				@PathVariable("name") String countryName,
-				@RequestParam(defaultValue = "0") int page,
-				@RequestParam(defaultValue = "10") int size,
-				@RequestParam(defaultValue = "views") String order,
-				@RequestParam(defaultValue = "true") boolean asc) { 
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByCountries(
+			@PathVariable("name") String countryName, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		Sort sort = Sort.by(order);
-		if(!asc){
-			sort = sort.descending();
-		}
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByCountry(countryName,
+				pageable);
 
-		
-		Pageable pageable = PageRequest.of(page, size, sort);
-		Page<Itinerary> itineraries = itineraryService.findPublishedItineraryPagesByCountry(countryName, pageable);
-
-		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
 	}
-  
-  @GetMapping("/list/{page}")
+
+	@GetMapping("/listByCity/{name}")
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByCities(
+			@PathVariable("name") String cityName, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByCity(cityName, pageable);
+
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+	}
+
+	@GetMapping("/listByDistance")
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByDistance(
+			@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByDistance(latitude,
+				longitude, pageable);
+
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+	}
+
+	@GetMapping("/list/{page}")
 	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries(@PathVariable("page") int page) {
 		Iterable<Itinerary> itinerariesList = itineraryService.findAllItinerary();
 		itinerariesSetPoints(itinerariesList);
-		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findAllItineraryProjectionsOrdered(PageRequest.of(page-1, 10));
+		Page<ItineraryProjection> itinerariesListOrdered = itineraryService
+				.findAllItineraryProjectionsOrdered(PageRequest.of(page, 10));
 		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/search/{page}")
-	public ResponseEntity<Iterable<ItineraryProjection>> getSearchItineraries(@PathVariable("page") int page, @RequestBody Search cadena) {
+	public ResponseEntity<Iterable<ItineraryProjection>> getSearchItineraries(@PathVariable("page") int page,
+			@RequestBody Search cadena) {
 		Iterable<Itinerary> itinerariesList = itineraryService.findSearchItinerary(cadena.getCadena());
 		itinerariesSetPoints(itinerariesList);
-		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findSearchItineraryProjectionsOrdered(PageRequest.of(page-1, 10), cadena.getCadena());
+		Page<ItineraryProjection> itinerariesListOrdered = itineraryService
+				.findSearchItineraryProjectionsOrdered(PageRequest.of(page, 10), cadena.getCadena());
 		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/user/{page}")
-	public ResponseEntity<Iterable<ItineraryProjection>> getUserItineraries(@PathVariable("page") int page, @RequestBody Search userId) {
+	public ResponseEntity<Iterable<ItineraryProjection>> getUserItineraries(@PathVariable("page") int page,
+			@RequestBody Search userId) {
 		Iterable<Itinerary> itinerariesList = itineraryService.findUserItinerary(userId.getUserId());
 		itinerariesSetPoints(itinerariesList);
-		List<ItineraryProjection> itinerariesListOrdered = itineraryService.findUserItineraryProjectionsOrdered(PageRequest.of(page-1, 10), userId.getUserId());
+		Page<ItineraryProjection> itinerariesListOrdered = itineraryService
+				.findUserItineraryProjectionsOrdered(PageRequest.of(page, 10), userId.getUserId());
 		return new ResponseEntity<>(itinerariesListOrdered, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/show/{id}")
-	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {	
-		if(itineraryService.existsById(id)){
+	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {
+		if (itineraryService.existsById(id)) {
 
 			Itinerary foundItinerary = itineraryService.findById(id).get();
 
-			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario indicado, ha sido previamente eliminado."));
-			} else if(foundItinerary.getStatus().equals(StatusType.DRAFT)&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
-			}else {
-				ItineraryDetailsProjection foundItineraryProjection = itineraryService.findOneItineraryDetailsProjection(id).orElse(null);
-				foundItinerary.setViews(foundItinerary.getViews()+1);
+			if (foundItinerary.getStatus().equals(StatusType.DELETED)) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body(new Message("El itinerario indicado, ha sido previamente eliminado."));
+			} else if (foundItinerary.getStatus().equals(StatusType.DRAFT)
+					&& !foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
+			} else {
+				ItineraryDetailsProjection foundItineraryProjection = itineraryService
+						.findOneItineraryDetailsProjection(id).orElse(null);
+				foundItinerary.setViews(foundItinerary.getViews() + 1);
 				itineraryService.save(foundItinerary);
 				return ResponseEntity.ok(foundItineraryProjection);
 			}
@@ -143,15 +159,16 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
 		}
 	}
-	
+
 	@PostMapping("/create")
 	public ResponseEntity<?> createItinerary(@RequestBody ItineraryDto itineraryDto) {
 		String username = userService.getCurrentUsername();
-		
-		if(username.equals("anonymousUser")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de creación sin registrarse."));
+
+		if (username.equals("anonymousUser")) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso de creación sin registrarse."));
 		}
-		
+
 		Optional<User> usuario = userService.getByUsername(username);
 
 		Itinerary newItinerary = new Itinerary();
@@ -162,86 +179,95 @@ public class ItineraryController {
 		newItinerary.setAuthor(usuario.get());
 		newItinerary.setViews(0);
 
-		
-		if(itineraryDto.getImage()!=null){
+		if (itineraryDto.getImage() != null) {
 			Image imagen = imageService.findByURL(itineraryDto.getImage()).orElse(null);
-			if(imagen!=null){
-			newItinerary.setImage(imagen);
+			if (imagen != null) {
+				newItinerary.setImage(imagen);
 			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+						new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
 		}
 
 		Itinerary createdItinerary = itineraryService.save(newItinerary);
 
 		return ResponseEntity.ok(itineraryService.findOneItineraryProjection(createdItinerary.getId()));
-	}	
-	
+	}
+
 	@PutMapping("/update")
-    public ResponseEntity<?> updateItinerary(@RequestBody ItineraryDto itineraryDto) {
-        
+	public ResponseEntity<?> updateItinerary(@RequestBody ItineraryDto itineraryDto) {
+
 		String username = userService.getCurrentUsername();
-		
-		if(username.equals("anonymousUser")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
-		}else if (!itineraryService.existsById(itineraryDto.getId())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
-        }
+
+		if (username.equals("anonymousUser")) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+		} else if (!itineraryService.existsById(itineraryDto.getId())) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+		}
 
 		Itinerary itineraryToUpdate = itineraryService.findById(itineraryDto.getId()).orElse(null);
 
-		if(!itineraryToUpdate.getAuthor().getUsername().equals(username)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de modficación de este itinerario, que no es suyo."));
+		if (!itineraryToUpdate.getAuthor().getUsername().equals(username)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+					new Message("El usuario no tiene permiso de modficación de este itinerario, que no es suyo."));
 		}
-        BeanUtils.copyProperties(itineraryDto, itineraryToUpdate, "id", "views", "createDate", "updateDate", "deleteDate");
+		BeanUtils.copyProperties(itineraryDto, itineraryToUpdate, "id", "views", "createDate", "updateDate",
+				"deleteDate");
 
 		itineraryToUpdate.setUpdateDate(LocalDateTime.now());
-		
-		if(itineraryDto.getImage()!=null){
+
+		if (itineraryDto.getImage() != null) {
 			Image imagen = imageService.findByURL(itineraryDto.getImage()).orElse(null);
-			if(imagen!=null){
-			itineraryToUpdate.setImage(imagen);
+			if (imagen != null) {
+				itineraryToUpdate.setImage(imagen);
 			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+						new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario debe de subir una imagen principal antes de crear el itinerario."));
 		}
-	
-		
+
 		Itinerary updatedItinerary = itineraryService.save(itineraryToUpdate);
 
 		return ResponseEntity.ok(itineraryService.findOneItineraryProjection(updatedItinerary.getId()));
-    }	
+	}
 
 	@DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteItinerary(@PathVariable("id") long id) {
-        if (!itineraryService.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
-        } else {
+	public ResponseEntity<?> deleteItinerary(@PathVariable("id") long id) {
+		if (!itineraryService.existsById(id)) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+		} else {
 			Itinerary foundItinerary = itineraryService.findById(id).get();
 
-			if(foundItinerary.getStatus().equals(StatusType.DELETED)){
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No existe el itinerario indicado"));
-			}else if(foundItinerary.getStatus().equals(StatusType.DRAFT)){
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede eliminar un itinerario no publicado"));
-			}else if(!foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())){
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No puede borrar un itinerario que no es suyo"));
+			if (foundItinerary.getStatus().equals(StatusType.DELETED)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body(new Message("No existe el itinerario indicado"));
+			} else if (foundItinerary.getStatus().equals(StatusType.DRAFT)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body(new Message("No puede eliminar un itinerario no publicado"));
+			} else if (!foundItinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
-			foundItinerary.setDeleteDate(LocalDateTime.now());
-			foundItinerary.setStatus(StatusType.DELETED);
-			itineraryService.save(foundItinerary);
-		}	}
-        return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
-    }
-	
+				foundItinerary.setDeleteDate(LocalDateTime.now());
+				foundItinerary.setStatus(StatusType.DELETED);
+				itineraryService.save(foundItinerary);
+			}
+		}
+		return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
+	}
+
 	private void itinerariesSetPoints(Iterable<Itinerary> itinerariesList) {
-        for (Itinerary it : itinerariesList) {
-            it.setPoints();
-            itineraryService.save(it);
-        }
-    }
+		for (Itinerary it : itinerariesList) {
+			it.setPoints();
+			itineraryService.save(it);
+		}
+	}
 
 }

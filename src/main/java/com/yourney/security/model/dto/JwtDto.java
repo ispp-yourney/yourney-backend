@@ -1,6 +1,5 @@
 package com.yourney.security.model.dto;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;

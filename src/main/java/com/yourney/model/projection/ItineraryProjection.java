@@ -1,12 +1,5 @@
 package com.yourney.model.projection;
 
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-
-import com.yourney.model.StatusType;
-
 public interface ItineraryProjection {
     
     Long getId();
@@ -18,7 +11,7 @@ public interface ItineraryProjection {
     String getImageUrl(); 
     String getUsername();
 
-    void setPoints();
+    //void setPoints();
 
     //List<ActivityProjection> getActivities();
 	  //String getDescription();

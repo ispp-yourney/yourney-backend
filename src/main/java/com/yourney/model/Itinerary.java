@@ -11,14 +11,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 
@@ -27,10 +23,8 @@ import com.yourney.security.model.User;
 import org.hibernate.annotations.Formula;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.yourney.security.model.User;
 
 import lombok.Data;
 
@@ -95,6 +89,12 @@ public class Itinerary {
 		return this.author.getUsername();
 	}
 	
+	@Formula("(select case when u.expiration_date >= CURRENT_DATE then u.plan else 0 end from users u where u.id=author_id)")
+	private Integer calcPlan;
+
+	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
+	private long calcPromotion;
+
 	private Integer	points;
 	
 	public void setPoints() {
