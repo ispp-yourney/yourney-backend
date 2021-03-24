@@ -33,17 +33,25 @@ public class ItineraryService {
         return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjections();
     }
 
-    public List<ItineraryProjection> findAllItineraryProjectionsOrdered(Pageable pageable) {
-        return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjectionsOrdered(pageable);
+    public Page<ItineraryProjection> findAllItineraryProjectionsOrdered(Pageable pageable) {
+        return itineraryRepository.findAllItineraryProjectionsOrdered(pageable);
     }
 
-    public Page<Itinerary> findPublishedItineraryPages(Pageable pageable) {
+    public Page<ItineraryProjection> findPublishedItineraryPages(Pageable pageable) {
         return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
     }
 
-    public Page<Itinerary> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
-
+    public Page<ItineraryProjection> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
         return itineraryRepository.findByActivitiesLandmarkCountry(country, pageable);
+    }
+
+    public Page<ItineraryProjection> findPublishedItineraryPagesByCity(String city, Pageable pageable) {
+        return itineraryRepository.findByActivitiesLandmarkCity(city, pageable);
+    }
+
+    public Page<ItineraryProjection> findPublishedItineraryPagesByDistance(Double latitude, Double longitude,
+            Pageable pageable) {
+        return itineraryRepository.findByActivitiesLandmarkDistance(latitude, longitude, pageable);
     }
 
     public Optional<Itinerary> findById(final Long id) {
@@ -71,16 +79,16 @@ public class ItineraryService {
         return itineraryRepository.existsById(id);
     }
 
-    public List<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena) {
-        return (List<ItineraryProjection>) itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
+    public Page<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena) {
+        return itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
     }
 
     public List<Itinerary> findSearchItinerary(String cadena) {
         return (List<Itinerary>) itineraryRepository.findSearchItinerary(cadena);
     }
 
-    public List<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId) {
-        return (List<ItineraryProjection>) itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
+    public Page<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId) {
+        return itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
     }
 
     public List<Itinerary> findUserItinerary(Long userId) {

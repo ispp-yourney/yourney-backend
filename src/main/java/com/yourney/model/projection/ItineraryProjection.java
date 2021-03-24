@@ -14,7 +14,7 @@ public interface ItineraryProjection {
 
     String getUsername();
 
-    void setPoints();
+    //void setPoints();
 
     // List<ActivityProjection> getActivities();
     // String getDescription();
