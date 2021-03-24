@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.yourney.model.Image;
 
@@ -45,6 +44,7 @@ import com.yourney.service.ItineraryService;
 
 @RestController
 @RequestMapping("/itinerary")
+@CrossOrigin
 public class ItineraryController {
 
 	@Autowired
@@ -63,43 +63,54 @@ public class ItineraryController {
 	}
 	
 	@GetMapping("/list")
-	public ResponseEntity<Page<Itinerary>> getListPublishedItineraries(
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItineraries(
 				@RequestParam(defaultValue = "0") int page,
-				@RequestParam(defaultValue = "10") int size,
-				@RequestParam(defaultValue = "views") String order,
-				@RequestParam(defaultValue = "true") boolean asc) { 
+				@RequestParam(defaultValue = "10") int size) { 
 
-		Sort sort = Sort.by(order);
-		if(!asc){
-			sort = sort.descending();
-		}
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPages(pageable);
 
-		Pageable pageable = PageRequest.of(page, size, sort);
-		Page<Itinerary> itineraries = itineraryService.findPublishedItineraryPages(pageable);
-
-		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
 	}
+
 	@GetMapping("/listByCountry/{name}")
-	public ResponseEntity<Page<Itinerary>> getListPublishedItinerariesByCountries(
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByCountries(
 				@PathVariable("name") String countryName,
 				@RequestParam(defaultValue = "0") int page,
-				@RequestParam(defaultValue = "10") int size,
-				@RequestParam(defaultValue = "views") String order,
-				@RequestParam(defaultValue = "true") boolean asc) { 
-
-		Sort sort = Sort.by(order);
-		if(!asc){
-			sort = sort.descending();
-		}
-
+				@RequestParam(defaultValue = "10") int size) {
 		
-		Pageable pageable = PageRequest.of(page, size, sort);
-		Page<Itinerary> itineraries = itineraryService.findPublishedItineraryPagesByCountry(countryName, pageable);
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByCountry(countryName, pageable);
 
-		return new ResponseEntity<Page<Itinerary>>(itineraries, HttpStatus.OK);
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+	}
+
+	@GetMapping("/listByCity/{name}")
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByCities(
+				@PathVariable("name") String cityName,
+				@RequestParam(defaultValue = "0") int page,
+				@RequestParam(defaultValue = "10") int size) { 
+		
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByCity(cityName, pageable);
+
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+	}
+
+	@GetMapping("/listByDistance")
+	public ResponseEntity<Page<ItineraryProjection>> getListPublishedItinerariesByDistance(
+				@RequestParam("latitude") Double latitude,
+				@RequestParam("longitude") Double longitude,
+				@RequestParam(defaultValue = "0") int page,
+				@RequestParam(defaultValue = "10") int size) { 
+		
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ItineraryProjection> itineraries = itineraryService.findPublishedItineraryPagesByDistance(latitude, longitude, pageable);
+
+		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
 	}
   
-  @GetMapping("/list/{page}")
+  	@GetMapping("/list/{page}")
 	public ResponseEntity<Iterable<ItineraryProjection>> getListItineraries(@PathVariable("page") int page) {
 		Iterable<Itinerary> itinerariesList = itineraryService.findAllItinerary();
 		itinerariesSetPoints(itinerariesList);

@@ -28,6 +28,7 @@ import org.hibernate.annotations.Formula;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.jpa.repository.Query;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yourney.security.model.User;
@@ -95,6 +96,12 @@ public class Itinerary {
 		return this.author.getUsername();
 	}
 	
+	@Formula("(select case when u.expiration_date >= CURRENT_DATE then u.plan else 0 end from users u where u.id=author_id)")
+	private Integer calcPlan;
+
+	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
+	private long calcPromotion;
+
 	private Integer	points;
 	
 	public void setPoints() {

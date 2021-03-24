@@ -43,16 +43,21 @@ public class ItineraryService {
         return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjectionsOrdered(pageable);
     }
 
-    public Page<Itinerary> findPublishedItineraryPages(Pageable pageable) {
+    public Page<ItineraryProjection> findPublishedItineraryPages(Pageable pageable) {
         return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
     }
-    
-    public Page<Itinerary> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
 
-    	
+    public Page<ItineraryProjection> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
         return itineraryRepository.findByActivitiesLandmarkCountry(country,pageable);
     }
 
+    public Page<ItineraryProjection> findPublishedItineraryPagesByCity(String city, Pageable pageable) {
+        return itineraryRepository.findByActivitiesLandmarkCity(city,pageable);
+    }
+
+    public Page<ItineraryProjection> findPublishedItineraryPagesByDistance(Double latitude, Double longitude, Pageable pageable) {
+        return itineraryRepository.findByActivitiesLandmarkDistance(latitude, longitude, pageable);
+    }
     
 	public Optional<Itinerary> findById(final Long id) {
 		return itineraryRepository.findById(id);
