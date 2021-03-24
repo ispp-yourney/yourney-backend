@@ -1,5 +1,7 @@
 package com.yourney.model.projection;
 
+import com.yourney.model.StatusType;
+
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ActivityDetailsProjection {
@@ -12,33 +14,35 @@ public interface ActivityDetailsProjection {
 
     String getDescription();
 
-    @Value("#{target.landmark.city}")
+    StatusType getStatus();
+
+    @Value("#{(target.landmark != null)?target.landmark.city:null}")
     String getLandmarkCity();
 
-    @Value("#{target.landmark.country}")
+    @Value("#{(target.landmark != null)?target.landmark.country:null}")
     String getLandmarkCountry();
 
-    @Value("#{target.landmark.name}")
+    @Value("#{(target.landmark != null)?target.landmark.name:null}")
     String getLandmarkName();
 
-    @Value("#{target.landmark.description}")
+    @Value("#{(target.landmark != null)?target.landmark.description:null}")
     String getLandmarkDescription();
 
-    @Value("#{target.landmark.category}")
+    @Value("#{(target.landmark != null)?target.landmark.category:null}")
     String getLandmarkCategory();
 
-    @Value("#{target.landmark.price}")
+    @Value("#{(target.landmark != null)?target.landmark.price:null}")
     Double getLandmarkPrice();
 
-    @Value("#{target.landmark.email}")
+    @Value("#{(target.landmark != null)?target.landmark.email:null}")
     String getLandmarkEmail();
 
-    @Value("#{target.landmark.phone}")
+    @Value("#{(target.landmark != null)?target.landmark.phone:null}")
     String getLandmarkPhone();
 
-    @Value("#{target.landmark.instagram}")
+    @Value("#{(target.landmark != null)?target.landmark.instagram:null}")
     String getLandmarkInstagram();
 
-    @Value("#{target.landmark.twitter}")
+    @Value("#{(target.landmark != null)?target.landmark.twitter:null}")
     String getLandmarkTwitter();
 }

@@ -38,6 +38,7 @@ import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
 
@@ -50,6 +51,9 @@ public class ItineraryController {
 
 	@Autowired
 	private ItineraryService itineraryService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	@Autowired
 	private ImageService imageService;
@@ -146,9 +150,16 @@ public class ItineraryController {
 					itineraryService.save(foundItinerary);
 				}
 
+				String username = userService.getCurrentUsername();
+				if(!(foundItinerary.getStatus().equals(StatusType.PUBLISHED) || foundItinerary.getAuthor().getUsername().equals(username))){
+					return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body(new Message("El itinerario solicitado no se encuentra disponible en este momento."));
+				}
+
 				itineraryService.save(foundItinerary);
 				ItineraryDetailsProjection foundItineraryProjection = itineraryService
 						.findOneItineraryDetailsProjection(id).orElse(null);
+		
 				return ResponseEntity.ok(foundItineraryProjection);
 			}
 		} else {
@@ -251,6 +262,13 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
+
+				foundItinerary.getActivities().stream().forEach(a -> {
+					a.setStatus(StatusType.DELETED);
+					a.setDeleteDate(LocalDateTime.now());
+					activityService.save(a);
+				});
+
 				foundItinerary.setDeleteDate(LocalDateTime.now());
 				foundItinerary.setStatus(StatusType.DELETED);
 				itineraryService.save(foundItinerary);

@@ -62,7 +62,7 @@ public class ActivityController {
 
             if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("La actividad no se encuentra publicada en este momento.");
+                        .body(new Message("La actividad no se encuentra publicada en este momento."));
             }
 
             Integer views = foundActivity.getViews();

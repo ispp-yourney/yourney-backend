@@ -58,12 +58,17 @@ public class LandmarkController {
                 landmarkService.save(foundLandmark);
             }
 
+            /*
             Activity activity = landmarkService.findOneActivityByLandmark(id).orElse(null);
 
             if (!(foundLandmark.getStatus().equals(StatusType.PUBLISHED)
                     || activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername()))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
+            }*/
+
+            if(!foundLandmark.getStatus().equals(StatusType.PUBLISHED)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
             }
 
             landmarkService.save(foundLandmark);
@@ -87,20 +92,24 @@ public class LandmarkController {
         }
 
         Landmark landmarkToUpdate = landmarkService.findById(landmarkDto.getId()).orElse(null);
-        Activity activity = activityService.findById(idActivity).orElse(null);
+        /*Activity activity = activityService.findById(idActivity).orElse(null);
 
         if (!(landmarkToUpdate.getStatus().equals(StatusType.PUBLISHED)
                 || activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername()))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
+        }*/
+
+        if(!landmarkToUpdate.getStatus().equals(StatusType.PUBLISHED)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
         }
 
         // UN LANDMARK DEBE TENER ASOCIADA UNA ACTIVIDAD
 
-        if (!activity.getItinerary().getAuthor().getUsername().equals(username)) {
+        /*if (!activity.getItinerary().getAuthor().getUsername().equals(username)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de editar un itinerario que no es suyo."));
-        }
+        }}*/
 
         BeanUtils.copyProperties(landmarkDto, landmarkToUpdate, "id", "views", "createDate", "updateDate", "deleteDate",
                 "status");
@@ -123,21 +132,32 @@ public class LandmarkController {
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
 
-        Landmark newLandmark = new Landmark();
-        Activity activity = activityService.findById(idActivity).orElse(null);
-
-        BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "updateDate", "deleteDate",
-                "status", "views");
-
-        newLandmark.setStatus(StatusType.PUBLISHED);
-        newLandmark.setCreateDate(LocalDateTime.now());
-        newLandmark.setViews((long) 0);
-        activity.setLandmark(newLandmark);
-
-        Landmark updatedLandmark = landmarkService.save(newLandmark);
-        activityService.save(activity);
-
-        return ResponseEntity.ok(landmarkService.findOneLandmarkProjection(updatedLandmark.getId()));
+        if(activityService.existsById(idActivity)){
+            Landmark newLandmark = new Landmark();
+            Activity activity = activityService.findById(idActivity).orElse(null);
+    
+            if(!activity.getItinerary().getAuthor().getUsername().equals(username)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("No tiene permiso para añadir POI a un itinerario que no es suyo."));
+            }
+    
+            BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "updateDate", "deleteDate",
+                    "status", "views");
+    
+            newLandmark.setStatus(StatusType.PUBLISHED);
+            newLandmark.setCreateDate(LocalDateTime.now());
+            newLandmark.setViews((long) 0);
+            activity.setLandmark(newLandmark);
+    
+            Landmark updatedLandmark = landmarkService.save(newLandmark);
+            activityService.save(activity);
+    
+            return ResponseEntity.ok(landmarkService.findOneLandmarkProjection(updatedLandmark.getId()));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("No existe una actividad asociada."));
+        }
+            
     }
 
     @DeleteMapping("/delete/{id}")
@@ -150,6 +170,7 @@ public class LandmarkController {
             }
 
             Landmark landmarkToDelete = landmarkService.findById(id).orElse(null);
+            /*
             Activity activity = landmarkService.findOneActivityByLandmark(id).orElse(null);
 
             if (!(landmarkToDelete.getStatus().equals(StatusType.PUBLISHED)
@@ -162,10 +183,16 @@ public class LandmarkController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new Message("El usuario no tiene permiso de eliminar un POI que no es suyo."));
             }
+            */
+
+            if(!landmarkToDelete.getStatus().equals(StatusType.PUBLISHED)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El POI solicitado no se encuentra disponible por decisión de su autor."));
+            }
 
             Landmark landmark = landmarkService.findById(id).get();
             landmark.setDeleteDate(LocalDateTime.now());
             landmark.setStatus(StatusType.DELETED);
+
             landmarkService.save(landmark);
 
             return ResponseEntity.ok(new Message("El POI ha sido eliminado correctamente."));
