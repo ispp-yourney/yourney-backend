@@ -9,8 +9,8 @@ public class LoginUser {
 
 	@NotBlank
 	private String username;
-	
+
 	@NotBlank
 	private String password;
-	
+
 }

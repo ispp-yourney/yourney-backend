@@ -20,13 +20,13 @@ import com.yourney.security.service.UserDetailsServiceImpl;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
-	
+
 	@Autowired
 	private JwtProvider jwtProvider;
-	
+
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
-	
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -35,14 +35,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			if (token != null && jwtProvider.valitateToken(token)) {
 				String username = jwtProvider.getUsernameFromToken(token);
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-				
+				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+						userDetails.getAuthorities());
+
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		} catch (Exception e) {
 			logger.error("Fail on doFillter");
 		}
-		
+
 		filterChain.doFilter(request, response);
 	}
 

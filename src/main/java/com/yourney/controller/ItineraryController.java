@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import java.util.Optional;
 
@@ -38,6 +37,7 @@ import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
 
@@ -51,6 +51,9 @@ public class ItineraryController {
 
 	@Autowired
 	private ItineraryService itineraryService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	@Autowired
 	private ImageService imageService;
@@ -149,10 +152,26 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND)
 						.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 			} else {
+
+				Integer views = foundItinerary.getViews();
+				if (views != null) {
+					foundItinerary.setViews(views + 1);
+					itineraryService.save(foundItinerary);
+				} else {
+					foundItinerary.setViews(1);
+					itineraryService.save(foundItinerary);
+				}
+
+				String username = userService.getCurrentUsername();
+				if(!(foundItinerary.getStatus().equals(StatusType.PUBLISHED) || foundItinerary.getAuthor().getUsername().equals(username))){
+					return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body(new Message("El itinerario solicitado no se encuentra disponible en este momento."));
+				}
+
+				itineraryService.save(foundItinerary);
 				ItineraryDetailsProjection foundItineraryProjection = itineraryService
 						.findOneItineraryDetailsProjection(id).orElse(null);
-				foundItinerary.setViews(foundItinerary.getViews() + 1);
-				itineraryService.save(foundItinerary);
+		
 				return ResponseEntity.ok(foundItineraryProjection);
 			}
 		} else {
@@ -255,6 +274,13 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
+
+				foundItinerary.getActivities().stream().forEach(a -> {
+					a.setStatus(StatusType.DELETED);
+					a.setDeleteDate(LocalDateTime.now());
+					activityService.save(a);
+				});
+
 				foundItinerary.setDeleteDate(LocalDateTime.now());
 				foundItinerary.setStatus(StatusType.DELETED);
 				itineraryService.save(foundItinerary);

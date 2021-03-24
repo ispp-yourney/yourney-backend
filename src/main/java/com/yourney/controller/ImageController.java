@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/image")
 @CrossOrigin
 public class ImageController {
-    
+
     @Autowired
     private CloudinaryService cloudinaryService;
 
@@ -48,11 +48,11 @@ public class ImageController {
 
     @PostMapping("/create")
     public ResponseEntity<?> newImage(@RequestBody @Valid ImageDto imageDto, BindingResult result) {
-        
+
         if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getAllErrors());  
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getAllErrors());
         }
-        
+
         Image image = new Image();
         BeanUtils.copyProperties(imageDto, image);
         imageService.save(image);
@@ -63,11 +63,12 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam MultipartFile multipartFile) throws IOException {
         if (ImageIO.read(multipartFile.getInputStream()) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));    
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
         }
-        Map<?,?> result = cloudinaryService.upload(multipartFile);
+        Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-        Image image = new Image((String) result.get("original_filename"), (String) result.get("url"), (String) result.get("public_id"));
+        Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+                (String) result.get("public_id"));
         imageService.save(image);
 
         return ResponseEntity.ok(new Message("La imagen se ha subido correctamente"));
@@ -76,7 +77,8 @@ public class ImageController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") long id) throws IOException {
         if (!imageService.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la imagen con el id indicado"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("No existe la imagen con el id indicado"));
         }
 
         Image image = imageService.findById(id).get();

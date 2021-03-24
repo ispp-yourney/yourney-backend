@@ -5,10 +5,23 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+import com.yourney.model.Activity;
 import com.yourney.model.Landmark;
+import com.yourney.model.projection.LandmarkProjection;
 
 @Repository
 public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
+
+    @Query("select it from Landmark it where it.id=:id")
+    Optional<LandmarkProjection> findOneLandmarkProjection(@Param("id") long idLandmark);
+
+    @Query("select a from Activity a where a.landmark.id=:id")
+    Optional<Activity> findOneActivityByLandmark(@Param("id") long idLandmark);
+
+    @Query("select l from Landmark l where l.status='PUBLISHED'")
+    Iterable<LandmarkProjection> findAllLandmarkProjection();
 
     @Query("select distinct l.country from Landmark l order by country")
     Iterable<String> findAllCountries();

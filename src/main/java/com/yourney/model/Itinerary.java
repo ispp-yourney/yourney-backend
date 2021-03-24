@@ -17,11 +17,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-
 import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
-
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -33,58 +31,57 @@ import lombok.Data;
 @Table(name = "itineraries")
 public class Itinerary {
 
-    @Id
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
-    @NotBlank
+
+	@NotBlank
 	@Column(nullable = false)
 	@Length(max = 50)
-	private String	name;
+	private String name;
 
 	@NotBlank
 	@Column(nullable = false)
 	@Length(max = 255)
-	private String	description;
+	private String description;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private StatusType	status;
+	private StatusType status;
 
-	private Double	budget;
+	private Double budget;
 
-	// TODO Calculado al publicar un itinerario
 	@Column(name = "estimated_days")
-	private Integer	estimatedDays;
+	private Integer estimatedDays;
 
 	@Column(name = "create_date", nullable = false)
-	private LocalDateTime	createDate;
+	private LocalDateTime createDate;
 
 	@Column(name = "update_date")
-	private LocalDateTime	updateDate;
+	private LocalDateTime updateDate;
 
 	@Column(name = "delete_date")
-	private LocalDateTime	deleteDate;
+	private LocalDateTime deleteDate;
 
-	private Integer	views;
+	private Integer views;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Image image;
-	
+
 	public String getImageUrl() {
 		return this.image.getImageUrl();
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	private SeasonType recommendedSeason;
-	
+
 	@JsonManagedReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
-	private Collection<Activity>	activities;
-	
+	private Collection<Activity> activities;
+
 	@ManyToOne
 	private User author;
-	
+
 	public String getUsername() {
 		return this.author.getUsername();
 	}
@@ -95,11 +92,10 @@ public class Itinerary {
 	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
 	private long calcPromotion;
 
-	private Integer	points;
-	
-	public void setPoints() {
-        this.points = (int)this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
-    }
+	private Integer points;
 
+	public void setPoints() {
+		this.points = (int) this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
+	}
 
 }

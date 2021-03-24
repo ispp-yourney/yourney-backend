@@ -2,6 +2,8 @@ package com.yourney.model.dto;
 
 import java.time.LocalDateTime;
 
+import com.yourney.model.StatusType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,7 +19,7 @@ public class ActivityDto {
 
 	private Integer day;
 
-    private Long itineraryId;
+    private Long itinerary;
 
 	private LocalDateTime deleteDate;
 	
@@ -25,7 +27,9 @@ public class ActivityDto {
     
 	private LocalDateTime createDate; 
 
-	private Long landmarkId;
+	private Long landmark;
 
     private Integer	views;	
+
+	private StatusType	status;
 }

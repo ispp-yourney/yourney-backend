@@ -40,23 +40,23 @@ import com.yourney.security.service.UserService;
 public class AuthController {
 
 	@Autowired
-	PasswordEncoder			passwordEncoder;
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
-	AuthenticationManager	authenticationManager;
+	AuthenticationManager authenticationManager;
 
 	@Autowired
-	UserService				userService;
+	UserService userService;
 
 	@Autowired
-	RoleService				roleService;
+	RoleService roleService;
 
 	@Autowired
-	JwtProvider				jwtProvider;
-
+	JwtProvider jwtProvider;
 
 	@PostMapping("/new")
-	public ResponseEntity<Object> newUser(@Valid @RequestBody final NewUser newUser, final BindingResult bindingResult) {
+	public ResponseEntity<Object> newUser(@Valid @RequestBody final NewUser newUser,
+			final BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
@@ -69,7 +69,8 @@ public class AuthController {
 			return new ResponseEntity<>(new Message("Existing email"), HttpStatus.BAD_REQUEST);
 		}
 
-		User user = new User(newUser.getUsername(), this.passwordEncoder.encode(newUser.getPassword()), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName());
+		User user = new User(newUser.getUsername(), this.passwordEncoder.encode(newUser.getPassword()),
+				newUser.getEmail(), newUser.getFirstName(), newUser.getLastName());
 		Set<Role> roles = new HashSet<>();
 		roles.add(this.roleService.getByRoleType(RoleType.ROLE_USER).get());
 		if (newUser.getRoles().contains("admin")) {
@@ -84,12 +85,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<Object> login(@RequestBody @Valid final LoginUser loginUser, final BindingResult bindingResult) {
+	public ResponseEntity<Object> login(@RequestBody @Valid final LoginUser loginUser,
+			final BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
 
-		Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
+		Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+				loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = this.jwtProvider.generateToken(authentication);
