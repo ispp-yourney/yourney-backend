@@ -14,7 +14,7 @@ import com.yourney.repository.LandmarkRepository;
 
 @Service
 public class LandmarkService {
-    
+
     @Autowired
     private LandmarkRepository landmarkRepository;
 
@@ -22,7 +22,7 @@ public class LandmarkService {
         return (List<Landmark>) landmarkRepository.findAll();
     }
 
-    public Optional<Landmark> findById(Long id){
+    public Optional<Landmark> findById(Long id) {
         return landmarkRepository.findById(id);
     }
 
@@ -31,20 +31,22 @@ public class LandmarkService {
         return newLandmark;
     }
 
-    public Optional<Activity> findOneActivityByLandmark(Long id){
+    public Optional<Activity> findOneActivityByLandmark(Long id) {
         return landmarkRepository.findOneActivityByLandmark(id);
     }
 
-    public Optional<LandmarkProjection> findOneLandmarkProjection(Long id){
+    public Optional<LandmarkProjection> findOneLandmarkProjection(Long id) {
         return landmarkRepository.findOneLandmarkProjection(id);
     }
 
     public List<String> findAllCountries() {
         return (List<String>) landmarkRepository.findAllCountries();
     }
+
     public List<String> findCitiesByCountry(String name) {
-    	return (List<String>) landmarkRepository.findCitiesByCountry(name);
+        return (List<String>) landmarkRepository.findCitiesByCountry(name);
     }
+
     public List<String> findAllCities() {
         return (List<String>) landmarkRepository.findAllCities();
     }
@@ -52,7 +54,5 @@ public class LandmarkService {
     public boolean existsById(long id) {
         return landmarkRepository.existsById(id);
     }
-
-
 
 }

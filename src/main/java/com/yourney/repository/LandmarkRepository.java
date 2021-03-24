@@ -11,25 +11,22 @@ import com.yourney.model.Activity;
 import com.yourney.model.Landmark;
 import com.yourney.model.projection.LandmarkProjection;
 
-
 @Repository
 public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
-	
+
     @Query("select it from Landmark it where it.id=:id")
-	Optional<LandmarkProjection> findOneLandmarkProjection(@Param("id") long idLandmark);
+    Optional<LandmarkProjection> findOneLandmarkProjection(@Param("id") long idLandmark);
 
     @Query("select a from Activity a where a.landmark.id=:id")
-	Optional<Activity> findOneActivityByLandmark(@Param("id") long idLandmark);
+    Optional<Activity> findOneActivityByLandmark(@Param("id") long idLandmark);
 
     @Query("select distinct l.country from Landmark l order by country")
-	Iterable<String> findAllCountries();
-    
+    Iterable<String> findAllCountries();
+
     @Query("select distinct l.city from Landmark l where l.country=:name order by city")
     Iterable<String> findCitiesByCountry(@Param("name") String name);
 
     @Query("select distinct l.city from Landmark l order by city")
-	Iterable<String> findAllCities();
- 
+    Iterable<String> findAllCities();
 
-	
 }

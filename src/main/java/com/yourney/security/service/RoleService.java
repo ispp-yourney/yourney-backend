@@ -16,7 +16,7 @@ public class RoleService {
 
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	public Optional<Role> getByRoleType(RoleType roleType) {
 		return roleRepository.findByRoleType(roleType);
 	}

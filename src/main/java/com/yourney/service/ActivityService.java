@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ActivityService {
-    
+
     @Autowired
     private ActivityRepository activityRepository;
 
@@ -31,15 +31,16 @@ public class ActivityService {
     }
 
     public Optional<ActivityProjection> findOneActivityProjection(final Long id) {
-		return activityRepository.findOneActivityProjection(id);
-	}
+        return activityRepository.findOneActivityProjection(id);
+    }
 
     public List<ActivityProjection> findAllActivityProjections() {
         return (List<ActivityProjection>) activityRepository.findAllActivityProjections();
     }
 
     public List<ActivityProjection> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
-        return (List<ActivityProjection>) activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary, dia);
+        return (List<ActivityProjection>) activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary,
+                dia);
     }
 
     public void deleteById(long id) {

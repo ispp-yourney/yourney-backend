@@ -2,6 +2,8 @@ package com.yourney.model.dto;
 
 import java.time.LocalDateTime;
 
+import com.yourney.model.StatusType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -28,4 +30,6 @@ public class ActivityDto {
 	private Long landmark;
 
     private Integer	views;	
+
+	private StatusType	status;
 }

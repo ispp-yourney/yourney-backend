@@ -28,33 +28,29 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(unique = true, nullable = false)
 	private String username;
-	
+
 	@Column(nullable = false)
 	private String password;
-	
+
 	private String email;
-	@Column(name="first_name")
+	@Column(name = "first_name")
 	private String firstName;
-	@Column(name="last_name")
+	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name="expiration_date")
+	@Column(name = "expiration_date")
 	private LocalDateTime expirationDate;
 
-	//0=Free
-	//1=Basic
+	// 0=Free
+	// 1=Basic
 	@Column(nullable = false)
 	private Integer plan;
 
-	
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "users_roles",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
 	public User(String username, String password, String email, String firstName, String lastName) {
@@ -64,6 +60,5 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-	
-	
+
 }

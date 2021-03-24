@@ -15,12 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CloudinaryService {
-    
+
     Cloudinary cloudinary;
 
     private Map<String, String> valuesMap = new HashMap<>();
 
-    public CloudinaryService(@Value("${cloudinary.cloud-name}") String cloudName, @Value("${cloudinary.api-key}") String apiKey, @Value("${cloudinary.api-secret}") String apiSecret) {
+    public CloudinaryService(@Value("${cloudinary.cloud-name}") String cloudName,
+            @Value("${cloudinary.api-key}") String apiKey, @Value("${cloudinary.api-secret}") String apiSecret) {
         valuesMap.put("cloud_name", cloudName);
         valuesMap.put("api_key", apiKey);
         valuesMap.put("api_secret", apiSecret);

@@ -50,4 +50,6 @@ public class LandmarkDto {
     private LocalDateTime createDate;     
 
     private Long views;
+
+    private StatusType	status;
 }

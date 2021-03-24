@@ -13,20 +13,20 @@ public class NewUser {
 
 	@NotBlank
 	private String username;
-	
+
 	@NotBlank
 	private String password;
-	
+
 	@NotBlank
 	private String firstName;
-	
+
 	@NotBlank
 	private String lastName;
-	
+
 	@Email
 	@NotBlank
 	private String email;
-	
+
 	private Set<String> roles = new HashSet<>();
-	
+
 }

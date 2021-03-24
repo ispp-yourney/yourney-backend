@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,13 +41,17 @@ public class Activity {
 	@Column(nullable = false)
 	private Integer day;
 
-    private LocalDateTime deleteDate;
-	
-	private LocalDateTime updateDate;
-    
-	private LocalDateTime createDate; 
+	private LocalDateTime deleteDate;
 
-    private Integer	views;
+	private LocalDateTime updateDate;
+
+	private LocalDateTime createDate;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private StatusType status;
+
+	private Integer views;
 
 	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -53,5 +59,5 @@ public class Activity {
 
 	@OneToOne
 	private Landmark landmark;
-	
+
 }
