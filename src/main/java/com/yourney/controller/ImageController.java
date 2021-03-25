@@ -83,8 +83,8 @@ public class ImageController {
 
         Image image = imageService.findById(id).get();
 
-        if (image.getImageId() != null) {
-            cloudinaryService.delete(image.getImageId());
+        if (image.getCloudinaryId() != null) {
+            cloudinaryService.delete(image.getCloudinaryId());
         }
 
         imageService.deleteById(id);

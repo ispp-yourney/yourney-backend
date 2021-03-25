@@ -22,10 +22,6 @@ public interface ItineraryDetailsProjection {
 
     Integer getEstimatedDays();
 
-    LocalDateTime getDeleteDate();
-
-    LocalDateTime getUpdateDate();
-
     LocalDateTime getCreateDate();
 
     Integer getViews();

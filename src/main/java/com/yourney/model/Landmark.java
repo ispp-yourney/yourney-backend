@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -68,15 +66,7 @@ public class Landmark {
 	@URL
 	private String twitter;
 
-	private LocalDateTime deleteDate;
-
-	private LocalDateTime updateDate;
-
 	private LocalDateTime createDate;
 
 	private Long views;
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private StatusType status;
 }

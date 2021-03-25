@@ -1,7 +1,5 @@
 package com.yourney.model.projection;
 
-import com.yourney.model.StatusType;
-
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ActivityDetailsProjection {
@@ -13,8 +11,6 @@ public interface ActivityDetailsProjection {
     String getTitle();
 
     String getDescription();
-
-    StatusType getStatus();
 
     @Value("#{(target.landmark != null)?target.landmark.city:null}")
     String getLandmarkCity();

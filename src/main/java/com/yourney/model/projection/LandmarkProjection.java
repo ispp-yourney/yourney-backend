@@ -37,10 +37,6 @@ public interface LandmarkProjection {
 
     StatusType getStatus();
 
-    LocalDateTime getDeleteDate();
-
-    LocalDateTime getUpdateDate();
-
     LocalDateTime getCreateDate();
 
     Long getViews();

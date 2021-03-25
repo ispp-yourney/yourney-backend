@@ -16,6 +16,7 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
+    
     public List<ImageProjection> findByOrderById() {
         return imageRepository.findByOrderById();
     }
@@ -39,5 +40,5 @@ public class ImageService {
     public Optional<Image> findByURL(String url) {
         return imageRepository.findByImageUrl(url);
     }
-
+    
 }

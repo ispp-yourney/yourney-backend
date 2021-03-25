@@ -17,12 +17,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -57,15 +56,9 @@ public class Itinerary {
 	@Column(name = "create_date", nullable = false)
 	private LocalDateTime createDate;
 
-	@Column(name = "update_date")
-	private LocalDateTime updateDate;
-
-	@Column(name = "delete_date")
-	private LocalDateTime deleteDate;
-
 	private Integer views;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.DETACH)
 	private Image image;
 
 	public String getImageUrl() {
@@ -91,11 +84,5 @@ public class Itinerary {
 
 	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
 	private long calcPromotion;
-
-	private Integer points;
-
-	public void setPoints() {
-		this.points = (int) this.activities.stream().filter(x -> x.getLandmark().isPromoted()).count();
-	}
 
 }
