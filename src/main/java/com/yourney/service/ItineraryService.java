@@ -70,26 +70,17 @@ public class ItineraryService {
     }
 
         /*
-
-
-
     public Optional<ItineraryProjection> findOneItineraryProjection(final Long id) {
         return itineraryRepository.findOneItineraryProjection(id);
     }
-
-
 
     public Page<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena) {
         return itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
     }
 
-
     public Page<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId) {
         return itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
     }
-
-    public List<Itinerary> findUserItinerary(Long userId) {
-        return (List<Itinerary>) itineraryRepository.findUserItinerary(userId);
-    }*/
+*/
 
 }

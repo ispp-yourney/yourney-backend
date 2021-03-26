@@ -33,14 +33,14 @@ INSERT INTO itineraries(name, description, status, recommended_season, budget, e
     ('itinerary test 4', 'lorem ipsum', 'PUBLISHED', NULL, 0., 2, '2021-01-15 12:25:01', 30, 2, 2);           -- 5
 
 -- LANDMARKS
-INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views)
-    VALUES('Giralda', 'lorem ipsum', 0., 'España', 'Sevilla', 37.38618100597202, -5.992615925346369, true, 'giralda@email.com', NULL, 123456789, NULL, NULL, 'Monumento histórico', 0);                       -- 1
+INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views,image_id)
+    VALUES('Giralda', 'lorem ipsum', 0., 'España', 'Sevilla', 37.38618100597202, -5.992615925346369, true, 'giralda@email.com', NULL, 123456789, NULL, NULL, 'Monumento histórico', 0,1);                       -- 1
 
-INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views)
-    VALUES('Torre del Oro', 'lorem ipsum', 0., 'España', 'Sevilla', 37.382419965949026, -5.996493217157904, true, NULL, NULL, NULL, NULL, NULL, 'Monumento histórico', 0);             -- 2
+INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views,image_id)
+    VALUES('Torre del Oro', 'lorem ipsum', 0., 'España', 'Sevilla', 37.382419965949026, -5.996493217157904, true, NULL, NULL, NULL, NULL, NULL, 'Monumento histórico', 0,2);             -- 2
 
-INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views)
-    VALUES('Patio de los naranjos', 'lorem ipsum', 0., 'España', 'Sevilla', 37.386429826238384, -5.993307475648048, false, NULL, NULL, NULL, NULL, NULL, 'Monumento histórico', 0);    -- 3
+INSERT INTO landmarks(name, description, price, country, city, latitude, longitude, promoted, email, instagram, phone, twitter, website, category, views,image_id)
+    VALUES('Patio de los naranjos', 'lorem ipsum', 0., 'España', 'Sevilla', 37.386429826238384, -5.993307475648048, false, NULL, NULL, NULL, NULL, NULL, 'Monumento histórico', 0,2);    -- 3
 
 -- ACTIVITIES
 INSERT INTO activities(day, create_date, description, title, itinerary_id, landmark_id) VALUES
