@@ -28,11 +28,13 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.ItineraryProjection;
+import com.yourney.repository.ItineraryRepository;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
@@ -163,7 +165,14 @@ public class ItineraryController {
 		newItinerary.setViews(0);
 		newItinerary.setImage(null);
 
-		return ResponseEntity.ok(newItinerary);
+		Itinerary createdItinerary = itineraryService.save(newItinerary);
+
+		if(createdItinerary == null){
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(
+					new Message("Ha ocurrido un error a la hora de actualizar este itinerario."));
+		} else {
+			return ResponseEntity.ok(createdItinerary);
+		}
 	}
 	
 	@PutMapping("/update")

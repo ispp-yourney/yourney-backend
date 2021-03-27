@@ -69,18 +69,4 @@ public class ItineraryService {
         return itineraryRepository.existsById(id);
     }
 
-        /*
-    public Optional<ItineraryProjection> findOneItineraryProjection(final Long id) {
-        return itineraryRepository.findOneItineraryProjection(id);
-    }
-
-    public Page<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena) {
-        return itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
-    }
-
-    public Page<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId) {
-        return itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
-    }
-*/
-
 }

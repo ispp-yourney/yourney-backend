@@ -14,9 +14,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImageRepository extends CrudRepository<Image, Long> {
 
-    List<ImageProjection> findByOrderById();
-
+    //List<ImageProjection> findByOrderById();
+/*
     @Query("SELECT i FROM Image i WHERE i.imageUrl=:imageUrl")
     Optional<Image> findByImageUrl(@Param("imageUrl") String imageUrl);
-
+*/
 }

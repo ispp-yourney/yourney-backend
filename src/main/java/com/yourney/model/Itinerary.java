@@ -61,9 +61,13 @@ public class Itinerary {
 	@OneToOne(cascade = CascadeType.DETACH)
 	private Image image;
 
+	/*
 	public String getImageUrl() {
 		return this.image.getImageUrl();
-	}
+	}*/
+	
+	@Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
+	private String imageUrl;
 
 	@Enumerated(EnumType.STRING)
 	private SeasonType recommendedSeason;
