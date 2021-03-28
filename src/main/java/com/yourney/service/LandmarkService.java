@@ -54,23 +54,4 @@ public class LandmarkService {
     public void deleteById(Long id) {
         landmarkRepository.deleteById(id);
     }
-    
-/*
-
-
-
-    public Optional<Activity> findOneActivityByLandmark(Long id) {
-        return landmarkRepository.findOneActivityByLandmark(id);
-    }
-
-    public Optional<LandmarkProjection> findOneLandmarkProjection(Long id) {
-        return landmarkRepository.findOneLandmarkProjection(id);
-    }
-
-    public Iterable<LandmarkProjection> findAllLandmarkProjection() {
-        return landmarkRepository.findAllLandmarkProjection();
-    }
-
-
-*/
 }

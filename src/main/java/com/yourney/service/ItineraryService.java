@@ -25,12 +25,12 @@ public class ItineraryService {
         return itineraryRepository.findAll();
     }
 
-    public Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget, Pageable pageable) {
+    public Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget,
+            Pageable pageable) {
         return itineraryRepository.searchByProperties(country, city, maxBudget, pageable);
     }
 
-    public Page<ItineraryProjection> searchByDistance(Double latitude, Double longitude,
-            Pageable pageable) {
+    public Page<ItineraryProjection> searchByDistance(Double latitude, Double longitude, Pageable pageable) {
         return itineraryRepository.searchByDistance(latitude, longitude, pageable);
     }
 
@@ -53,7 +53,7 @@ public class ItineraryService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return newItinerary;
     }
 
@@ -65,7 +65,7 @@ public class ItineraryService {
         }
     }
 
-    public boolean existsById(long id){
+    public boolean existsById(long id) {
         return itineraryRepository.existsById(id);
     }
 

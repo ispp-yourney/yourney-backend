@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
@@ -72,11 +73,9 @@ public class Landmark {
 
 	private Long views;
 
-
 	@OneToOne(cascade = CascadeType.DETACH)
 	private Image image;
 
-	public String getImageUrl() {
-		return this.image.getImageUrl();
-	}	
+	@Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
+	private String imageUrl;
 }

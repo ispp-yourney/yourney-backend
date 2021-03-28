@@ -61,11 +61,6 @@ public class Itinerary {
 	@OneToOne(cascade = CascadeType.DETACH)
 	private Image image;
 
-	/*
-	public String getImageUrl() {
-		return this.image.getImageUrl();
-	}*/
-	
 	@Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
 	private String imageUrl;
 
@@ -82,7 +77,7 @@ public class Itinerary {
 	public String getUsername() {
 		return this.author.getUsername();
 	}
-	
+
 	@Formula("(select case when u.expiration_date >= CURRENT_DATE then u.plan else 0 end from users u where u.id=author_id)")
 	private Integer calcPlan;
 

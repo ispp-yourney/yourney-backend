@@ -15,13 +15,4 @@ public interface ItineraryProjection {
     String getUsername();
 
     Double getBudget();
-
-    // List<ActivityProjection> getActivities();
-    // StatusType getStatus();
-    // Integer getEstimatedDays();
-    // LocalDateTime getCreateDate();
-    // AuthorProjection getAuthor();
-    // List<SeasonProjection> getRecommendedSeasons();
-    // ImageProjection getImage();
-
 }

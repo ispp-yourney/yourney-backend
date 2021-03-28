@@ -27,6 +27,7 @@ import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
+import com.yourney.service.ImageService;
 import com.yourney.service.LandmarkService;
 import com.yourney.utils.ValidationUtils;
 
@@ -35,7 +36,6 @@ import com.yourney.utils.ValidationUtils;
 @CrossOrigin
 public class LandmarkController {
 
-    
     @Autowired
     private LandmarkService landmarkService;
 
@@ -45,6 +45,8 @@ public class LandmarkController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/country/list")
     public ResponseEntity<Iterable<String>> listCountries() {
@@ -68,7 +70,7 @@ public class LandmarkController {
 
         if (!foundLandmark.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
+                    .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
         }
 
         String username = userService.getCurrentUsername();
@@ -115,9 +117,9 @@ public class LandmarkController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateLandMark(@RequestBody @Valid LandmarkDto landmarkDto, BindingResult result) {
-		if (result.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
-		}
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
 
         String username = userService.getCurrentUsername();
         Optional<Landmark> foundLandmark = landmarkService.findById(landmarkDto.getId());
@@ -142,10 +144,10 @@ public class LandmarkController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveLandMark(@Valid @RequestBody LandmarkDto landmarkDto, BindingResult result) {
-		if (result.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
-		}
-        
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
+
         String username = userService.getCurrentUsername();
 
         if (username.equals("anonymousUser")) {
@@ -153,27 +155,26 @@ public class LandmarkController {
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
 
-        Optional<Activity> foundActivity = activityService.findById(landmarkDto.getActivity());
-        if(foundActivity.isPresent()){
-            Landmark newLandmark = new Landmark();
-            Activity activity = foundActivity.get();
-                
-            BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "views");
-    
-            newLandmark.setCreateDate(LocalDateTime.now());
-            newLandmark.setViews((long) 0);
-            activity.setLandmark(newLandmark);
-    
-            Landmark createdLandmark = landmarkService.save(newLandmark);
-            activityService.save(activity);
+        Landmark newLandmark = new Landmark();
+        BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "views", "image");
+        newLandmark.setCreateDate(LocalDateTime.now());
+        newLandmark.setViews((long) 0);
+        newLandmark.setImage(imageService.findById(1).get());
+        Landmark createdLandmark = landmarkService.save(newLandmark);
+        
+        if(landmarkDto.getActivity()!=null) {
+            Optional<Activity> foundActivity = activityService.findById(landmarkDto.getActivity());
+            if (foundActivity.isPresent()) {
+                Activity activity = foundActivity.get();
+                activity.setLandmark(newLandmark);
+                activityService.save(activity);
 
-            return ResponseEntity.ok(createdLandmark);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("No existe una actividad asociada."));
+                return ResponseEntity.ok(createdLandmark);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No existe una actividad asociada."));
+            }
         }
-            
+        return ResponseEntity.ok(createdLandmark);
     }
-    
-    
+
 }

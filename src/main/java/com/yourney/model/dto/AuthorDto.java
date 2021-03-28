@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AuthorDto {
-    
+
 	private Long id;
-	private String username;  
-    private String email;
+	private String username;
+	private String email;
 	private String firstName;
-	private String lastName; 
+	private String lastName;
 }

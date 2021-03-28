@@ -12,5 +12,5 @@ public class Search {
 
 	private String cadena;
 	private Long userId;
-	
+
 }

@@ -21,8 +21,9 @@ INSERT INTO users_roles(user_id, role_id) VALUES
 -- IMAGES
 
 INSERT INTO images(name, cloudinary_id, image_url) VALUES
-    ('Imagen de la giralda', NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/La_Giralda_August_2012_Seville_Spain.jpg/240px-La_Giralda_August_2012_Seville_Spain.jpg'),     -- 1 
-    ('imagen principal', NULL, 'https://multimedia.andalucia.org/media/0BC700DB844F4EDFBE00C1FA9B493D71/img/1112772E6D5945A1B89C26E539DD0D99/SE_Catedral_01.jpg?responsive');                -- 2
+    ('Imagen por defecto', NULL, 'https://www.sinrumbofijo.com/wp-content/uploads/2016/05/default-placeholder.png'),                                                                         -- 1
+    ('Imagen de la giralda', NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/La_Giralda_August_2012_Seville_Spain.jpg/240px-La_Giralda_August_2012_Seville_Spain.jpg'),     -- 2 
+    ('imagen principal', NULL, 'https://multimedia.andalucia.org/media/0BC700DB844F4EDFBE00C1FA9B493D71/img/1112772E6D5945A1B89C26E539DD0D99/SE_Catedral_01.jpg?responsive');                -- 3
 
 -- ITINERARIES
 INSERT INTO itineraries(name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES

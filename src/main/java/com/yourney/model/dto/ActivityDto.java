@@ -13,17 +13,17 @@ public class ActivityDto {
 
 	private Long id;
 
-    @NotBlank(message = "El campo nombre es obligatorio")
+	@NotBlank(message = "El campo nombre es obligatorio")
 	private String title;
 
 	@NotBlank(message = "El campo nombre es obligatorio")
 	private String description;
 
 	@NotNull(message = "El campo días estimados es obligatorio")
-    @Min(value = 1, message = "La duración estimada mínima es 1")
+	@Min(value = 1, message = "La duración estimada mínima es 1")
 	private Integer day;
 
-    private Long itinerary;
+	private Long itinerary;
 
 	private Long landmark;
 }

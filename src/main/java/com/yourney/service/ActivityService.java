@@ -44,31 +44,10 @@ public class ActivityService {
     }
 
     public Iterable<Activity> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
-        return activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary,dia);
+        return activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary, dia);
     }
 
     public Iterable<Activity> findActivityByItinerary(long idItinerary) {
         return activityRepository.findActivityByItinerary(idItinerary);
     }
-
-    /*
-
-    public Optional<ActivityProjection> findOneActivityProjection(final Long id) {
-        return activityRepository.findOneActivityProjection(id);
-    }
-
-    public List<ActivityProjection> findAllActivityProjections() {
-        return (List<ActivityProjection>) activityRepository.findAllActivityProjections();
-    }
-
-    public List<ActivityProjection> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
-        return (List<ActivityProjection>) activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary,
-                dia);
-    }
-
-    public Iterable<ActivityProjection> findAllActivityProjection() {
-        return activityRepository.findAllActivityProjection();
-    }
-
-    */
 }

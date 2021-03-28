@@ -44,39 +44,40 @@ public class ActivityController {
 
     @Autowired
     private UserService userService;
-    
+
     @GetMapping("/list")
     public ResponseEntity<Iterable<Activity>> listActivitiesByItineraryAndDay(
-        @RequestParam(defaultValue = "0") int itineraryId,
-        @RequestParam(defaultValue = "1") int day) {
+            @RequestParam(defaultValue = "0") int itineraryId, @RequestParam(defaultValue = "1") int day) {
 
-        Iterable<Activity> activitiesList = activityService.findAllActivityProjectionsByDayAndItinerary(itineraryId, day);
+        Iterable<Activity> activitiesList = activityService.findAllActivityProjectionsByDayAndItinerary(itineraryId,
+                day);
 
         return new ResponseEntity<>(activitiesList, HttpStatus.OK);
     }
 
     @GetMapping("/listByItinerary")
     public ResponseEntity<Iterable<Activity>> listActivitiesByItinerary(
-        @RequestParam(defaultValue = "0") int itineraryId) {
+            @RequestParam(defaultValue = "0") int itineraryId) {
 
         Iterable<Activity> activitiesList = activityService.findActivityByItinerary(itineraryId);
 
         return new ResponseEntity<>(activitiesList, HttpStatus.OK);
     }
-    
+
     @GetMapping("/show/{id}")
     public ResponseEntity<?> showActivity(@PathVariable("id") long id) {
         Optional<Activity> foundActivity = activityService.findById(id);
-        
-        if(!foundActivity.isPresent()){
+
+        if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada."));
         }
 
         Activity activity = foundActivity.get();
 
-        if (activity.getItinerary().getStatus().equals(StatusType.DRAFT) 
-            && !activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("No tiene permisos para ver esta actividad."));
+        if (activity.getItinerary().getStatus().equals(StatusType.DRAFT)
+                && !activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("No tiene permisos para ver esta actividad."));
         }
 
         return ResponseEntity.ok(activity);
@@ -85,8 +86,8 @@ public class ActivityController {
     @PostMapping("/create")
     public ResponseEntity<?> createActivity(@Valid @RequestBody ActivityDto activityDto, BindingResult result) {
         if (result.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
-		}
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
         String username = userService.getCurrentUsername();
 
         if (username.equals("anonymousUser")) {
@@ -96,8 +97,9 @@ public class ActivityController {
 
         Optional<Itinerary> findItinerary = itineraryService.findById(activityDto.getItinerary());
 
-        if(!findItinerary.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El itinerario indicado para la actividad no existe");
+        if (!findItinerary.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("El itinerario indicado para la actividad no existe");
         }
 
         Itinerary itinerary = findItinerary.get();
@@ -119,12 +121,12 @@ public class ActivityController {
     @PutMapping("/update")
     public ResponseEntity<?> updateActivity(@Valid @RequestBody ActivityDto activityDto, BindingResult result) {
         if (result.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
-		}
-        
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
+
         String username = userService.getCurrentUsername();
         Optional<Activity> foundActivity = activityService.findById(activityDto.getId());
-        
+
         Activity activityToUpdate = foundActivity.get();
 
         if (!activityService.existsById(activityDto.getId())) {
@@ -146,7 +148,6 @@ public class ActivityController {
         activityService.save(activityToUpdate);
         return ResponseEntity.ok(new Message("La actividad ha sido actualizada con éxito"));
     }
-
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteActivity(@PathVariable("id") long id) {
