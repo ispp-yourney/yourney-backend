@@ -2,17 +2,18 @@ package com.yourney.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
@@ -68,15 +69,13 @@ public class Landmark {
 	@URL
 	private String twitter;
 
-	private LocalDateTime deleteDate;
-
-	private LocalDateTime updateDate;
-
 	private LocalDateTime createDate;
 
 	private Long views;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private StatusType status;
+	@OneToOne(cascade = CascadeType.DETACH)
+	private Image image;
+
+	@Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
+	private String imageUrl;
 }

@@ -1,7 +1,5 @@
-
 package com.yourney.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.yourney.model.Itinerary;
-import com.yourney.model.StatusType;
-import com.yourney.model.projection.ItineraryDetailsProjection;
 import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.repository.ItineraryRepository;
 
@@ -21,78 +17,56 @@ public class ItineraryService {
     @Autowired
     private ItineraryRepository itineraryRepository;
 
-    // public List<Itinerary> findAll(){
-    // return (List<Itinerary>) itineraryRepository.findAll();
-    // }
-
-    public List<Itinerary> findAllItinerary() {
-        return (List<Itinerary>) itineraryRepository.findAllItinerary();
-    }
-
-    public List<ItineraryProjection> findAllItineraryProjections() {
-        return (List<ItineraryProjection>) itineraryRepository.findAllItineraryProjections();
-    }
-
-    public Page<ItineraryProjection> findAllItineraryProjectionsOrdered(Pageable pageable) {
-        return itineraryRepository.findAllItineraryProjectionsOrdered(pageable);
-    }
-
-    public Page<ItineraryProjection> findPublishedItineraryPages(Pageable pageable) {
-        return itineraryRepository.findByStatus(StatusType.PUBLISHED, pageable);
-    }
-
-    public Page<ItineraryProjection> findPublishedItineraryPagesByCountry(String country, Pageable pageable) {
-        return itineraryRepository.findByActivitiesLandmarkCountry(country, pageable);
-    }
-
-    public Page<ItineraryProjection> findPublishedItineraryPagesByCity(String city, Pageable pageable) {
-        return itineraryRepository.findByActivitiesLandmarkCity(city, pageable);
-    }
-
-    public Page<ItineraryProjection> findPublishedItineraryPagesByDistance(Double latitude, Double longitude,
-            Pageable pageable) {
-        return itineraryRepository.findByActivitiesLandmarkDistance(latitude, longitude, pageable);
-    }
-
     public Optional<Itinerary> findById(final Long id) {
         return itineraryRepository.findById(id);
     }
 
-    public Optional<ItineraryProjection> findOneItineraryProjection(final Long id) {
-        return itineraryRepository.findOneItineraryProjection(id);
+    public Iterable<Itinerary> findAll() {
+        return itineraryRepository.findAll();
     }
 
-    public Optional<ItineraryDetailsProjection> findOneItineraryDetailsProjection(final Long id) {
-        return itineraryRepository.findOneItineraryDetailsProjection(id);
+    public Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget,
+            Pageable pageable) {
+        return itineraryRepository.searchByProperties(country, city, maxBudget, pageable);
+    }
+
+    public Page<ItineraryProjection> searchByDistance(Double latitude, Double longitude, Pageable pageable) {
+        return itineraryRepository.searchByDistance(latitude, longitude, pageable);
+    }
+
+    public Page<ItineraryProjection> searchByName(Pageable pageable, String cadena) {
+        return itineraryRepository.searchByName(pageable, cadena);
+    }
+
+    public Page<ItineraryProjection> searchByUserId(Pageable pageable, Long userId) {
+        return itineraryRepository.searchByUserId(pageable, userId);
+    }
+
+    public Page<ItineraryProjection> searchByUsername(Pageable pageable, String username) {
+        return itineraryRepository.searchByUsername(pageable, username);
     }
 
     public Itinerary save(Itinerary itinerary) {
-        Itinerary newItinerary = itineraryRepository.save(itinerary);
+        Itinerary newItinerary = null;
+        try {
+            newItinerary = itineraryRepository.save(itinerary);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return newItinerary;
     }
 
     public void deleteById(long id) {
-        itineraryRepository.deleteById(id);
+        try {
+            itineraryRepository.deleteById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean existsById(long id) {
         return itineraryRepository.existsById(id);
-    }
-
-    public Page<ItineraryProjection> findSearchItineraryProjectionsOrdered(Pageable pageable, String cadena) {
-        return itineraryRepository.findSearchItineraryProjectionsOrdered(pageable, cadena);
-    }
-
-    public List<Itinerary> findSearchItinerary(String cadena) {
-        return (List<Itinerary>) itineraryRepository.findSearchItinerary(cadena);
-    }
-
-    public Page<ItineraryProjection> findUserItineraryProjectionsOrdered(Pageable pageable, Long userId) {
-        return itineraryRepository.findUserItineraryProjectionsOrdered(pageable, userId);
-    }
-
-    public List<Itinerary> findUserItinerary(Long userId) {
-        return (List<Itinerary>) itineraryRepository.findUserItinerary(userId);
     }
 
 }

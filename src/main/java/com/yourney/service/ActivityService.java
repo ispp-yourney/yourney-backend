@@ -1,11 +1,9 @@
 
 package com.yourney.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.yourney.model.Activity;
-import com.yourney.model.projection.ActivityProjection;
 import com.yourney.repository.ActivityRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,8 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public List<Activity> findAll() {
-        return (List<Activity>) activityRepository.findAll();
+    public Iterable<Activity> findAll() {
+        return activityRepository.findAll();
     }
 
     public Optional<Activity> findById(long id) {
@@ -26,25 +24,15 @@ public class ActivityService {
     }
 
     public Activity save(Activity activity) {
-        Activity newActivity = activityRepository.save(activity);
+        Activity newActivity = null;
+
+        try {
+            newActivity = activityRepository.save(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return newActivity;
-    }
-
-    public Optional<ActivityProjection> findOneActivityProjection(final Long id) {
-        return activityRepository.findOneActivityProjection(id);
-    }
-
-    public List<ActivityProjection> findAllActivityProjections() {
-        return (List<ActivityProjection>) activityRepository.findAllActivityProjections();
-    }
-
-    public List<ActivityProjection> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
-        return (List<ActivityProjection>) activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary,
-                dia);
-    }
-
-    public Iterable<ActivityProjection> findAllActivityProjection() {
-        return activityRepository.findAllActivityProjection();
     }
 
     public void deleteById(long id) {
@@ -53,5 +41,13 @@ public class ActivityService {
 
     public boolean existsById(long id) {
         return activityRepository.existsById(id);
+    }
+
+    public Iterable<Activity> findAllActivityProjectionsByDayAndItinerary(long idItinerary, int dia) {
+        return activityRepository.findAllActivityProjectionsByDayAndItinerary(idItinerary, dia);
+    }
+
+    public Iterable<Activity> findActivityByItinerary(long idItinerary) {
+        return activityRepository.findActivityByItinerary(idItinerary);
     }
 }

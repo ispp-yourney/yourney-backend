@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.validator.constraints.URL;
 
 import lombok.Data;
@@ -32,12 +34,13 @@ public class Image {
 	@Column(nullable = false)
 	private String imageUrl;
 
-	private String imageId;
+	@JsonIgnore
+	private String cloudinaryId;
 
-	public Image(String name, String imageUrl, String imageId) {
+	public Image(String name, String imageUrl, String cloudinaryId) {
 		this.name = name;
 		this.imageUrl = imageUrl;
-		this.imageId = imageId;
+		this.cloudinaryId = cloudinaryId;
 	}
 
 }

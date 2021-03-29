@@ -1,16 +1,19 @@
 package com.yourney.controller;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ActivityDto;
 import com.yourney.model.dto.Message;
-import com.yourney.model.projection.ActivityProjection;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
+import com.yourney.utils.ValidationUtils;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,150 +37,113 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivityController {
 
     @Autowired
-    private ItineraryService itineraryService;
+    private ActivityService activityService;
 
     @Autowired
-    private ActivityService activityService;
+    private ItineraryService itineraryService;
 
     @Autowired
     private UserService userService;
 
     @GetMapping("/list")
-    public ResponseEntity<Iterable<ActivityProjection>> listActivities() {
-        Iterable<ActivityProjection> activitiesList = activityService.findAllActivityProjection();
+    public ResponseEntity<Iterable<Activity>> listActivitiesByItineraryAndDay(
+            @RequestParam(defaultValue = "0") int itineraryId, @RequestParam(defaultValue = "1") int day) {
+
+        Iterable<Activity> activitiesList = activityService.findAllActivityProjectionsByDayAndItinerary(itineraryId,
+                day);
+
         return new ResponseEntity<>(activitiesList, HttpStatus.OK);
     }
 
-    @GetMapping("/list/{id}/{dia}")
-    public ResponseEntity<Iterable<ActivityProjection>> listActivities(@PathVariable("id") long id,
-            @PathVariable("dia") int dia) {
-        Iterable<ActivityProjection> activitiesList = activityService.findAllActivityProjectionsByDayAndItinerary(id,
-                dia);
+    @GetMapping("/listByItinerary")
+    public ResponseEntity<Iterable<Activity>> listActivitiesByItinerary(
+            @RequestParam(defaultValue = "0") int itineraryId) {
+
+        Iterable<Activity> activitiesList = activityService.findActivityByItinerary(itineraryId);
+
         return new ResponseEntity<>(activitiesList, HttpStatus.OK);
     }
 
     @GetMapping("/show/{id}")
     public ResponseEntity<?> showActivity(@PathVariable("id") long id) {
+        Optional<Activity> foundActivity = activityService.findById(id);
 
-        if (activityService.existsById(id)) {
-
-            Activity foundActivity = activityService.findById(id).get();
-
-            if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("La actividad no se encuentra publicada en este momento."));
-            }
-
-            Integer views = foundActivity.getViews();
-            if (views != null) {
-                foundActivity.setViews(foundActivity.getViews() + 1);
-                activityService.save(foundActivity);
-            } else {
-                foundActivity.setViews(1);
-                activityService.save(foundActivity);
-            }
-            ActivityProjection foundActivityProjection = activityService.findOneActivityProjection(id).orElse(null);
-            return ResponseEntity.ok(foundActivityProjection);
-
-        } else {
+        if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada."));
         }
 
+        Activity activity = foundActivity.get();
+
+        if (activity.getItinerary().getStatus().equals(StatusType.DRAFT)
+                && !activity.getItinerary().getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("No tiene permisos para ver esta actividad."));
+        }
+
+        return ResponseEntity.ok(activity);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createActivity(@RequestBody ActivityDto activityDto) {
+    public ResponseEntity<?> createActivity(@Valid @RequestBody ActivityDto activityDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
         String username = userService.getCurrentUsername();
-        Activity newActivity = new Activity();
 
         if (username.equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de creación sin registrarse."));
         }
 
-        if (!itineraryService.existsById(activityDto.getItinerary())) {
+        Optional<Itinerary> findItinerary = itineraryService.findById(activityDto.getItinerary());
+
+        if (!findItinerary.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("El itinerario indicado para la actividad no existe");
         }
 
-        Itinerary itinerary = itineraryService.findById(activityDto.getItinerary()).orElse(null);
+        Itinerary itinerary = findItinerary.get();
 
-        if (!username.equals(itinerary.getAuthor().getUsername())) {
+        if (!username.equals(itinerary.getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No es posible añadir actividades a un itinerario del que no es dueño."));
         }
 
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DELETED)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El itinerario indicado para la actividad ha sido borrado");
-        }
+        Activity newActivity = new Activity();
+        BeanUtils.copyProperties(activityDto, newActivity, "id", "createDate");
 
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DRAFT)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El itinerario indicado para la actividad no está publicado");
-        }
-
-        BeanUtils.copyProperties(activityDto, newActivity, "id", "status", "deleteDate", "updateDate", "createDate",
-                "views");
-
-        newActivity.setViews(0);
         newActivity.setItinerary(itinerary);
         newActivity.setCreateDate(LocalDateTime.now());
-        newActivity.setStatus(StatusType.PUBLISHED);
         Activity createdActivity = activityService.save(newActivity);
-        return ResponseEntity.ok(showActivity(createdActivity.getId()));
+        return ResponseEntity.ok(createdActivity);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateActivity(@RequestBody ActivityDto activityDto, BindingResult result) {
-        String username = userService.getCurrentUsername();
+    public ResponseEntity<?> updateActivity(@Valid @RequestBody ActivityDto activityDto, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getFieldError());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+        }
 
-        } else if (!activityService.existsById(activityDto.getId())) {
+        String username = userService.getCurrentUsername();
+        Optional<Activity> foundActivity = activityService.findById(activityDto.getId());
+
+        Activity activityToUpdate = foundActivity.get();
+
+        if (!activityService.existsById(activityDto.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
-        Activity foundActivity = activityService.findById(activityDto.getId()).get();
-
-        if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
+        if (activityToUpdate.getItinerary().getStatus().equals(StatusType.PUBLISHED)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("La actividad no se encuentra publicada en este momento y por tanto no se puede editar.");
         }
 
-        if (username.equals("anonymousUser")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de actualizar una actividad sin registrarse."));
-        }
-
-        if (!itineraryService.existsById(activityDto.getItinerary())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El nuevo itinerario indicado para la actividad no existe");
-        }
-
-        Itinerary itinerary = itineraryService.findById(activityDto.getItinerary()).orElse(null);
-
-        if (!username.equals(itinerary.getAuthor().getUsername())) {
+        if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede añadir una actividad a un itinerario del que no es dueño."));
         }
 
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DELETED)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El nuevo itinerario indicado para la actividad ha sido borrado");
-        }
-
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DRAFT)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El nuevo itinerario indicado para la actividad no está publicado");
-        }
-
-        Activity activityToUpdate = activityService.findById(activityDto.getId()).orElse(null);
-
         BeanUtils.copyProperties(activityDto, activityToUpdate, "id");
-
-        activityToUpdate.setItinerary(itinerary);
-        activityToUpdate.setUpdateDate(LocalDateTime.now());
 
         activityService.save(activityToUpdate);
         return ResponseEntity.ok(new Message("La actividad ha sido actualizada con éxito"));
@@ -185,45 +152,26 @@ public class ActivityController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteActivity(@PathVariable("id") long id) {
         String username = userService.getCurrentUsername();
-        Activity activityToDelete = activityService.findById(id).orElse(null);
+        Optional<Activity> foundActivity = activityService.findById(id);
 
-        if (username.equals("anonymousUser")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
-        }
-
-        if (!activityService.existsById(id)) {
+        if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No exite la actividad indicada"));
         }
 
-        Activity foundActivity = activityService.findById(id).get();
+        Activity activityToDelete = foundActivity.get();
 
-        if (!foundActivity.getStatus().equals(StatusType.PUBLISHED)) {
+        if (!activityToDelete.getItinerary().getStatus().equals(StatusType.PUBLISHED)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("La actividad no se encuentra publicada en este momento y por tanto no se puede borrar.");
+                    .body("La actividad se encuentra publicada en este momento y por tanto no se puede borrar.");
         }
 
-        Itinerary itinerary = itineraryService.findById(activityToDelete.getItinerary().getId()).orElse(null);
-
-        if (!username.equals(itinerary.getAuthor().getUsername())) {
+        if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar una actividad de un itinerario del que no es creador."));
         }
 
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DELETED)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se puede eliminar una actividad de un itinerario que ha sido borrado");
-        }
-
-        if (itinerary != null && itinerary.getStatus().equals(StatusType.DRAFT)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se puede eliminar una actividad de un itinerario que está en borrador.");
-        }
-
         Activity activity = activityService.findById(id).get();
-        activity.setDeleteDate(LocalDateTime.now());
-        activity.setStatus(StatusType.DELETED);
-        activityService.save(activity);
+        activityService.deleteById(activity.getId());
 
         return ResponseEntity.ok(new Message("Actividad eliminada correctamente"));
     }
