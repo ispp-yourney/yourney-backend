@@ -89,6 +89,12 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		
+		<dependency>
+      		<groupId>org.mockito</groupId>
+      		<artifactId>mockito-junit-jupiter</artifactId>
+      		<scope>test</scope>
+    	</dependency>
 		       
 		<!-- Base de datos -->		
 		<dependency>
