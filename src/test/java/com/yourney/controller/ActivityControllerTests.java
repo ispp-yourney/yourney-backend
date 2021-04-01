@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +51,7 @@ import com.yourney.service.LandmarkService;
 public class ActivityControllerTests {
 
 	private static final int TEST_ACTIVITY_ID = 1;
+	private static final int TEST_ACTIVITY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID = 1;
 	
 	@Autowired
@@ -114,6 +117,7 @@ public class ActivityControllerTests {
 	    it1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it1.setViews(0);
 	    
+	    
 	    given(this.itineraryService.findById((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
 	    
 		//Activity
@@ -124,10 +128,25 @@ public class ActivityControllerTests {
 		a1.setDescription("lorem ipsum 0");
 		a1.setDay(1);
 		a1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-//		a1.setItinerary(it1);
+		a1.setItinerary(it1);
 //		a1.setLandmark(l1);
 		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(a1));
+		Collection<Activity> activities = new ArrayList<>();
+		activities.add(a1);
 		
+		Activity a2 = new Activity(); 
+
+		a2.setId(2);
+		a2.setTitle("termina el test: Giralda");
+		a2.setDescription("lorem ipsum 1");
+		a2.setDay(2);
+		a2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		a2.setItinerary(it1);
+//		a1.setLandmark(l1);
+		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID_2)).willReturn(Optional.of(a2));
+		activities.add(a2);
+		
+		it1.setActivities(activities);
 
 
 	}
@@ -145,18 +164,18 @@ public class ActivityControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
 		// Validate headers
-		.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
+		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
 
 		// Validate the returned fields
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].id", is(1)))
-        .andExpect(jsonPath("$[0].name", is("Widget Name")))
-        .andExpect(jsonPath("$[0].description", is("Description")))
-        .andExpect(jsonPath("$[0].version", is(1)))
+        .andExpect(jsonPath("$[0].title", is("comienza el test: Giralda")))
+        .andExpect(jsonPath("$[0].description", is("lorem ipsum 0")))
+        .andExpect(jsonPath("$[0].day", is(1)))
         .andExpect(jsonPath("$[1].id", is(2)))
-        .andExpect(jsonPath("$[1].name", is("Widget 2 Name")))
-        .andExpect(jsonPath("$[1].description", is("Description 2")))
-        .andExpect(jsonPath("$[1].version", is(4)));
+        .andExpect(jsonPath("$[1].title", is("termina el test: Giralda")))
+        .andExpect(jsonPath("$[1].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$[1].day", is(2)));
 	}
 
 }
