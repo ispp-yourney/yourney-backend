@@ -30,7 +30,7 @@ INSERT INTO itineraries(name, description, status, recommended_season, budget, e
     ('itinerary test 0', 'lorem ipsum', 'PUBLISHED', 'WINTER', 10., 2, '2021-01-20 12:25:01', 4, 3, 2),       -- 1
     ('itinerary test 1', 'lorem ipsum', 'PUBLISHED', 'SPRING', 5., 2, '2021-01-26 12:25:01', 8, 3, 2),       -- 2
     ('itinerary test 2', 'lorem ipsum', 'PUBLISHED', NULL, 15., 2, '2021-01-25 12:25:01', 10, 2, 2),           -- 3
-    ('itinerary test 3', 'lorem ipsum', 'PUBLISHED', NULL, 0., 2, '2021-01-31 12:25:01', 5, 2, 2),           -- 4
+    ('itinerary test 3', 'lorem ipsum', 'PUBLISHED', NULL, 0., 2, '2021-01-31 12:25:01', 5, 1, 2),           -- 4
     ('itinerary test 4', 'lorem ipsum', 'PUBLISHED', NULL, 0., 2, '2021-01-15 12:25:01', 30, 2, 2);           -- 5
 
 -- LANDMARKS

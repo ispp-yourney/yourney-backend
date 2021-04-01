@@ -1,13 +1,13 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
-
-
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
@@ -32,14 +32,18 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yourney.config.SecurityConfig;
 import com.yourney.model.Activity;
 import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
+import com.yourney.security.model.User;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
@@ -103,6 +107,20 @@ public class ActivityControllerTests {
 //	    l1.setViews((long)0);
 //	    l1.setImage(i1);
 		
+		
+		//User
+//		users (email,first_name,last_name,"password",username, plan, expiration_date) VALUES
+//		 ('test222@ewfwef.com','Name 1','Surname 1','admin','admin', 0, NULL),
+		User auth1 = new User();
+		
+		auth1.setId((long)1);
+		auth1.setEmail("test222@ewfwef.com");
+		auth1.setFirstName("Name 1");
+		auth1.setLastName("Surname 1");
+		auth1.setPassword("user1");
+		auth1.setUsername("user1");
+		auth1.setPlan(0);
+		
 	    //Itinerary
 //	    (name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES
 //	    ('itinerary test 0', 'lorem ipsum', 'PUBLISHED', 'WINTER', 10., 2, '2021-01-20 12:25:01', 4, 3, 2),       -- 1
@@ -116,6 +134,7 @@ public class ActivityControllerTests {
 	    it1.setEstimatedDays(2);
 	    it1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it1.setViews(0);
+	    it1.setAuthor(auth1);
 	    
 	    given(this.itineraryService.findById((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
 	    
@@ -134,6 +153,8 @@ public class ActivityControllerTests {
 		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(a1));
 		Collection<Activity> activities = new ArrayList<>();
 		activities.add(a1);
+		
+		doReturn(a1).when(this.activityService).save(a1);
 		
 		Activity a2 = new Activity(); 
 
@@ -196,5 +217,56 @@ public class ActivityControllerTests {
         .andExpect(jsonPath("$[1].description", is("lorem ipsum 1")))
         .andExpect(jsonPath("$[1].day", is(2)));
 	}
+	
+	@Test
+	void testShowActivity() throws Exception {
+		this.mockMvc.perform(get("/activity/show/{id}", TEST_ACTIVITY_ID))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate headers
+		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
 
+		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 0")))
+        .andExpect(jsonPath("$.day", is(1)));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateActivity() throws Exception {
+		Activity activityToPost = new Activity();
+		
+		activityToPost.setId(1);
+		activityToPost.setTitle("comienza el test: Giralda");
+		activityToPost.setDescription("lorem ipsum 0");
+		activityToPost.setDay(1);
+		
+		this.mockMvc.perform(post("/activity/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content("{\n" + 
+				"  \"day\": 1,\n" + 
+				"  \"description\": \"string\",\n" + 
+				"  \"id\": 1,\n" + 
+				"  \"itinerary\": 1,\n" + 
+				"  \"landmark\": null,\n" + 
+				"  \"title\": \"string\"\n" + 
+				"}"))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk());
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//		
+//		// Validate headers
+//		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
+//
+//		// Validate the returned fields
+//        .andExpect(jsonPath("$.id", is(1)))
+//        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
+//        .andExpect(jsonPath("$.description", is("lorem ipsum 0")))
+//        .andExpect(jsonPath("$.day", is(1)));
+	}
 }
