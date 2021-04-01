@@ -31,7 +31,7 @@ public class Landmark {
 
 	@NotBlank
 	@Column(nullable = false)
-	@Length(max = 50)
+	@Length(max = 100)
 	private String name;
 
 	@Length(max = 255)
@@ -63,7 +63,7 @@ public class Landmark {
 	@URL
 	private String website;
 
-	@Length(max = 50)
+	@Length(max = 500)
 	private String instagram;
 
 	@URL

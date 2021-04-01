@@ -32,6 +32,7 @@ public class Activity {
 	@Length(max = 50)
 	private String title;
 
+	@Length(max = 1000)
 	private String description;
 
 	@Positive
