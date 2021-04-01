@@ -117,8 +117,9 @@ public class ActivityControllerTests {
 	    it1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it1.setViews(0);
 	    
-	    
 	    given(this.itineraryService.findById((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
+	    
+	    
 	    
 		//Activity
 		Activity a1 = new Activity(); 
@@ -147,17 +148,35 @@ public class ActivityControllerTests {
 		activities.add(a2);
 		
 		it1.setActivities(activities);
-
+		
+		given(this.activityService.findActivityByItinerary((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(activities);
+		
+		Iterable<Activity> activitiesList = new ArrayList<Activity>(activities);
+	
+		given(this.activityService.findAllActivityProjectionsByDayAndItinerary((long)ActivityControllerTests.TEST_ITINERARY_ID, 1)).willReturn(activitiesList);
 
 	}
 	
 	@Test
-	void testShowActivityList() throws Exception {
-		this.mockMvc.perform(get("/activity/list")).andExpect(status().isOk()).andExpect(model().attributeExists("activity"));
+	void testListActivitiesByItineraryAndDay() throws Exception {
+		this.mockMvc.perform(get("/activity/list?itineraryId={itineraryId}", TEST_ITINERARY_ID))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate headers
+		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
+
+		// Validate the returned fields
+        //.andExpect(jsonPath("$", hasSize(1)))
+        .andExpect(jsonPath("$[0].id", is(1)))
+        .andExpect(jsonPath("$[0].title", is("comienza el test: Giralda")))
+        .andExpect(jsonPath("$[0].description", is("lorem ipsum 0")))
+        .andExpect(jsonPath("$[0].day", is(1)));
 	}
-	
+
 	@Test
-	void testShowActivityListByItinerary() throws Exception {
+	void testListActivityListByItinerary() throws Exception {
 		this.mockMvc.perform(get("/activity/listByItinerary?itineraryId={itineraryId}", TEST_ITINERARY_ID))
 		// Validate the response code and content type
 		.andExpect(status().isOk())
