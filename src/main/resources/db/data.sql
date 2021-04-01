@@ -5,10 +5,10 @@ INSERT INTO roles(role_type) VALUES('ROLE_USER');       -- 2
 
 INSERT INTO users (email,first_name,last_name,"password",username, plan, expiration_date) VALUES
 	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin','admin', 0, NULL),                                -- 1
-	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1cortes','alejandro1password', 0, NULL),     -- 2
-	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2lopez','lidia2password', 1, '2040-03-22 15:28:31'),      -- 3
-     ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3tirado','ana3password', 0, NULL),                         -- 4
-     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4ruiz','luis4password', 1, '2030-01-20 12:25:01');          -- 5
+	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL),     -- 2
+	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31'),      -- 3
+     ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL),                         -- 4
+     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01');          -- 5
 
 INSERT INTO users_roles(user_id, role_id) VALUES
 	(1,1),
@@ -307,35 +307,35 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
 	-- Itinerary 5
 	('Torre Eiffel',                                                           			-- 26
     'Emblemática torre de hierro forjado diseñada por Gustave Eiffel y construida en 1889, dispone de observatorio.',
-    0.0, 'París', 'Francia', 48.86245165181368, 2.294873015425074, false, NULL, NULL, '+33892701239', NULL, 'https://www.toureiffel.paris/', 'Lugar de interés histórico', 33, 36),
+    0.0, 'Francia', 'París', 48.86245165181368, 2.294873015425074, false, NULL, NULL, '+33892701239', NULL, 'https://www.toureiffel.paris/', 'Lugar de interés histórico', 33, 36),
 	('Museo del Louvre',                                                           		-- 27
     'Antiguo palacio con una gran colección de arte, desde esculturas romanas hasta "La Mona Lisa" de da Vinci.',
-    0.0, 'París', 'Francia', 48.86203827021599, 2.3375541557348547, false, NULL, NULL, '+33140205050', NULL, 'https://www.louvre.fr/', 'Museo de arte', 33, 37),
+    0.0, 'Francia', 'París', 48.86203827021599, 2.3375541557348547, false, NULL, NULL, '+33140205050', NULL, 'https://www.louvre.fr/', 'Museo de arte', 33, 37),
 	('Catedral de Notre Dame',                                                          -- 28
     'Imponente catedral del siglo XIII con arbotantes y gárgolas y marco de la novela de Víctor Hugo.',
-    0.0, 'París', 'Francia', 48.852993026337295, 2.3499133107394714, false, NULL, NULL, '+33142345610', NULL, 'https://www.notredamedeparis.fr/', 'Catedral', 33, 38),
+    0.0, 'Francia', 'París', 48.852993026337295, 2.3499133107394714, false, NULL, NULL, '+33142345610', NULL, 'https://www.notredamedeparis.fr/', 'Catedral', 33, 38),
 	('Arco de Triunfo de París',                                                        -- 29
     'Arco triunfal emblemático conmemorativo de las victorias de Napoleón, cuenta con observatorio.',
-    0.0, 'París', 'Francia', 48.87480495771061, 2.295104424697544, false, NULL, NULL, '+33155377377', NULL, 'http://www.paris-arc-de-triomphe.fr/', 'Monumento', 33, 39),
+    0.0, 'Francia', 'París', 48.87480495771061, 2.295104424697544, false, NULL, NULL, '+33155377377', NULL, 'http://www.paris-arc-de-triomphe.fr/', 'Monumento', 33, 39),
 	('Panteón de París',                                                           		-- 30
     'Mausoleo del siglo  XVIII con fachada de columnas que contiene los restos de ciudadanos franceses ilustres.',
-    0.0, 'París', 'Francia', 48.84657588873261, 2.346487317716868, false, NULL, NULL, '+33144321800', NULL, 'http://www.paris-pantheon.fr/', 'Monumento', 33, 40),
+    0.0, 'Francia', 'París', 48.84657588873261, 2.346487317716868, false, NULL, NULL, '+33144321800', NULL, 'http://www.paris-pantheon.fr/', 'Monumento', 33, 40),
 	-- Itinerary 6
 	('Santa Teresa',																	-- 31
     'Santa Teresa es un barrio situado en una colina que ofrece un ambiente rústico lleno de encanto.', 
-    0.0, 'Río de Janeiro - Estado de Río de Janeiro', 'Brasil', -22.923525709710262, -43.19050070425792, false, NULL, NULL, NULL, NULL, NULL, 'Barrio', 49, 41),
+    0.0, 'Brasil', 'Río de Janeiro', -22.923525709710262, -43.19050070425792, false, NULL, NULL, NULL, NULL, NULL, 'Barrio', 49, 41),
 	('Cristo Redentor',																	-- 32
     'Estatua gigante de Jesucristo de 30 m en la cima de una montaña, con vistas a la ciudad y acceso en tren.', 
-    0.0, 'Río de Janeiro - Estado de Río de Janeiro', 'Brasil', -22.951112137023348, -43.210413422166454, true, NULL, NULL, NULL, NULL, 'https://cristoredentoroficial.com.br/', 'Monumento', 49, 42),
+    0.0, 'Brasil', 'Río de Janeiro', -22.951112137023348, -43.210413422166454, true, NULL, NULL, NULL, NULL, 'https://cristoredentoroficial.com.br/', 'Monumento', 49, 42),
 	('Copacabana',																		-- 33
     'Emblemática playa de 3,5 km con una extensa superficie de arena, un paseo bullicioso, puestos de comida y hoteles.', 
-    0.0, 'Río de Janeiro - Estado de Río de Janeiro', 'Brasil', -22.97303348977198, -43.185283260504974, false, NULL, NULL, NULL, NULL, NULL, 'Playa', 49, 43),
+    0.0, 'Brasil', 'Río de Janeiro', -22.97303348977198, -43.185283260504974, false, NULL, NULL, NULL, NULL, NULL, 'Playa', 49, 43),
     ('Feria hippie de Ipanema',															-- 34
-    'feria artesanal', 
-    0.0, 'Río de Janeiro - Estado de Río de Janeiro', 'Brasil', -22.984775601826943, -43.19857314754225, false, NULL, NULL, NULL, NULL, 'https://www.feirarteipanema.com/', 'Punto turístico', 49, 44),
+    'Feria artesanal', 
+    0.0, 'Brasil', 'Río de Janeiro', -22.984775601826943, -43.19857314754225, false, NULL, NULL, NULL, NULL, 'https://www.feirarteipanema.com/', 'Punto turístico', 49, 44),
 	('Pedra da Gávea',																	-- 35
     'Monolito costero a 844 m de altitud con rutas de senderismo exigentes y vistas panorámicas de Río de Janeiro.', 
-    0.0, 'Río de Janeiro - Estado de Río de Janeiro', 'Brasil', -22.997239637426688, -43.28467941390136, false, NULL, NULL, NULL, NULL, NULL, 'Pico de Montaña', 49, 45),
+    0.0, 'Brasil', 'Río de Janeiro', -22.997239637426688, -43.28467941390136, false, NULL, NULL, NULL, NULL, NULL, 'Pico de Montaña', 49, 45),
 	-- Itinerary 7
 	('Palacio de Westminster',															-- 36
     'Obra maestra neogótica y sede del gobierno nacional. Hay visitas guiadas los sábados y durante el verano.', 
