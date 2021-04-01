@@ -41,7 +41,7 @@ public class Itinerary {
 
 	@NotBlank
 	@Column(nullable = false)
-	@Length(max = 255)
+	@Length(max = 1000)
 	private String description;
 
 	@Enumerated(EnumType.STRING)
