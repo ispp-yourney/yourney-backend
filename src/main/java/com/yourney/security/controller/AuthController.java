@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +39,7 @@ import com.yourney.security.model.dto.LoginUser;
 import com.yourney.security.model.dto.NewUser;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
+import com.yourney.utils.ValidationUtils;
 
 @RestController
 @RequestMapping("/auth")
@@ -61,9 +63,9 @@ public class AuthController {
 
 	@PostMapping("/new")
 	public ResponseEntity<Object> newUser(@Valid @RequestBody final NewUser newUser,
-			final BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
+			final BindingResult result) {
+		if (result.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
 		}
 
 		if (this.userService.existsByUsername(newUser.getUsername())) {
@@ -86,18 +88,23 @@ public class AuthController {
 		user.setPlan(0);
 		this.userService.save(user);
 
-		return new ResponseEntity<>(new Message("Created user"), HttpStatus.CREATED);
+		return new ResponseEntity<>(new Message("Usuario creado correctamente"), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestBody @Valid final LoginUser loginUser,
-			final BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
+			final BindingResult result) {
+		if (result.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
 		}
 
-		Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+		Authentication authentication;
+		try {
+			authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
+		} catch (AuthenticationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message("El usuario o la contraseña es inválido"));
+		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = this.jwtProvider.generateToken(authentication);
@@ -123,8 +130,7 @@ public class AuthController {
 
 	@GetMapping("/upgrade")
 	public ResponseEntity<?> upgradeUser(
-		@RequestParam(name="subscriptionDays", defaultValue = "28") long subscriptionDays
-	) {
+		@RequestParam(name="subscriptionDays", defaultValue = "28") long subscriptionDays) {
 
 		String username = userService.getCurrentUsername();
 		Optional<User> foundUser = userService.getByUsername(username);
