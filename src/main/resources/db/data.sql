@@ -221,6 +221,7 @@ INSERT INTO itineraries(name, description, status, recommended_season, budget, e
     'Millones de turistas de todo el mundo visitan distintos lugares de España cada año. Andalucía es una de las regiones más visitadas y su capital nos da una idea de porqué. Monumentos históricos, calles encantadoras, temperaturas cálidas, una gastronomía sin igual y una cultura única hacen de Sevilla una ciudad llena de pasión.',
     'PUBLISHED', 'SPRING', 900.0, 5, '2021-02-02 18:17:25', 75, 4, 10);  											        									-- 10
 
+
     
 -- LANDMARKS
 
