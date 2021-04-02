@@ -3,6 +3,7 @@ package com.yourney.security.controller;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,5 +104,18 @@ public class AuthController {
 
 		JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
 		return new ResponseEntity<>(jwtDto, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/show/{username}")
+	public ResponseEntity<?> showUser(@PathVariable("username") String username) {
+		Optional<User> foundUser = userService.getByUsername(username);
+
+		if (!foundUser.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el usuario indicado"));
+		}
+
+		User user = foundUser.get();
+
+		return ResponseEntity.ok(user);
 	}
 }
