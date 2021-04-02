@@ -30,8 +30,14 @@ public class UserService {
 		return userRepository.existsByEmail(email);
 	}
 
-	public void save(User user) {
-		userRepository.save(user);
+	public User save(User user) {
+		User newUser = null;
+		try {
+            newUser = userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		return newUser;
 	}
 
 	public String getCurrentUsername() {
