@@ -11,20 +11,20 @@ import lombok.Data;
 @Data
 public class NewUser {
 
-	@NotBlank
+	@NotBlank(message = "El nombre de usuario es obligatorio")
 	private String username;
 
-	@NotBlank
+	@NotBlank(message = "La contraseña es obligatoria")
 	private String password;
 
-	@NotBlank
+	@NotBlank(message = "El nombre es obligatorio")
 	private String firstName;
 
-	@NotBlank
+	@NotBlank(message = "Los apellidos son obligatorios")
 	private String lastName;
 
-	@Email
-	@NotBlank
+	@Email(message = "El correo electrónico introducido no es válido")
+	@NotBlank(message = "El correo electrónico es obligatorio")
 	private String email;
 
 	private Set<String> roles = new HashSet<>();
