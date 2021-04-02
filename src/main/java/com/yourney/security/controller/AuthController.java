@@ -1,6 +1,7 @@
 
 package com.yourney.security.controller;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yourney.model.dto.Message;
@@ -118,4 +120,33 @@ public class AuthController {
 
 		return ResponseEntity.ok(user);
 	}
+
+	@GetMapping("/upgrade")
+	public ResponseEntity<?> upgradeUser(
+		@RequestParam(name="subscriptionDays", defaultValue = "28") long subscriptionDays
+	) {
+
+		String username = userService.getCurrentUsername();
+		Optional<User> foundUser = userService.getByUsername(username);
+
+		if (!foundUser.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No se encuentra con un usuario activo en la web, autentíquese."));
+		}
+		if(subscriptionDays<1){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("No puede subscribirse a días negativos o nulos"));
+		}
+
+		User user = foundUser.get();
+		if(user.getExpirationDate()!=null && user.getExpirationDate().isAfter(LocalDateTime.now())){
+			user.setExpirationDate(user.getExpirationDate().plusDays(subscriptionDays));
+			user.setPlan(1);
+		} else {
+			user.setExpirationDate(LocalDateTime.now().plusDays(subscriptionDays));
+			user.setPlan(1);
+		}
+		
+		User updatedUser = userService.save(user);
+
+		return ResponseEntity.ok(updatedUser);
+	}	
 }
