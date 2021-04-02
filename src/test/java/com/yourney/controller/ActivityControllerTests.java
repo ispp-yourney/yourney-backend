@@ -67,50 +67,13 @@ public class ActivityControllerTests {
 	@MockBean
 	protected ItineraryService itineraryService;
 	
-	@MockBean
-	protected LandmarkService landmarkService;
-	
-	@MockBean
-	protected ImageService imageService;
-
 	@Autowired
 	private MockMvc mockMvc;
 
 	@BeforeEach
 	void setup() {
-//		
-//		//Image
-//	    Image i1 = new Image();
-//		
-//	    i1.setId(1);
-//	    i1.setName("Imagen por defecto");
-//	    i1.setImageUrl("https://www.sinrumbofijo.com/wp-content/uploads/2016/05/default-placeholder.png");
-//	    i1.setCloudinaryId(null);
-//	    
-//	    //Landmark
-//	    Landmark l1 = new Landmark();
-//	    l1.setId((long)1);
-//	    l1.setName("Giralda");
-//	    l1.setDescription("lorem ipsum");
-//	    l1.setPrice(0.);
-//	    l1.setCountry("España");
-//	    l1.setCity("Sevilla");
-//	    l1.setLatitude(37.38618100597202);
-//	    l1.setLongitude(-5.992615925346369);
-//	    l1.setPromoted(true);
-//	    l1.setEmail("giralda@email.com");
-//	    l1.setInstagram(null);
-//	    l1.setPhone("123456789");
-//	    l1.setTwitter(null);
-//	    l1.setWebsite(null);
-//	    l1.setCategory("Monumento histórico");
-//	    l1.setViews((long)0);
-//	    l1.setImage(i1);
-		
 		
 		//User
-//		users (email,first_name,last_name,"password",username, plan, expiration_date) VALUES
-//		 ('test222@ewfwef.com','Name 1','Surname 1','admin','admin', 0, NULL),
 		User auth1 = new User();
 		
 		auth1.setId((long)1);
@@ -122,8 +85,6 @@ public class ActivityControllerTests {
 		auth1.setPlan(0);
 		
 	    //Itinerary
-//	    (name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES
-//	    ('itinerary test 0', 'lorem ipsum', 'PUBLISHED', 'WINTER', 10., 2, '2021-01-20 12:25:01', 4, 3, 2),       -- 1
 	    Itinerary it1 = new Itinerary();
 	    
 	    it1.setId((long)1);
@@ -149,7 +110,6 @@ public class ActivityControllerTests {
 		a1.setDay(1);
 		a1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 		a1.setItinerary(it1);
-//		a1.setLandmark(l1);
 		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(a1));
 		Collection<Activity> activities = new ArrayList<>();
 		activities.add(a1);
@@ -164,7 +124,6 @@ public class ActivityControllerTests {
 		a2.setDay(2);
 		a2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 		a2.setItinerary(it1);
-//		a1.setLandmark(l1);
 		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID_2)).willReturn(Optional.of(a2));
 		activities.add(a2);
 		
@@ -185,11 +144,7 @@ public class ActivityControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
-		// Validate headers
-		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
-
 		// Validate the returned fields
-        //.andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].id", is(1)))
         .andExpect(jsonPath("$[0].title", is("comienza el test: Giralda")))
         .andExpect(jsonPath("$[0].description", is("lorem ipsum 0")))
@@ -203,9 +158,6 @@ public class ActivityControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
-		// Validate headers
-		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
-
 		// Validate the returned fields
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].id", is(1)))
@@ -225,9 +177,6 @@ public class ActivityControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
-		// Validate headers
-		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
-
 		// Validate the returned fields
         .andExpect(jsonPath("$.id", is(1)))
         .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
@@ -258,11 +207,8 @@ public class ActivityControllerTests {
 
 		// Validate the response code and content type
 		.andExpect(status().isOk());
-//        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//		
-//		// Validate headers
-//		//.andExpect(header().string(HttpHeaders.LOCATION, "/rest/widgets"))
-//
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON))	
+
 //		// Validate the returned fields
 //        .andExpect(jsonPath("$.id", is(1)))
 //        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))

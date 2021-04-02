@@ -34,6 +34,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
@@ -74,6 +76,8 @@ public class ItineraryControllerTests {
 	private static final String TEST_ITINERARY_COUNTRY_2 = "Francia";
 	private static final String TEST_ITINERARY_CITY_2 = "ParÃ­s";
 	private static final Double TEST_ITINERARY_MAXBUDGET = 9000.;
+	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
+	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -83,6 +87,9 @@ public class ItineraryControllerTests {
 	
 	@MockBean
 	private UserService userService;
+	
+//	@MockBean
+//	private ItineraryRepository itineraryRepository;
 	
 	@MockBean
 	protected ItineraryService itineraryService;
@@ -190,8 +197,8 @@ public class ItineraryControllerTests {
 	    la1.setImage(null);
 	    la1.setImageUrl(null);
 	    la1.setInstagram(null);
-	    la1.setLatitude(64.0);
-	    la1.setLongitude(56.0);
+	    la1.setLatitude(60.0);
+	    la1.setLongitude(60.0);
 	    la1.setName("Monumento 1");
 	    la1.setPhone("+1 111111111");
 	    la1.setPrice(0.0);
@@ -212,8 +219,8 @@ public class ItineraryControllerTests {
 	    la2.setImage(null);
 	    la2.setImageUrl(null);
 	    la2.setInstagram(null);
-	    la2.setLatitude(64.0);
-	    la2.setLongitude(56.0);
+	    la2.setLatitude(50.0);
+	    la2.setLongitude(50.0);
 	    la2.setName("Monumento 2");
 	    la2.setPhone("+1 111111111");
 	    la2.setPrice(0.0);
@@ -234,8 +241,8 @@ public class ItineraryControllerTests {
 	    la3.setImage(null);
 	    la3.setImageUrl(null);
 	    la3.setInstagram(null);
-	    la3.setLatitude(64.0);
-	    la3.setLongitude(56.0);
+	    la3.setLatitude(40.0);
+	    la3.setLongitude(40.0);
 	    la3.setName("Monumento 3");
 	    la3.setPhone("+1 111111111");
 	    la3.setPrice(0.0);
@@ -256,8 +263,8 @@ public class ItineraryControllerTests {
 	    la4.setImage(null);
 	    la4.setImageUrl(null);
 	    la4.setInstagram(null);
-	    la4.setLatitude(64.0);
-	    la4.setLongitude(56.0);
+	    la4.setLatitude(30.0);
+	    la4.setLongitude(30.0);
 	    la4.setName("Monumento 4");
 	    la4.setPhone("+1 111111111");
 	    la4.setPrice(0.0);
@@ -319,17 +326,32 @@ public class ItineraryControllerTests {
 		ac5.setItinerary(it3);
 		ac5.setLandmark(la4);
 		
+		
 		// PAGEABLE
 		Pageable pageable = PageRequest.of(TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE);
-		List<ItineraryProjection> itineraries = new ArrayList<>();
-		//itineraries.add((ItineraryProjection) it1);
-		//itineraries.add((ItineraryProjection) it2);
-		Page<ItineraryProjection> itinerariesPage = new PageImpl<>(itineraries);
+		ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+		
+		List<ItineraryProjection> itineraries1 = new ArrayList<>();
+		ItineraryProjection itp1 = factory.createProjection(ItineraryProjection.class, it1);
+		ItineraryProjection itp2 = factory.createProjection(ItineraryProjection.class, it2);
+		itineraries1.add(itp1);
+		itineraries1.add(itp2);
+		Page<ItineraryProjection> itinerariesPage1 = new PageImpl<>(itineraries1);
+		
+		List<ItineraryProjection> itineraries2 = new ArrayList<>();
+		itp1 = factory.createProjection(ItineraryProjection.class, it1);
+		itp2 = factory.createProjection(ItineraryProjection.class, it2);
+		ItineraryProjection itp3 = factory.createProjection(ItineraryProjection.class, it3);
+		itineraries2.add(itp1);
+		itineraries2.add(itp2);
+		itineraries2.add(itp3);
+		Page<ItineraryProjection> itinerariesPage2 = new PageImpl<>(itineraries2);
 
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
-	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, pageable)).willReturn(itinerariesPage);
+	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, pageable)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
 
 	}
 	
@@ -349,28 +371,54 @@ public class ItineraryControllerTests {
         .andExpect(jsonPath("$.views", is(0)));
 	}
 	
-//	@Test
-//	void testSearchByProperties() throws Exception {
-//		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}&maxBudget={maxBudget}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET))
-//		// Validate the response code and content type
-//		.andExpect(status().isOk())
-//		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//		// Validate the returned fields
-//		.andExpect(jsonPath("$", hasSize(2)))
-//        .andExpect(jsonPath("$[0].id", is(1)))
-//        .andExpect(jsonPath("$[0].name", is("itinerary test 1")))
-//        .andExpect(jsonPath("$[0].description", is("lorem ipsum 1")))
-//        .andExpect(jsonPath("$[0].status", is("PUBLISHED")))
-//        .andExpect(jsonPath("$[0].budget", is(10.)))
-//        .andExpect(jsonPath("$[0].estimatedDays", is(2)))
-//        .andExpect(jsonPath("$[0].views", is(0)))
-//        .andExpect(jsonPath("$[1].id", is(2)))
-//        .andExpect(jsonPath("$[1].name", is("itinerary test 2")))
-//        .andExpect(jsonPath("$[1].description", is("lorem ipsum 2")))
-//        .andExpect(jsonPath("$[1].status", is("PUBLISHED")))
-//        .andExpect(jsonPath("$[1].budget", is(100.)))
-//        .andExpect(jsonPath("$[1].estimatedDays", is(3)))
-//        .andExpect(jsonPath("$[1].views", is(50)));
-//	}
+	@Test
+	void testSearchByProperties() throws Exception {
+		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}&maxBudget={maxBudget}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)));
+	}
+	
+	@Test
+	void testSearchItinerariesByDistance() throws Exception {
+		this.mockMvc.perform(get("/itinerary/searchByDistance?page={page}&size={size}&latitude={latitude}&longitude={longitude}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(3)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)))
+		.andExpect(jsonPath("$.content[2].id", is(3)))
+        .andExpect(jsonPath("$.content[2].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[2].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[2].budget", is(100.)))
+        .andExpect(jsonPath("$.content[2].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[2].views", is(15)));
+	}
 
 }
