@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.yourney.model.SeasonType;
+import com.yourney.model.StatusType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,5 +35,7 @@ public class ItineraryDto {
     private LocalDateTime createDate;
 
     private SeasonType recommendedSeason;
+
+    private StatusType status;
 
 }

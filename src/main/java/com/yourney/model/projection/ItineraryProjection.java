@@ -1,5 +1,7 @@
 package com.yourney.model.projection;
 
+import com.yourney.model.StatusType;
+
 public interface ItineraryProjection {
 
     Long getId();
@@ -15,4 +17,6 @@ public interface ItineraryProjection {
     String getUsername();
 
     Double getBudget();
+
+    StatusType getStatus();
 }
