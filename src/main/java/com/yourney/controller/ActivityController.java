@@ -160,11 +160,6 @@ public class ActivityController {
 
         Activity activityToDelete = foundActivity.get();
 
-        if (!activityToDelete.getItinerary().getStatus().equals(StatusType.PUBLISHED)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("La actividad se encuentra publicada en este momento y por tanto no se puede borrar.");
-        }
-
         if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar una actividad de un itinerario del que no es creador."));
