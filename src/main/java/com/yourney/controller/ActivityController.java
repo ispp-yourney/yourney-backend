@@ -133,11 +133,6 @@ public class ActivityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
-        if (activityToUpdate.getItinerary().getStatus().equals(StatusType.PUBLISHED)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("La actividad no se encuentra publicada en este momento y por tanto no se puede editar.");
-        }
-
         if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede añadir una actividad a un itinerario del que no es dueño."));
