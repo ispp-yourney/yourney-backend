@@ -28,7 +28,7 @@ import com.yourney.service.LandmarkService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LandmarkControllerTests {
+class LandmarkControllerTests {
 
 	private static final int TEST_LANDMARK_ID = 1;
 	

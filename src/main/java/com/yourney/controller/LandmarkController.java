@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import com.yourney.model.Activity;
+import com.yourney.model.Image;
 import com.yourney.model.Landmark;
 import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
@@ -47,6 +48,8 @@ public class LandmarkController {
 
     @Autowired
     private ImageService imageService;
+
+    private static final String ANONYMOUS_USER_STRING = "anonymousUser";
 
     @GetMapping("/country/list")
     public ResponseEntity<Iterable<String>> listCountries() {
@@ -74,14 +77,15 @@ public class LandmarkController {
         }
 
         String username = userService.getCurrentUsername();
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
         }
 
         Landmark landmarkToDelete = foundLandmark.get();
 
-        if (landmarkService.existsActivityByLandmarkId(landmarkToDelete.getId())) {
+        boolean existsActivityFromLandmark= landmarkService.existsActivityByLandmarkId(landmarkToDelete.getId());
+        if (existsActivityFromLandmark) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El punto de interés se encuentra asociado con al menos una actividad."));
         }
@@ -124,10 +128,14 @@ public class LandmarkController {
         String username = userService.getCurrentUsername();
         Optional<Landmark> foundLandmark = landmarkService.findById(landmarkDto.getId());
 
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
         }
+
+		if (!foundLandmark.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el POI indicado"));
+		}
 
         Landmark landmarkToUpdate = foundLandmark.get();
 
@@ -150,16 +158,22 @@ public class LandmarkController {
 
         String username = userService.getCurrentUsername();
 
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
+
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
 
         Landmark newLandmark = new Landmark();
         BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "views", "image");
         newLandmark.setCreateDate(LocalDateTime.now());
         newLandmark.setViews((long) 0);
-        newLandmark.setImage(imageService.findById(1).get());
+        newLandmark.setImage(defaultImage.get());
         Landmark createdLandmark = landmarkService.save(newLandmark);
         
         if(landmarkDto.getActivity()!=null) {

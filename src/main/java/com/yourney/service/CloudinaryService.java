@@ -32,14 +32,17 @@ public class CloudinaryService {
     public Map<?, ?> upload(MultipartFile multipartFile) throws IOException {
         File file = convert(multipartFile);
         Map<?, ?> result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-        file.delete();
+        boolean operationSucceeded = file.delete();
+
+        if(!operationSucceeded){
+            return cloudinary.uploader().upload(null,ObjectUtils.emptyMap());
+        }
 
         return result;
     }
 
     public Map<?, ?> delete(String id) throws IOException {
-        Map<?, ?> result = cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
-        return result;
+        return cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
     }
 
     private File convert(MultipartFile multipartFile) throws IOException {

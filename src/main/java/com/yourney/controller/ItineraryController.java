@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
@@ -57,13 +58,16 @@ public class ItineraryController {
 	@Autowired
 	private ImageService imageService;
 
+
+    private static final String ERROR_ITINERARIO_NO_EXISTE_STRING = "No existe el itinerario indicado";
+
 	@GetMapping("/show/{id}")
 	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {
 		Optional<Itinerary> foundItinerary = itineraryService.findById(id);
 		String currentUsername = userService.getCurrentUsername();
 
 		if (!foundItinerary.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		}
 
 		Itinerary itinerary = foundItinerary.get();
@@ -134,10 +138,16 @@ public class ItineraryController {
 	@GetMapping("/user/{username}")
 	public ResponseEntity<Page<ItineraryProjection>> listItinerariesByUser(@PathVariable("username") String username,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-
-		Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchByUsername(PageRequest.of(page, size),
-				username);
-		return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+		String currentUsername = userService.getCurrentUsername();
+		if (!currentUsername.equals(username)) {
+			Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchByUsername(PageRequest.of(page, size),
+					username);
+			return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+		} else {
+			Page<ItineraryProjection> userItinerariesListOrdered = itineraryService.searchByCurrentUsername(PageRequest.of(page, size),
+					username);
+			return new ResponseEntity<Page<ItineraryProjection>>(userItinerariesListOrdered, HttpStatus.OK);
+		}
 	}
 
 	@PostMapping("/create")
@@ -154,17 +164,27 @@ public class ItineraryController {
 		}
 
 		Optional<User> usuario = userService.getByUsername(username);
+		if (!usuario.isPresent()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario debe estar registrado para publicar un itinerario."));
+		}
 
 		Itinerary newItinerary = new Itinerary();
 		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "status", "createDate", "activities", "author",
 				"views", "image");
 
-		newItinerary.setStatus(StatusType.DRAFT);
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+
+		newItinerary.setStatus(StatusType.PUBLISHED);
 		newItinerary.setCreateDate(LocalDateTime.now());
 		newItinerary.setActivities(new ArrayList<>());
 		newItinerary.setAuthor(usuario.get());
 		newItinerary.setViews(0);
-		newItinerary.setImage(imageService.findById(1).get());
+		newItinerary.setImage(defaultImage.get());
 
 		Itinerary createdItinerary = itineraryService.save(newItinerary);
 
@@ -192,10 +212,10 @@ public class ItineraryController {
 		Optional<Itinerary> itineraryToUpdate = itineraryService.findById(itineraryDto.getId());
 
 		if (!itineraryToUpdate.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		}
 
-		Itinerary itinerary = itineraryService.findById(itineraryDto.getId()).get();
+		Itinerary itinerary = itineraryToUpdate.get();
 
 		if (!itinerary.getAuthor().getUsername().equals(username)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
@@ -218,7 +238,7 @@ public class ItineraryController {
 		Optional<Itinerary> foundItinerary = itineraryService.findById(id);
 
 		if (!foundItinerary.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		} else {
 			Itinerary itinerary = foundItinerary.get();
 
@@ -226,11 +246,7 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
-
-				itinerary.getActivities().stream().forEach(a -> {
-					activityService.deleteById(a.getId());
-				});
-
+				itinerary.getActivities().stream().forEach(a -> activityService.deleteById(a.getId()));
 				itineraryService.deleteById(id);
 			}
 		}

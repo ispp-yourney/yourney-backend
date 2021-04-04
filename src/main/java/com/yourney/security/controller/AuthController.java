@@ -78,10 +78,23 @@ public class AuthController {
 
 		User user = new User(newUser.getUsername(), this.passwordEncoder.encode(newUser.getPassword()),
 				newUser.getEmail(), newUser.getFirstName(), newUser.getLastName());
+
+		Optional<Role> userRole = this.roleService.getByRoleType(RoleType.ROLE_USER);
+		Optional<Role> adminRole = this.roleService.getByRoleType(RoleType.ROLE_USER);
+
+		if(!userRole.isPresent()){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("El rol de usuario no se encuentra disponible."));
+		}		
+		if(!adminRole.isPresent()){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("El rol de administrador no se encuentra disponible."));
+		}
+
 		Set<Role> roles = new HashSet<>();
-		roles.add(this.roleService.getByRoleType(RoleType.ROLE_USER).get());
+		roles.add(userRole.get());
 		if (newUser.getRoles().contains("admin")) {
-			roles.add(this.roleService.getByRoleType(RoleType.ROLE_ADMIN).get());
+			roles.add(adminRole.get());
 		}
 
 		user.setRoles(roles);
