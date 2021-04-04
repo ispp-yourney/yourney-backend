@@ -2,9 +2,6 @@ package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
 
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -12,46 +9,31 @@ import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
-import com.yourney.config.SecurityConfig;
 import com.yourney.model.Activity;
-import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.model.projection.ItineraryProjection;
-import com.yourney.repository.ItineraryRepository;
 import com.yourney.security.model.Role;
 import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
@@ -66,8 +48,6 @@ import com.yourney.service.LandmarkService;
 @AutoConfigureMockMvc
 public class ItineraryControllerTests {
 
-	private static final int TEST_ACTIVITY_ID = 1;
-	private static final int TEST_ACTIVITY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID_1 = 1;
 	private static final int TEST_ITINERARY_PAGE = 1;
 	private static final int TEST_ITINERARY_SIZE = 10;
@@ -78,6 +58,7 @@ public class ItineraryControllerTests {
 	private static final Double TEST_ITINERARY_MAXBUDGET = 9000.;
 	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
 	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
+	private static final Integer TEST_ITINERARY_MAXDAYS = 1000;
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -87,9 +68,6 @@ public class ItineraryControllerTests {
 	
 	@MockBean
 	private UserService userService;
-	
-//	@MockBean
-//	private ItineraryRepository itineraryRepository;
 	
 	@MockBean
 	protected ItineraryService itineraryService;
@@ -350,7 +328,7 @@ public class ItineraryControllerTests {
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
-	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, pageable)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
 
 	}
@@ -373,7 +351,7 @@ public class ItineraryControllerTests {
 	
 	@Test
 	void testSearchByProperties() throws Exception {
-		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}&maxBudget={maxBudget}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET))
+		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}&maxBudget={maxBudget}&maxDays={maxDays}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS))
 		// Validate the response code and content type
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))

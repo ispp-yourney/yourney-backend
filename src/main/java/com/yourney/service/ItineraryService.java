@@ -25,9 +25,9 @@ public class ItineraryService {
         return itineraryRepository.findAll();
     }
 
-    public Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget,
+    public Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget, Integer maxDays,
             Pageable pageable) {
-        return itineraryRepository.searchByProperties(country, city, maxBudget, pageable);
+        return itineraryRepository.searchByProperties(country, city, maxBudget, maxDays, pageable);
     }
 
     public Page<ItineraryProjection> searchByDistance(Double latitude, Double longitude, Pageable pageable) {
