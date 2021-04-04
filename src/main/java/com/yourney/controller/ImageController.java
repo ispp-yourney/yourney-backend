@@ -53,12 +53,16 @@ public class ImageController {
     @Autowired
     private UserService userService;
 
+    private static final String ANONYMOUS_USER_STRING = "anonymousUser";
+    private static final String ERROR_USUARIO_NO_REGISTRADO_STRING = "El usuario no tiene permiso de creación sin registrarse.";
+    private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente"; 
+
     @PostMapping("/createForItinerary/{itineraryId}")
     public ResponseEntity<?> newItineraryImage(@PathVariable("itineraryId") Long itineraryId,
             @RequestBody @Valid ImageDto imageDto, BindingResult result) {
-        if (userService.getCurrentUsername().equals("anonymousUser")) {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de creación sin registrarse."));
+                    .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
         }
 
         if (result.hasErrors()) {
@@ -82,16 +86,16 @@ public class ImageController {
         updatedItinerary.setImage(createdImage);
         itineraryService.save(updatedItinerary);
 
-        return ResponseEntity.ok(new Message("La imagen se ha subido correctamente"));
+        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
 
     @PostMapping("/createForLandmark/{landmarkId}")
     public ResponseEntity<?> newLandmarkImage(@PathVariable("landmarkId") Long landmarkId,
             @RequestBody @Valid ImageDto imageDto, BindingResult result) {
 
-        if (userService.getCurrentUsername().equals("anonymousUser")) {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de creación sin registrarse."));
+                    .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
         }
 
         if (result.hasErrors()) {
@@ -110,14 +114,14 @@ public class ImageController {
         updatedLandmark.setImage(createdImage);
         landmarkService.save(updatedLandmark);
 
-        return ResponseEntity.ok(new Message("La imagen se ha subido correctamente"));
+        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
 
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam MultipartFile multipartFile) throws IOException {
-        if (userService.getCurrentUsername().equals("anonymousUser")) {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de creación sin registrarse."));
+                    .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
         }
 
         if (ImageIO.read(multipartFile.getInputStream()) == null) {
@@ -129,13 +133,13 @@ public class ImageController {
                 (String) result.get("public_id"));
         imageService.save(image);
 
-        return ResponseEntity.ok(new Message("La imagen se ha subido correctamente"));
+        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
 
     @DeleteMapping("{id}/deleteFromItinerary/{itineraryId}")
     public ResponseEntity<?> deleteFromItinerary(@PathVariable("id") long id,
             @PathVariable("itineraryId") long itineraryId) throws IOException {
-        if (userService.getCurrentUsername().equals("anonymousUser")) {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
         }
@@ -181,7 +185,7 @@ public class ImageController {
     @DeleteMapping("{id}/deleteFromLandmark/{landmarkId}")
     public ResponseEntity<?> deleteFromLandmark(@PathVariable("id") long id,
             @PathVariable("landmarkId") long landmarkId) throws IOException {
-        if (userService.getCurrentUsername().equals("anonymousUser")) {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
         }

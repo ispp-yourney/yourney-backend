@@ -58,13 +58,16 @@ public class ItineraryController {
 	@Autowired
 	private ImageService imageService;
 
+
+    private static final String ERROR_ITINERARIO_NO_EXISTE_STRING = "No existe el itinerario indicado";
+
 	@GetMapping("/show/{id}")
 	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {
 		Optional<Itinerary> foundItinerary = itineraryService.findById(id);
 		String currentUsername = userService.getCurrentUsername();
 
 		if (!foundItinerary.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		}
 
 		Itinerary itinerary = foundItinerary.get();
@@ -203,7 +206,7 @@ public class ItineraryController {
 		Optional<Itinerary> itineraryToUpdate = itineraryService.findById(itineraryDto.getId());
 
 		if (!itineraryToUpdate.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		}
 
 		Itinerary itinerary = itineraryToUpdate.get();
@@ -229,7 +232,7 @@ public class ItineraryController {
 		Optional<Itinerary> foundItinerary = itineraryService.findById(id);
 
 		if (!foundItinerary.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		} else {
 			Itinerary itinerary = foundItinerary.get();
 
@@ -237,11 +240,7 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
-
-				itinerary.getActivities().stream().forEach(a -> {
-					activityService.deleteById(a.getId());
-				});
-
+				itinerary.getActivities().stream().forEach(a -> activityService.deleteById(a.getId()));
 				itineraryService.deleteById(id);
 			}
 		}

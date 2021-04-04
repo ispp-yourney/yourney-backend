@@ -49,6 +49,8 @@ public class LandmarkController {
     @Autowired
     private ImageService imageService;
 
+    private static final String ANONYMOUS_USER_STRING = "anonymousUser";
+
     @GetMapping("/country/list")
     public ResponseEntity<Iterable<String>> listCountries() {
         return ResponseEntity.ok(landmarkService.findAllCountries());
@@ -75,14 +77,15 @@ public class LandmarkController {
         }
 
         String username = userService.getCurrentUsername();
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
         }
 
         Landmark landmarkToDelete = foundLandmark.get();
 
-        if (landmarkService.existsActivityByLandmarkId(landmarkToDelete.getId())) {
+        boolean existsActivityFromLandmark= landmarkService.existsActivityByLandmarkId(landmarkToDelete.getId());
+        if (existsActivityFromLandmark) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El punto de interés se encuentra asociado con al menos una actividad."));
         }
@@ -125,7 +128,7 @@ public class LandmarkController {
         String username = userService.getCurrentUsername();
         Optional<Landmark> foundLandmark = landmarkService.findById(landmarkDto.getId());
 
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
         }
@@ -155,7 +158,7 @@ public class LandmarkController {
 
         String username = userService.getCurrentUsername();
 
-        if (username.equals("anonymousUser")) {
+        if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
