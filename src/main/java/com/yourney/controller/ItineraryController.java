@@ -138,8 +138,8 @@ public class ItineraryController {
 	@GetMapping("/user/{username}")
 	public ResponseEntity<Page<ItineraryProjection>> listItinerariesByUser(@PathVariable("username") String username,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-		String current_username = userService.getCurrentUsername();
-		if (!current_username.equals(username)) {
+		String currentUsername = userService.getCurrentUsername();
+		if (!currentUsername.equals(username)) {
 			Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchByUsername(PageRequest.of(page, size),
 					username);
 			return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
