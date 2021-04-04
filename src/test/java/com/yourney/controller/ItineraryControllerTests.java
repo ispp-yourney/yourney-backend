@@ -46,7 +46,7 @@ import com.yourney.service.LandmarkService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ItineraryControllerTests {
+class ItineraryControllerTests {
 
 	private static final int TEST_ITINERARY_ID_1 = 1;
 	private static final int TEST_ITINERARY_PAGE = 1;

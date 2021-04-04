@@ -32,7 +32,11 @@ public class CloudinaryService {
     public Map<?, ?> upload(MultipartFile multipartFile) throws IOException {
         File file = convert(multipartFile);
         Map<?, ?> result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-        file.delete();
+        boolean operationSucceeded = file.delete();
+
+        if(!operationSucceeded){
+            return cloudinary.uploader().upload(null,ObjectUtils.emptyMap());
+        }
 
         return result;
     }

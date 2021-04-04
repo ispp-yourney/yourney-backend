@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
@@ -154,17 +155,27 @@ public class ItineraryController {
 		}
 
 		Optional<User> usuario = userService.getByUsername(username);
+		if (!usuario.isPresent()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario debe estar registrado para publicar un itinerario."));
+		}
 
 		Itinerary newItinerary = new Itinerary();
 		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "status", "createDate", "activities", "author",
 				"views", "image");
+
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
 
 		newItinerary.setStatus(StatusType.DRAFT);
 		newItinerary.setCreateDate(LocalDateTime.now());
 		newItinerary.setActivities(new ArrayList<>());
 		newItinerary.setAuthor(usuario.get());
 		newItinerary.setViews(0);
-		newItinerary.setImage(imageService.findById(1).get());
+		newItinerary.setImage(defaultImage.get());
 
 		Itinerary createdItinerary = itineraryService.save(newItinerary);
 
@@ -195,7 +206,7 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el itinerario indicado"));
 		}
 
-		Itinerary itinerary = itineraryService.findById(itineraryDto.getId()).get();
+		Itinerary itinerary = itineraryToUpdate.get();
 
 		if (!itinerary.getAuthor().getUsername().equals(username)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(

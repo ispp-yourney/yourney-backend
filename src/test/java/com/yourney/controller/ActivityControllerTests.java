@@ -31,7 +31,7 @@ import com.yourney.service.ItineraryService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ActivityControllerTests {
+class ActivityControllerTests {
 
 	private static final int TEST_ACTIVITY_ID = 1;
 	private static final int TEST_ACTIVITY_ID_2 = 2;

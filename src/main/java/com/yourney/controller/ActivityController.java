@@ -127,6 +127,11 @@ public class ActivityController {
         String username = userService.getCurrentUsername();
         Optional<Activity> foundActivity = activityService.findById(activityDto.getId());
 
+        if (!foundActivity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("La actividad indicada no existe");
+        }
+
         Activity activityToUpdate = foundActivity.get();
 
         if (!activityService.existsById(activityDto.getId())) {
@@ -159,9 +164,7 @@ public class ActivityController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar una actividad de un itinerario del que no es creador."));
         }
-
-        Activity activity = activityService.findById(id).get();
-        activityService.deleteById(activity.getId());
+        activityService.deleteById(activityToDelete.getId());
 
         return ResponseEntity.ok(new Message("Actividad eliminada correctamente"));
     }
