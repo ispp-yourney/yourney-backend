@@ -22,7 +22,6 @@ public interface LandmarkProjection {
 
     Double getLongitude();
 
-    // boolean getPromoted();
     String getCategory();
 
     String getEmail();

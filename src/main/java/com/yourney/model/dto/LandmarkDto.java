@@ -33,8 +33,6 @@ public class LandmarkDto {
 
     private Double longitude;
 
-    // private boolean promoted;
-
     private String category;
 
     private String email;
