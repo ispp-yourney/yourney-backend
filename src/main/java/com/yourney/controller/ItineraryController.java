@@ -138,10 +138,16 @@ public class ItineraryController {
 	@GetMapping("/user/{username}")
 	public ResponseEntity<Page<ItineraryProjection>> listItinerariesByUser(@PathVariable("username") String username,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-
-		Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchByUsername(PageRequest.of(page, size),
-				username);
-		return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+		String current_username = userService.getCurrentUsername();
+		if (!current_username.equals(username)) {
+			Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchByUsername(PageRequest.of(page, size),
+					username);
+			return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+		} else {
+			Page<ItineraryProjection> userItinerariesListOrdered = itineraryService.searchByCurrentUsername(PageRequest.of(page, size),
+					username);
+			return new ResponseEntity<Page<ItineraryProjection>>(userItinerariesListOrdered, HttpStatus.OK);
+		}
 	}
 
 	@PostMapping("/create")
@@ -173,7 +179,7 @@ public class ItineraryController {
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));
 		}
 
-		newItinerary.setStatus(StatusType.DRAFT);
+		newItinerary.setStatus(StatusType.PUBLISHED);
 		newItinerary.setCreateDate(LocalDateTime.now());
 		newItinerary.setActivities(new ArrayList<>());
 		newItinerary.setAuthor(usuario.get());

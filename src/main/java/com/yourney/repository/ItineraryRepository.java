@@ -31,4 +31,7 @@ public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
     @Query("select it from Itinerary it where it.status = 'PUBLISHED' and it.author.username =:username order by it.calcPromotion desc, it.views desc")
     Page<ItineraryProjection> searchByUsername(Pageable pageable, String username);
+    
+    @Query("select it from Itinerary it where it.author.username =:username order by it.calcPromotion desc, it.views desc")
+    Page<ItineraryProjection> searchByCurrentUsername(Pageable pageable, String username);
 }

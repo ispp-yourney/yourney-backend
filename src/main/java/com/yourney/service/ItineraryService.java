@@ -45,7 +45,11 @@ public class ItineraryService {
     public Page<ItineraryProjection> searchByUsername(Pageable pageable, String username) {
         return itineraryRepository.searchByUsername(pageable, username);
     }
-
+    
+    public Page<ItineraryProjection> searchByCurrentUsername(Pageable pageable, String username) {
+        return itineraryRepository.searchByCurrentUsername(pageable, username);
+    }
+    
     public Itinerary save(Itinerary itinerary) {
         Itinerary newItinerary = null;
         try {
