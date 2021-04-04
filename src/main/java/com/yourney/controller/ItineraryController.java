@@ -83,15 +83,19 @@ public class ItineraryController {
 	@GetMapping("/search")
 	public ResponseEntity<Page<ItineraryProjection>> searchByProperties(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
-			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "-1") double maxBudget) {
+			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "-1") double maxBudget, 
+			@RequestParam(defaultValue = "-1") int maxDays) {
 
 		if (maxBudget == -1) {
 			maxBudget = 1000000000.;
 		}
+		if (maxDays == -1) {
+			maxDays = 1000000000;
+		}
 
 		Pageable pageable = PageRequest.of(page, size);
 		Page<ItineraryProjection> itineraries = itineraryService.searchByProperties("%" + country + "%",
-				"%" + city + "%", maxBudget, pageable);
+				"%" + city + "%", maxBudget, maxDays, pageable);
 
 		return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
 	}
