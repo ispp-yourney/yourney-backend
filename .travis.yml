@@ -1,0 +1,37 @@
+dist: xenial
+language: java
+jdk:
+- openjdk11
+services:
+- postgresql
+before_install:
+- chmod +x mvnw
+addons:
+  postgresql: '9.4'
+  sonarcloud:
+    organization: "ispp-yourney"
+    token:
+      secure: "kbJa+WVp34iEr9nNloAZRM2TE1HWkg5ZQYXyEhXDV0fm4wYVo5fUb+K4WOA3aoOj/Q/c+r8myC2fZSq2Ja8l0xT2cEg/mrXpugMPHWGvKLm+oQGnmGFHjnf9bMBMQtdbQp+sT+uXEINVNPC7KjAdMlqFxqCl/udU6itvbCOgejipSln77PUW1fF6gjNybA9ahfPL3FM/UkyUUW8rrNbCYYJBUlf/FTGoj9ydKaiJ1ZMq+jwKLrpCQEwSgJlsm0lfu08EK5Flc1QGks14jV/fIyDjeIDFLeA9qWIeF1/D/OeRVuc76s8gbH36upFp6jNYiG08FhbSmg6vOpRSjl1pyO30kyie5cHLhyyOgE3olOjINTWpMVGf5IKlPQgE7i5lHcFC1H67ZPqL1VqT8Nu6LOPHdbABcTbsDfBIh16h+YWTo6BcN9QaJWMsLSGsWAFLbMFkrrPlmXYo5CoRFB1xg4fzfQI4Ffrs8pJ9Ux9PvGbCKx/1t705oIMeRUODN0wi9HZYiYaN56t3FkY2l0yfbHIWkXjwg1fvJGpiPVRK392zqXO37yzNuouEQX52cKmSs4kNI2u/ybdg9PlnR/rKWaoQaQ+4Gm6TWGHjzigM6XyqQYQqCh83m2+YT5zx5ijoR1mv6jQLHrNQAKyvsgXTBrvfiJhEonrKSRJ8c2+f9UU="
+before_script:
+- psql -U postgres -c "create database yourney_db owner postgres"
+script:
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=ispp-yourney_yourney-backend
+notifications:
+  email:
+    recipients:
+    - edubotdom@alum.us.es
+    - danaremar@alum.us.es
+    - javvazzam@alum.us.es
+    - jossanrui5@alum.us.es
+    - antsuabon@alum.us.es
+    - jesgamlar@alum.us.es
+    - julsoutos@alum.us.es
+    on_success: always
+    on_failure: always
+deploy:
+  provider: heroku
+  app: be-dev-yourney
+  strategy: git
+  api_key: $HEROKU_AUTH_TOKEN
+  on:
+    branch: develop
