@@ -69,11 +69,11 @@ public class AuthController {
 		}
 
 		if (this.userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("Existing username"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Nombre de usuario ya existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		if (this.userService.existsByEmail(newUser.getEmail())) {
-			return new ResponseEntity<>(new Message("Existing email"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Email ya existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		User user = new User(newUser.getUsername(), this.passwordEncoder.encode(newUser.getPassword()),

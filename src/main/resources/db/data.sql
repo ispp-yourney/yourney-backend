@@ -654,4 +654,7 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
 	'Para terminar nuestra visita a Sevilla, podemos pasar el último día en el divertido parque de atracciones Isla Mágica, uno de los mayores del país. Con numerosas atracciones y diversión, el disfrute de toda la familia está asegurado.',
 	'Isla Mágica', 10, 67);										-- 67
 	
-	
+	-- COMMENTS
+    INSERT INTO comments(content, rating, create_date, author_id, itinerary_id) VALUES
+	-- Itinerary 1
+	('Es un plan de vacaciones muy completo y que comprende los lugares más emblemáticos de la ciudad. Muy buenas actividades propuestas para cada día y muy bien organizado el viaje.', 4, '2021-04-06 12:56:01', 4, 1);                           --1
