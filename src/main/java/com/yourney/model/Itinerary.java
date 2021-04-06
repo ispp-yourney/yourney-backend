@@ -84,4 +84,14 @@ public class Itinerary {
 	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
 	private long calcPromotion;
 
+	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
+	private Collection<Comment> comments;
+
+	@Formula("(select avg(c.rating) from comments c where c.itinerary_id = id)")
+	private Double avgRating;
+
+	@Formula("(select count(c.id) from comments c where c.itinerary_id = id)")
+	private Long countComments;
+
 }

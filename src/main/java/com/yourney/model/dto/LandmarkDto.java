@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class LandmarkDto {
 
-    private long id;
+    private Long id;
 
     @NotBlank(message = "El campo nombre es obligatorio")
     private String name;

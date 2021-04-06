@@ -99,7 +99,7 @@ public class ActivityController {
 
         if (!findItinerary.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El itinerario indicado para la actividad no existe");
+                    .body(new Message("El itinerario indicado para la actividad no existe"));
         }
 
         Itinerary itinerary = findItinerary.get();
@@ -129,7 +129,7 @@ public class ActivityController {
 
         if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("La actividad indicada no existe");
+                    .body(new Message("La actividad indicada no existe"));
         }
 
         Activity activityToUpdate = foundActivity.get();
@@ -155,7 +155,7 @@ public class ActivityController {
         Optional<Activity> foundActivity = activityService.findById(id);
 
         if (!foundActivity.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No exite la actividad indicada"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
         Activity activityToDelete = foundActivity.get();
