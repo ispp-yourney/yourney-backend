@@ -1,23 +1,3 @@
--- USERS
-
-INSERT INTO roles(role_type) VALUES('ROLE_ADMIN');      -- 1
-INSERT INTO roles(role_type) VALUES('ROLE_USER');       -- 2
-
-INSERT INTO users (email,first_name,last_name,"password",username, plan, expiration_date) VALUES
-	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin','admin', 0, NULL),                                -- 1
-	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL),     -- 2
-	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31'),      -- 3
-     ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL),                         -- 4
-     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01');          -- 5
-
-INSERT INTO users_roles(user_id, role_id) VALUES
-	(1,1),
-	(2,2),
-    (3,2),
-    (4,2),
-	(5,2);
-
-
 -- IMAGES
 
 INSERT INTO images(name, cloudinary_id, image_url) VALUES 
@@ -185,9 +165,40 @@ INSERT INTO images(name, cloudinary_id, image_url) VALUES
 	 ('imagenIslaMagica', NULL,
      'https://static4-sevilla.abc.es/media/sevilla/2019/01/04/s/isla-magica-deudas-k4xH--1200x630@abc.jpg'),          											-- 77
      ('imagenLosAngeles', NULL,
-     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg');                                                  	-- 78
-
+     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg'),                                                  	-- 78
+     -- Usuario
+     ('adminPicture', NULL,
+     'https://avatars.githubusercontent.com/u/55277082?s=400&u=3bd4eb1b8b279a9572945b0dcc020c64bfd42613&v=4'),                                                  -- 79
+     ('alejandro1cortesPicture', NULL,
+     'https://i.pinimg.com/236x/90/09/1c/90091c6d906b942b83ad99f118cc495e.jpg'),                                                                                -- 80
+     ('lidia2lopezPicture', NULL,
+     'https://media.gq.com.mx/photos/5c9e87ab7499251a3d14ce86/16:9/w_1920,c_limit/Tatiana.jpg'),                                                                -- 81
+    ('ana3tiradoPicture', NULL,
+     'https://3.bp.blogspot.com/-di61N-stVVg/WoGXhO14ZRI/AAAAAAAASjs/P3l9xdxX-TI5deqWkB78xo5DZm6AUT0ygCLcBGAs/s1600/insWilliams7.jpg'),                         -- 82
+    ('luis4ruizPicture', NULL,
+     'https://visionauto.com.ar/wp-content/uploads/2020/07/alemodeSans-titre-3-1.png');                                                                         -- 83
      
+-- USERS
+
+INSERT INTO roles(role_type) VALUES('ROLE_ADMIN');      -- 1
+INSERT INTO roles(role_type) VALUES('ROLE_USER');       -- 2
+
+INSERT INTO users (email,first_name,last_name,"password",username, plan, expiration_date, image_id) VALUES
+	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin','admin', 0, NULL, 79),                                -- 1
+	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL, 80),     -- 2
+	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31', 81),      -- 3
+     ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL, 82),                         -- 4
+     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01', 83);          -- 5
+
+INSERT INTO users_roles(user_id, role_id) VALUES
+	(1,1),
+	(2,2),
+    (3,2),
+    (4,2),
+	(5,2);
+
+
+
 -- ITINERARIES
 
 INSERT INTO itineraries(name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES

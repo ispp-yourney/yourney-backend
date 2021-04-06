@@ -3,6 +3,7 @@ package com.yourney.security.model;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,9 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yourney.model.Image;
+
+import org.hibernate.annotations.Formula;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,6 +58,12 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
+
+	@OneToOne(cascade = CascadeType.DETACH)
+	private Image image;
+
+	@Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
+	private String imageUrl;
 
 	public User(String username, String password, String email, String firstName, String lastName) {
 		this.username = username;

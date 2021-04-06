@@ -10,6 +10,7 @@ import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.dto.Message;
+import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.CloudinaryService;
 import com.yourney.service.ImageService;
@@ -82,12 +83,16 @@ public class ImageController {
         }
 
         Image currentItineraryImage = updatedItinerary.getImage();
-        if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null){
-            cloudinaryService.delete(currentItineraryImage.getCloudinaryId());
-        }
 
         updatedItinerary.setImage(createdImage);
         itineraryService.save(updatedItinerary);
+
+        if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null && currentItineraryImage.getId()!=1){
+            cloudinaryService.delete(currentItineraryImage.getCloudinaryId());
+        }
+        if(currentItineraryImage.getId()!=1){
+            imageService.deleteById(currentItineraryImage.getId());
+        }
 
         return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
@@ -118,15 +123,59 @@ public class ImageController {
         Landmark updatedLandmark = landmark.get();
 
         Image currentLandmarkImage = updatedLandmark.getImage();
-        if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null){
-            cloudinaryService.delete(currentLandmarkImage.getCloudinaryId());
-        }
 
+        
         updatedLandmark.setImage(createdImage);
         landmarkService.save(updatedLandmark);
 
+        if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null && currentLandmarkImage.getId()!=1){
+            cloudinaryService.delete(currentLandmarkImage.getCloudinaryId());
+        }
+        if(currentLandmarkImage.getId()!=1){
+            imageService.deleteById(currentLandmarkImage.getId());
+        }
+
         return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
+
+    @PostMapping("/uploadForUser")
+    public ResponseEntity<?> newLandmarkImage(@RequestParam MultipartFile multipartFile) throws IOException {
+
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
+        }
+
+        if (ImageIO.read(multipartFile.getInputStream()) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
+        }
+        Map<?, ?> result = cloudinaryService.upload(multipartFile);
+
+        Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+                (String) result.get("public_id"));
+        Image createdImage = imageService.save(image);
+
+        Optional<User> user = userService.getByUsername(userService.getCurrentUsername());
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El usuario al que desea asignar la imagen no existe."));
+        }
+        User updatedUser = user.get();
+
+        Image currentUserImage = updatedUser.getImage();
+
+        updatedUser.setImage(createdImage);
+        userService.save(updatedUser);
+
+        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
+            cloudinaryService.delete(currentUserImage.getCloudinaryId());
+        }
+        if(currentUserImage.getId()!=1){
+            imageService.deleteById(currentUserImage.getId());
+        }
+
+        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    }    
 
     @DeleteMapping("/deleteForItinerary/{itineraryId}")
     public ResponseEntity<?> deleteFromItinerary(@PathVariable("itineraryId") long itineraryId) throws IOException {
@@ -161,11 +210,15 @@ public class ImageController {
         updatedItinerary.setImage(defaultImage.get());
         itineraryService.save(updatedItinerary);
 
-        if (image.getCloudinaryId() != null) {
+        if (image.getCloudinaryId() != null && image.getId() != 1) {
             cloudinaryService.delete(image.getCloudinaryId());
         }
-
-        imageService.deleteById(image.getId());
+        if(image.getId()!=1){
+            imageService.deleteById(image.getId());
+        }  else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El itinerario no tiene ninguna foto asociada."));
+        }
         
         return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
     }
@@ -198,12 +251,53 @@ public class ImageController {
         updatedLandmark.setImage(defaultImage.get());
         landmarkService.save(updatedLandmark);
 
-        if (image.getCloudinaryId() != null) {
+        if (image.getCloudinaryId() != null && image.getId() != 1) {
             cloudinaryService.delete(image.getCloudinaryId());
         }
-
-        imageService.deleteById(image.getId());
+        if(image.getId()!=1){
+            imageService.deleteById(image.getId());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El POI no tiene ninguna foto asociada."));
+        }
         
+        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
+    }
+
+    @DeleteMapping("/deleteForUser")
+    public ResponseEntity<?> deleteFromUser() throws IOException {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
+        }
+        
+        Optional<User> user = userService.getByUsername(userService.getCurrentUsername());
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El usuario al que desea asignar la imagen no existe."));
+        }
+        User updatedUser = user.get();
+        Image currentUserImage = updatedUser.getImage();
+
+        Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+
+        updatedUser.setImage(defaultImage.get());
+        userService.save(updatedUser);
+
+        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
+            cloudinaryService.delete(currentUserImage.getCloudinaryId());
+        }
+        if(currentUserImage.getId()!=1){
+            imageService.deleteById(currentUserImage.getId());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El usuario no tiene ninguna foto asociada."));
+        }
+
         return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
     }
 }

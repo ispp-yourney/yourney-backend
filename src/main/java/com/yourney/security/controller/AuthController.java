@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yourney.model.Image;
 import com.yourney.model.dto.Message;
 import com.yourney.security.jwt.JwtProvider;
 import com.yourney.security.model.Role;
@@ -39,6 +40,7 @@ import com.yourney.security.model.dto.LoginUser;
 import com.yourney.security.model.dto.NewUser;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ImageService;
 import com.yourney.utils.ValidationUtils;
 
 @RestController
@@ -57,6 +59,9 @@ public class AuthController {
 
 	@Autowired
 	RoleService roleService;
+
+	@Autowired
+	private ImageService imageService;
 
 	@Autowired
 	JwtProvider jwtProvider;
@@ -96,6 +101,13 @@ public class AuthController {
 		if (newUser.getRoles().contains("admin")) {
 			roles.add(adminRole.get());
 		}
+
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+		user.setImage(defaultImage.get());
 
 		user.setRoles(roles);
 		user.setPlan(0);
