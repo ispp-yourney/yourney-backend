@@ -8,14 +8,18 @@ INSERT INTO users (email,first_name,last_name,"password",username, plan, expirat
 	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL),     -- 2
 	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31'),      -- 3
      ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL),                         -- 4
-     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01');          -- 5
+     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01'),          -- 5
+     ('julia5domingo@gmail.com','Julia','Domingo Vázquez','julia5password','julia5fomingo', 0, NULL),                -- 6
+     ('antonio6romero@hotmail.com','Antonio','Romero Sánchez','antonio6password','antonio6sanchez', 0, NULL);        -- 7
 
 INSERT INTO users_roles(user_id, role_id) VALUES
 	(1,1),
 	(2,2),
     (3,2),
     (4,2),
-	(5,2);
+	(5,2),
+    (6,2),
+    (7,2);
 
 
 -- IMAGES
@@ -284,7 +288,7 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
     'Emblemática torre similar a la torre Eiffel, con varios miradores y otras atracciones.', 
     0.0, 'Japón', 'Tokio', 35.66261510657874, 139.74439364913403, false, NULL, NULL, '+81 334335111', NULL, 'https://www.tokyotower.co.jp/', 'Punto turístico', 62, 28),
     ('Togoshi Ginza',																	-- 19
-    'Un restaurante situado en el centro de La Habana con una gran reputación y unos platos deliciosos.', 
+    'Lugar de compras situado en la capital japonesa.', 
     0.0, 'Japón', 'Tokio', 35.61546358505407, 139.7168918115364, false, NULL, NULL, '+81 337881474', NULL, 'http://www.togoshiginza.jp/', 'Barrio', 62, 29),
 	-- Itinerary 4
     ('Leos Sports Club GmbH0',                                                         	-- 20
@@ -419,7 +423,7 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
     ('Real Alcázar de Sevilla',															-- 61
     'Emblemático palacio real de origen árabe con jardines, fuentes, arcos ornamentados y azulejos del siglo XVI.', 
     0.0, 'España', 'Sevilla', 37.3832718833855, -5.990287762829736, false, NULL, NULL, '+34 954502324', NULL, 'https://www.alcazarsevilla.org/', 'Punto turístico', 75, 71),
-	('Catedrál de Sevilla',																-- 62
+	('Catedral de Sevilla',																-- 62
     'Gran catedral gótica con la tumba de Colón y un campanario de estilo árabe con vistas a la ciudad.', 
     0.0, 'España', 'Sevilla', 37.385908828128976, -5.993128874217623, true, NULL, NULL, '+34 902099692', NULL, 'https://www.catedraldesevilla.es/', 'Punto turístico', 75, 72),
 	('Avenida de la Costitución',														-- 63
@@ -636,8 +640,8 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
 	'El segundo día del itinerario lo emplearemos en vistar dos de los puntos de mayor interés de Sevilla. El primero es el Real Alcázar, un gran palacio de origen árabe que atrae a miles de turistas cada año.',
 	'Real Alcázar de Sevilla', 10, 61),							-- 61
 	(2, '2021-02-02 18:23:21',
-	'El segundo gran punto que visitaremos hoy será la Catedrál de Sevilla. Tiene gran importancia históica y religiosa, dado que juega un papel muy importante en la celebración de la Semana Santa de Sevilla. Además, podemos acceder a la majesuosa Giralda desde la cuál las vistas son mágicas.',
-	'Catedrál de Sevilla', 10, 62),								-- 62
+	'El segundo gran punto que visitaremos hoy será la Catedral de Sevilla. Tiene gran importancia históica y religiosa, dado que juega un papel muy importante en la celebración de la Semana Santa de Sevilla. Además, podemos acceder a la majesuosa Giralda desde la cuál las vistas son mágicas.',
+	'Catedral de Sevilla', 10, 62),								-- 62
 	(3, '2021-02-02 18:25:57',
 	'Este tercer día de itinerario aprovecharemos para visitar el centro de Sevilla, haciendo un pequeño recorrido por alguna de sus mágicas calles. Empezaremos visitando la Avenida de la Constitución, desde la cuál se pueden ver los lugares que visitamos el día anterior y muchos otros puntos de interés.',
 	'Avenida de la Costitución', 10, 62),						-- 63
@@ -657,4 +661,47 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
 	-- COMMENTS
     INSERT INTO comments(content, rating, create_date, author_id, itinerary_id) VALUES
 	-- Itinerary 1
-	('Es un plan de vacaciones muy completo y que comprende los lugares más emblemáticos de la ciudad. Muy buenas actividades propuestas para cada día y muy bien organizado el viaje.', 4, '2021-04-06 12:56:01', 4, 1);                           --1
+	('Es un plan de vacaciones muy completo y que comprende los lugares más emblemáticos de la ciudad. Muy buenas actividades propuestas para cada día y muy bien organizado el viaje.', 4, '2021-04-06 12:56:01', 4, 1),                           -- 1
+    ('Es un itinerario correcto pero me parece mal que no se visite el Paseo de la Fama, ya que es de lo más importante de la ciudad.', 3, '2021-04-01 12:56:01', 3, 1),                                                                            -- 2
+    ('Me parece que el presupuesto es demasiado caro cuando se están haciendo actividades en su mayoría gratuitas, creo que hay un error en el cálculo o una mala gestión económica.', 2, '2021-03-01 12:56:01', 6, 1),                             -- 3
+    -- Itinerary 2
+    ('Mi familia y yo hicimos este viaje hace unos años y la verdad es que seguimos más o menos el mismo plan, las actividades están muy bien elegidas.', 5, '2021-04-06 12:56:01', 2, 2),                                                          -- 4
+    ('Me encanta la ciudad de La Habana y es cierto que la mejor estación para visitarla es verano, pero se debería advertir de que no se vaya a finales por la época de tornados.', 3, '2021-03-15 12:56:01', 4, 2),                               -- 5
+    ('Estábamos mis amigos y yo buscando un futuro destino y nos ha encantado tu itinerario, pensamos seguirlo en cuanto tengamos oportunidad para ir.', 5, '2021-03-08 12:56:01', 7, 2),                                                           -- 6
+    ('Creo que se podrían haber añadido alguna visita a alguna de sus maravillosas platas. Por lo demás es interesante el plan.', 3, '2021-03-01 12:56:01', 6, 2),                                                                                  -- 7
+    -- Itinerary 3
+    ('Un acierto el haber elegido el último día para ahcer compras, Tokyo es una ciudad que se presta mucho a ello.', 4, '2021-04-06 12:56:01', 7, 3),                                                                                              -- 8
+    ('¡Me ha encantado tu itinerario, Tokyo es una ciudad que me encanta y pienso seguir las actividades que has propuesto!', 5, '2021-03-30 12:56:01', 6, 3),                                                                                      -- 9
+    ('La Torre de Tokyo yo la hubiera dejado para los primeros días, ya que es un sitio bastante concurrido y es mejor tener margen de tiempo por si no se puede visitar, por lo demás genial.', 4, '2021-03-08 12:56:01', 2, 3),                   -- 10
+    -- Itinerary 4
+    ('Munich es de mis ciudades favoritas y no considero que este itinerario esté a su altura. Faltan muchos sitios importantes por visitar, siento no poder dar más nota.', 1, '2021-04-06 12:56:01', 3, 4),                                       -- 11
+    ('A pesar de que creo que faltan algunos sitios emblemáticos, me parece un viaje económico e interesante.', 4, '2021-03-11 12:56:01', 4, 4),                                                                                                    -- 12
+    ('Este verano teníamos planeado viajar a Munich así que nos viene genial este plan, lo hemos estudiado y nos gusta bastante.', 5, '2021-03-02 12:56:01', 7, 4),                                                                                 -- 13
+    ('He estado en la tienda de cosmética y es un gran acierto la recomendación.', 4, '2021-03-01 12:56:01', 6, 4),                                                                                                                                 -- 14
+    -- Itinerary 5
+	('¡Me encanta París! He tenido la suerte de visitar la ciudad en el pasado y me ha agradado comprobar que en este itinerario se incluyen los puntos de interés más importantes.', 5, '2021-01-20 13:10:15', 4, 5),                              -- 15
+    ('Hola, me ha gustado que incluyas varios de los puntos turísticos más interesantes de París en este itinerario. Sin embargo, te recomendaría mencionar algunos lugares menos conocidos pero que tienen un gran encanto.', 3, '2021-01-19 12:56:01', 7, 5),                           -- 16
+    ('¡Un gran itinerario! Sin duda, se aprovecha el tiempo al máximo en esta magnifica ciudad.', 5, '2021-01-17 12:56:01', 3, 5),                                                                                                                                                        -- 17
+    ('Siento no poder darte mayor puntuación en este itinerario, pero me entristece que no hayas mencionado ninguna de las maravillosas y encantadoras calles de la ciudad del amor. No debemos fijarnos unicamente en los lugares más famosos.', 1, '2021-01-14 12:56:01', 5, 5),        -- 18
+    -- Itinerary 6
+    ('Quería hacerte saber que he seguido tu itinerario para viajar a Brasil, ¡y me ha encantado! Ha sido una gran experiencia que espero que todos disfruteis tanto como yo.', 4, '2021-02-28 11:20:29', 2, 6),                           -- 19
+    ('Este itinerario es genial. Recomiendo a todo el mundo visitar la ciudad y disfrutar de sus grandes atractivos. Las vistas desde el Cristo Redentor son maravillosas. ¡100% recomendable!', 4, '2021-02-26 12:56:01', 7, 6),                           -- 20
+    ('¡Que locura de ciudad! Tuve la idea de ir en plenos carnavales y fue una gran decisión. Disfrute de la ciudad y su gente. ¡Animaos a visitar este gran país!', 5, '2021-02-25 12:56:01', 6, 6),                           -- 21
+    -- Itinerary 7
+    ('El itinerario está bien, pero la visita a Londres no me agradó en absoluto. Tuve varios problemas con el idioma y el tiempo nos jugó malas pasadas, fastidiando algunas visitas.', 2, '2021-01-25 19:56:05', 2, 7),                           -- 22
+    ('Londres es una ciudad muy bonita y este itinerario ayuda a visitarla y disfrutar de ella. Sin embargo, también recomiendo complementar la información que aparece aquí con el de otros itinerarios de la ciudad.', 3, '2021-01-23 12:56:01', 3, 7),                           -- 23
+    ('Cometí el error de visitar Londres sin mirar ningún itinerario y me perdí gran parte de su encanto. Para evitar cometer el mismo error, voy a volver siguiendo este itinerario, que refleja los puntos más interesantes de la ciudad.', 4, '2021-01-22 12:56:01', 5, 7),                           -- 24
+    ('Este itinerario ayuda a visitar Londres y disfrutar de ella. Pero, porfavor, ¡no visiteis la Abadía de Westminster! ¡No merece la pena!', 3, '2021-01-17 12:56:01', 6, 7),                           -- 25
+    ('Cambiaría algunas de las actividades de este itinerario por visitas a otros lugares más interesantes. A pesar de todo, el itinerario me ha gustado.', 3, '2021-01-16 12:56:01', 7, 7),                           -- 26
+    -- Itinerary 8
+    ('Que gran ciudad. Su cultura, sus costumbres, su ambiente, su gente, su gastronomía. Este itinerario lo incluye todo. Mi mas sincera enhorabuena.', 5, '2021-02-21 20:19:55', 2, 8),                           -- 27
+    ('Roma es genial. Tiene muchos puntos de gran interés histórico, cultural y turístico, lo que hace que a veces sea dificil visitarlos todos en un tiempo limitado. Definitivamente, no podría haber disfrutado tanto de la ciudad si no fuese por este itinerario.', 5, '2021-02-17 12:56:01', 6, 8),                           -- 28
+    ('Gran itinerario. Me ayudó mucho a visitar los distintos puntos de la ciudad. Sin embargo, hubiese preferido visitar otro monumento distinto a la Fontana Di Trevi.', 4, '2021-02-16 12:56:01', 4, 8),                           -- 29
+    -- Itinerary 9
+    ('Un acierto el dedicar un día a la visita de la isla de Vallisaari, es un sitio espectacular.', 5, '2021-04-06 12:56:01', 7, 9),                                                                                              -- 30
+    ('Creo que hay demasiados parques a visitar, puede ser un poco monótono el viaje. Cambiaría por otro tipo de actividades más variadas.', 2, '2021-03-30 12:56:01', 6, 9),                                                       -- 31
+    ('Me parece un viaje económico y bastante interesante.', 5, '2021-03-08 12:56:01', 2, 9),                                                                                                                                       -- 32
+    -- Itinerary 10
+    ('Sevilla me ha encantado. Su cálido clima y su cultura han hecho que me enamore de ella. Sin duda, volvería a visitar la ciudad. Gran itinerario.', 5, '2021-02-22 18:17:25', 2, 10),                           -- 33
+    ('La historia de Sevilla es apasionante. Me alegra ver que este itinerario resalta las visitas a estos puntos de interés histórico.', 5, '2021-02-20 18:17:25', 7, 10),                           -- 34
+    ('Sevilla es sin duda pasión. Este itinerario refleja la imagen de Sevilla y su gran interés e importancia histórica. Visitad Sevilla si quereis disfrutar de un buen viaje.', 5, '2021-02-10 18:17:25', 5, 10);                           -- 35
