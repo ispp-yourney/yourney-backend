@@ -21,8 +21,7 @@ INSERT INTO users_roles(user_id, role_id) VALUES
 -- IMAGES
 
 INSERT INTO images(name, cloudinary_id, image_url) VALUES 
-    ('imagenLosAngeles', NULL,
-     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg'),                                                  	-- 1
+    ('Imagen por defecto', NULL, 'https://www.sinrumbofijo.com/wp-content/uploads/2016/05/default-placeholder.png'),                                            -- 1
     ('imagenLaHabana', NULL,
      'https://elviajista.com/wp-content/uploads/2020/06/habanacuba-730x487.jpg'),     																			-- 2 
     ('imagenTokio', NULL,
@@ -184,7 +183,9 @@ INSERT INTO images(name, cloudinary_id, image_url) VALUES
 	 ('imagenParqueDeMariaLuisa', NULL,
      'https://elcorreoweb.es/documents/10157/0/675x413/0c7/675d400/none/10703/KRPT/image_content_19649564_20180308225211.jpg'),          						-- 76
 	 ('imagenIslaMagica', NULL,
-     'https://static4-sevilla.abc.es/media/sevilla/2019/01/04/s/isla-magica-deudas-k4xH--1200x630@abc.jpg');          											-- 77
+     'https://static4-sevilla.abc.es/media/sevilla/2019/01/04/s/isla-magica-deudas-k4xH--1200x630@abc.jpg'),          											-- 77
+     ('imagenLosAngeles', NULL,
+     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg');                                                  	-- 78
 
      
 -- ITINERARIES
@@ -192,7 +193,7 @@ INSERT INTO images(name, cloudinary_id, image_url) VALUES
 INSERT INTO itineraries(name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES
     ('Una semana en Los Ángeles',
     'Situada en la coste oeste de los Estados Unidos, Los Ángeles es una ciudad de gran atractivo turístico. En este itinerario, os llevaré por algunos de los lugares más interesantes de esta gran ciudad, desde la playa de Venice hasta Hollywood, pasando por el Observatorio Griffith y el distrito comercial.',
-    'PUBLISHED', 'SPRING', 1400.0, 6, '2021-01-20 12:55:00', 43, 2, 1),     																					-- 1
+    'PUBLISHED', 'SPRING', 1400.0, 6, '2021-01-20 12:55:00', 43, 2, 78),     																					-- 78
     ('Tu verano en La Habana',
     '¿Alguna vez haz soñado con visitar un país tropical donde el ambiente y las temperaturas te enamoren y te hagan olvidar todas tus preocupaciones? Entonces Cuba es tu sitio. Su capital, La Habana, es una de las ciudades mas encantadoras del mundo. Sus hermosos colores y sus vivas calles harán que tu visita a Cuba sea inolvidable.',
     'PUBLISHED', 'SUMMER', 850.0, 5, '2021-02-26 10:14:17', 56, 3, 2),											       											-- 2

@@ -5,12 +5,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
-import javax.validation.Valid;
 
 import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
-import com.yourney.model.dto.ImageDto;
 import com.yourney.model.dto.Message;
 import com.yourney.security.service.UserService;
 import com.yourney.service.CloudinaryService;
@@ -18,16 +16,13 @@ import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
 import com.yourney.service.LandmarkService;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,19 +52,22 @@ public class ImageController {
     private static final String ERROR_USUARIO_NO_REGISTRADO_STRING = "El usuario no tiene permiso de creación sin registrarse.";
     private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente"; 
 
-    @PostMapping("/createForItinerary/{itineraryId}")
+    @PostMapping("/uploadForItinerary/{itineraryId}")
     public ResponseEntity<?> newItineraryImage(@PathVariable("itineraryId") Long itineraryId,
-            @RequestBody @Valid ImageDto imageDto, BindingResult result) {
+        @RequestParam MultipartFile multipartFile) throws IOException {
+
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
         }
 
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getAllErrors());
+        if (ImageIO.read(multipartFile.getInputStream()) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
         }
-        Image image = new Image();
-        BeanUtils.copyProperties(imageDto, image, "id");
+        Map<?, ?> result = cloudinaryService.upload(multipartFile);
+
+        Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+                (String) result.get("public_id"));
         Image createdImage = imageService.save(image);
 
         Optional<Itinerary> itinerary = itineraryService.findById(itineraryId);
@@ -83,42 +81,21 @@ public class ImageController {
                     .body(new Message("No es posible añadir imágenes a un itinerario del que no es dueño."));
         }
 
+        Image currentItineraryImage = updatedItinerary.getImage();
+        if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null){
+            cloudinaryService.delete(currentItineraryImage.getCloudinaryId());
+        }
+
         updatedItinerary.setImage(createdImage);
         itineraryService.save(updatedItinerary);
 
         return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
     }
 
-    @PostMapping("/createForLandmark/{landmarkId}")
+    @PostMapping("/uploadForLandmark/{landmarkId}")
     public ResponseEntity<?> newLandmarkImage(@PathVariable("landmarkId") Long landmarkId,
-            @RequestBody @Valid ImageDto imageDto, BindingResult result) {
+        @RequestParam MultipartFile multipartFile) throws IOException {
 
-        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
-        }
-
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getAllErrors());
-        }
-        Image image = new Image();
-        BeanUtils.copyProperties(imageDto, image, "id");
-        Image createdImage = imageService.save(image);
-
-        Optional<Landmark> landmark = landmarkService.findById(landmarkId);
-        if (!landmark.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("El POI al que intenta asociar la imagen no existe"));
-        }
-        Landmark updatedLandmark = landmark.get();
-        updatedLandmark.setImage(createdImage);
-        landmarkService.save(updatedLandmark);
-
-        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam MultipartFile multipartFile) throws IOException {
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message(ERROR_USUARIO_NO_REGISTRADO_STRING));
@@ -131,70 +108,7 @@ public class ImageController {
 
         Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
                 (String) result.get("public_id"));
-        imageService.save(image);
-
-        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-    }
-
-    @DeleteMapping("{id}/deleteFromItinerary/{itineraryId}")
-    public ResponseEntity<?> deleteFromItinerary(@PathVariable("id") long id,
-            @PathVariable("itineraryId") long itineraryId) throws IOException {
-        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
-        }
-
-        Optional<Image> image = imageService.findById(id);
-        if (!image.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("No existe la imagen con el id indicado"));
-        }
-
-        Optional<Itinerary> itinerary = itineraryService.findById(itineraryId);
-        if (!itinerary.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("El itinerario que intenta asociar a la imagen no existe"));
-        }
-        Itinerary updatedItinerary = itinerary.get();
-
-        if (id != updatedItinerary.getImage().getId()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("La imagen que intenta eliminar no está asociada al itinerario indicado."));
-        }
-        if (updatedItinerary.getImage() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("El itienerario seleccionado no tiene imágenes asociadas"));
-        }
-
-        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("No es posible eliminar imágenes a un itinerario del que no es dueño."));
-        }
-        updatedItinerary.setImage(null);
-        itineraryService.save(updatedItinerary);
-
-        if (image.get().getCloudinaryId() != null) {
-            cloudinaryService.delete(image.get().getCloudinaryId());
-        }
-
-        imageService.deleteById(id);
-
-        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
-    }
-
-    @DeleteMapping("{id}/deleteFromLandmark/{landmarkId}")
-    public ResponseEntity<?> deleteFromLandmark(@PathVariable("id") long id,
-            @PathVariable("landmarkId") long landmarkId) throws IOException {
-        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
-        }
-
-        Optional<Image> image = imageService.findById(id);
-        if (!image.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("No existe la imagen con el id indicado"));
-        }
+        Image createdImage = imageService.save(image);
 
         Optional<Landmark> landmark = landmarkService.findById(landmarkId);
         if (!landmark.isPresent()) {
@@ -203,24 +117,93 @@ public class ImageController {
         }
         Landmark updatedLandmark = landmark.get();
 
-        if (updatedLandmark.getImage() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("El POI seleccionado no tiene imágenes asociadas"));
-        }
-        if (id != updatedLandmark.getImage().getId()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("La imagen que intenta eliminar no está asociada al POI indicado."));
+        Image currentLandmarkImage = updatedLandmark.getImage();
+        if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null){
+            cloudinaryService.delete(currentLandmarkImage.getCloudinaryId());
         }
 
-        updatedLandmark.setImage(null);
+        updatedLandmark.setImage(createdImage);
         landmarkService.save(updatedLandmark);
 
-        if (image.get().getCloudinaryId() != null) {
-            cloudinaryService.delete(image.get().getCloudinaryId());
+        return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    }
+
+    @DeleteMapping("/deleteForItinerary/{itineraryId}")
+    public ResponseEntity<?> deleteFromItinerary(@PathVariable("itineraryId") long itineraryId) throws IOException {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
         }
 
-        imageService.deleteById(id);
+        Optional<Itinerary> itinerary = itineraryService.findById(itineraryId);
+        if (!itinerary.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El itinerario sobre el que intenta eliminar la imagen no existe"));
+        }
+        Itinerary updatedItinerary = itinerary.get();
 
+        Image image = updatedItinerary.getImage();
+        if (image==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El itinerario indicado no contiene ninguna imagen"));
+        }
+
+        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("No es posible eliminar imágenes a un itinerario del que no es dueño."));
+        }
+
+        Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+        updatedItinerary.setImage(defaultImage.get());
+        itineraryService.save(updatedItinerary);
+
+        if (image.getCloudinaryId() != null) {
+            cloudinaryService.delete(image.getCloudinaryId());
+        }
+
+        imageService.deleteById(image.getId());
+        
+        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
+    }
+
+    @DeleteMapping("/deleteForLandmark/{landmarkId}")
+    public ResponseEntity<?> deleteFromLandmark(@PathVariable("landmarkId") long landmarkId) throws IOException {
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
+        }
+
+        Optional<Landmark> landmark = landmarkService.findById(landmarkId);
+        if (!landmark.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El itinerario sobre el que intenta eliminar la imagen no existe"));
+        }
+        Landmark updatedLandmark = landmark.get();
+
+        Image image = updatedLandmark.getImage();
+        if (image==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new Message("El POI indicado no contiene ninguna imagen"));
+        }
+
+        Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+        updatedLandmark.setImage(defaultImage.get());
+        landmarkService.save(updatedLandmark);
+
+        if (image.getCloudinaryId() != null) {
+            cloudinaryService.delete(image.getCloudinaryId());
+        }
+
+        imageService.deleteById(image.getId());
+        
         return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
     }
 }
