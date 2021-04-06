@@ -52,6 +52,10 @@ public class ImageController {
     private static final String ANONYMOUS_USER_STRING = "anonymousUser";
     private static final String ERROR_USUARIO_NO_REGISTRADO_STRING = "El usuario no tiene permiso de creación sin registrarse.";
     private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente"; 
+    private static final String NOT_VALID_IMAGE_STRING = "La imagen no es válida";
+    private static final String ANONYMOUS_NOT_ALLOWED_STRING = "El usuario no tiene permiso de eliminación sin registrarse."; 
+    private static final String IMAGE_NOT_FOUND_STRING = "La imagen seleccionada no ha sido encontrada.";
+    private static final String DELETED_IMAGE_STRING = "Imagen eliminada correctamente";
 
     @PostMapping("/uploadForItinerary/{itineraryId}")
     public ResponseEntity<?> newItineraryImage(@PathVariable("itineraryId") Long itineraryId,
@@ -63,7 +67,7 @@ public class ImageController {
         }
 
         if (ImageIO.read(multipartFile.getInputStream()) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(NOT_VALID_IMAGE_STRING));
         }
         Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
@@ -90,7 +94,7 @@ public class ImageController {
         if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null && currentItineraryImage.getId()!=1){
             cloudinaryService.delete(currentItineraryImage.getCloudinaryId());
         }
-        if(currentItineraryImage.getId()!=1){
+        if(currentItineraryImage!=null && currentItineraryImage.getId()!=1){
             imageService.deleteById(currentItineraryImage.getId());
         }
 
@@ -107,7 +111,7 @@ public class ImageController {
         }
 
         if (ImageIO.read(multipartFile.getInputStream()) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(NOT_VALID_IMAGE_STRING));
         }
         Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
@@ -131,7 +135,7 @@ public class ImageController {
         if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null && currentLandmarkImage.getId()!=1){
             cloudinaryService.delete(currentLandmarkImage.getCloudinaryId());
         }
-        if(currentLandmarkImage.getId()!=1){
+        if(currentLandmarkImage!=null && currentLandmarkImage.getId()!=1){
             imageService.deleteById(currentLandmarkImage.getId());
         }
 
@@ -147,7 +151,7 @@ public class ImageController {
         }
 
         if (ImageIO.read(multipartFile.getInputStream()) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("La imagen no es válida"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(NOT_VALID_IMAGE_STRING));
         }
         Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
@@ -170,7 +174,7 @@ public class ImageController {
         if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
             cloudinaryService.delete(currentUserImage.getCloudinaryId());
         }
-        if(currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getId()!=1){
             imageService.deleteById(currentUserImage.getId());
         }
 
@@ -181,7 +185,7 @@ public class ImageController {
     public ResponseEntity<?> deleteFromItinerary(@PathVariable("itineraryId") long itineraryId) throws IOException {
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
+                    .body(new Message(ANONYMOUS_NOT_ALLOWED_STRING));
         }
 
         Optional<Itinerary> itinerary = itineraryService.findById(itineraryId);
@@ -205,7 +209,7 @@ public class ImageController {
         Optional<Image> defaultImage = imageService.findById(1);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+					.body(new Message(IMAGE_NOT_FOUND_STRING));
 		}
         updatedItinerary.setImage(defaultImage.get());
         itineraryService.save(updatedItinerary);
@@ -220,14 +224,14 @@ public class ImageController {
                     .body(new Message("El itinerario no tiene ninguna foto asociada."));
         }
         
-        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
+        return ResponseEntity.ok(new Message(DELETED_IMAGE_STRING));
     }
 
     @DeleteMapping("/deleteForLandmark/{landmarkId}")
     public ResponseEntity<?> deleteFromLandmark(@PathVariable("landmarkId") long landmarkId) throws IOException {
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
+                    .body(new Message(ANONYMOUS_NOT_ALLOWED_STRING));
         }
 
         Optional<Landmark> landmark = landmarkService.findById(landmarkId);
@@ -246,7 +250,7 @@ public class ImageController {
         Optional<Image> defaultImage = imageService.findById(1);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+					.body(new Message(IMAGE_NOT_FOUND_STRING));
 		}
         updatedLandmark.setImage(defaultImage.get());
         landmarkService.save(updatedLandmark);
@@ -261,14 +265,14 @@ public class ImageController {
                     .body(new Message("El POI no tiene ninguna foto asociada."));
         }
         
-        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
+        return ResponseEntity.ok(new Message(DELETED_IMAGE_STRING));
     }
 
     @DeleteMapping("/deleteForUser")
     public ResponseEntity<?> deleteFromUser() throws IOException {
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de eliminación sin registrarse."));
+                    .body(new Message(ANONYMOUS_NOT_ALLOWED_STRING));
         }
         
         Optional<User> user = userService.getByUsername(userService.getCurrentUsername());
@@ -282,7 +286,7 @@ public class ImageController {
         Optional<Image> defaultImage = imageService.findById(1);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+					.body(new Message(IMAGE_NOT_FOUND_STRING));
 		}
 
         updatedUser.setImage(defaultImage.get());
@@ -291,13 +295,13 @@ public class ImageController {
         if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
             cloudinaryService.delete(currentUserImage.getCloudinaryId());
         }
-        if(currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getId()!=1){
             imageService.deleteById(currentUserImage.getId());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Message("El usuario no tiene ninguna foto asociada."));
         }
 
-        return ResponseEntity.ok(new Message("Imagen eliminada correctamente"));
+        return ResponseEntity.ok(new Message(DELETED_IMAGE_STRING));
     }
 }
