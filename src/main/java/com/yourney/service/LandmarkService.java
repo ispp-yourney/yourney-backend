@@ -4,9 +4,11 @@ package com.yourney.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.yourney.model.Landmark;
+import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.repository.LandmarkRepository;
 
 @Service
@@ -14,6 +16,10 @@ public class LandmarkService {
 
     @Autowired
     private LandmarkRepository landmarkRepository;
+
+    public Iterable<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size) {
+        return landmarkRepository.searchByProperties(country, city, name, PageRequest.of(0, size));
+    }
 
     public Iterable<Landmark> findAll() {
         return landmarkRepository.findAll();

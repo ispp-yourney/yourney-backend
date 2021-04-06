@@ -419,7 +419,7 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
     ('Real Alcázar de Sevilla',															-- 61
     'Emblemático palacio real de origen árabe con jardines, fuentes, arcos ornamentados y azulejos del siglo XVI.', 
     0.0, 'España', 'Sevilla', 37.3832718833855, -5.990287762829736, false, NULL, NULL, '+34 954502324', NULL, 'https://www.alcazarsevilla.org/', 'Punto turístico', 75, 71),
-	('Catedrál de Sevilla',																-- 62
+	('Catedral de Sevilla',																-- 62
     'Gran catedral gótica con la tumba de Colón y un campanario de estilo árabe con vistas a la ciudad.', 
     0.0, 'España', 'Sevilla', 37.385908828128976, -5.993128874217623, true, NULL, NULL, '+34 902099692', NULL, 'https://www.catedraldesevilla.es/', 'Punto turístico', 75, 72),
 	('Avenida de la Costitución',														-- 63
@@ -636,8 +636,8 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
 	'El segundo día del itinerario lo emplearemos en vistar dos de los puntos de mayor interés de Sevilla. El primero es el Real Alcázar, un gran palacio de origen árabe que atrae a miles de turistas cada año.',
 	'Real Alcázar de Sevilla', 10, 61),							-- 61
 	(2, '2021-02-02 18:23:21',
-	'El segundo gran punto que visitaremos hoy será la Catedrál de Sevilla. Tiene gran importancia históica y religiosa, dado que juega un papel muy importante en la celebración de la Semana Santa de Sevilla. Además, podemos acceder a la majesuosa Giralda desde la cuál las vistas son mágicas.',
-	'Catedrál de Sevilla', 10, 62),								-- 62
+	'El segundo gran punto que visitaremos hoy será la Catedral de Sevilla. Tiene gran importancia históica y religiosa, dado que juega un papel muy importante en la celebración de la Semana Santa de Sevilla. Además, podemos acceder a la majesuosa Giralda desde la cuál las vistas son mágicas.',
+	'Catedral de Sevilla', 10, 62),								-- 62
 	(3, '2021-02-02 18:25:57',
 	'Este tercer día de itinerario aprovecharemos para visitar el centro de Sevilla, haciendo un pequeño recorrido por alguna de sus mágicas calles. Empezaremos visitando la Avenida de la Constitución, desde la cuál se pueden ver los lugares que visitamos el día anterior y muchos otros puntos de interés.',
 	'Avenida de la Costitución', 10, 62),						-- 63

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -22,7 +23,9 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "landmarks")
+@Table(name = "landmarks", indexes = {
+	@Index(columnList = "country, city, name")
+}) 
 public class Landmark {
 
 	@Id

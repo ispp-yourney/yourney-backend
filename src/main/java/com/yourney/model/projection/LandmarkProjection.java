@@ -34,8 +34,6 @@ public interface LandmarkProjection {
 
     String getTwitter();
 
-    StatusType getStatus();
-
     LocalDateTime getCreateDate();
 
     Long getViews();
