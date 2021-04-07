@@ -180,7 +180,7 @@ class ItineraryControllerTests {
 	    la1.setName("Monumento 1");
 	    la1.setPhone("+1 111111111");
 	    la1.setPrice(0.0);
-	    la1.setPromoted(true);
+	    la1.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
 	    la1.setTwitter(null);
 	    la1.setViews((long) 10);
 	    la1.setWebsite(null);
@@ -202,7 +202,7 @@ class ItineraryControllerTests {
 	    la2.setName("Monumento 2");
 	    la2.setPhone("+1 111111111");
 	    la2.setPrice(0.0);
-	    la2.setPromoted(false);
+	    la2.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
 	    la2.setTwitter(null);
 	    la2.setViews((long) 10);
 	    la2.setWebsite(null);
@@ -224,7 +224,7 @@ class ItineraryControllerTests {
 	    la3.setName("Monumento 3");
 	    la3.setPhone("+1 111111111");
 	    la3.setPrice(0.0);
-	    la3.setPromoted(false);
+	    la3.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
 	    la3.setTwitter(null);
 	    la3.setViews((long) 10);
 	    la3.setWebsite(null);
@@ -246,7 +246,7 @@ class ItineraryControllerTests {
 	    la4.setName("Monumento 4");
 	    la4.setPhone("+1 111111111");
 	    la4.setPrice(0.0);
-	    la4.setPromoted(true);
+	    la4.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
 	    la4.setTwitter(null);
 	    la4.setViews((long) 10);
 	    la4.setWebsite(null);

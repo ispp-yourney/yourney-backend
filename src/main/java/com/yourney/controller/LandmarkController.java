@@ -2,6 +2,7 @@ package com.yourney.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -70,11 +71,12 @@ public class LandmarkController {
 
 	@GetMapping("/search")
 	public ResponseEntity<Iterable<LandmarkProjection>> searchByProperties(
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "0") int page, 
+            @RequestParam(defaultValue = "") String country,
 			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "") String name) {
 
 		Iterable<LandmarkProjection> landmarks = landmarkService.searchByProperties("%" + country + "%",
-				"%" + city + "%","%" + name + "%", size);
+				"%" + city + "%","%" + name + "%", size, PageRequest.of(page, size));
 
 		return new ResponseEntity<Iterable<LandmarkProjection>>(landmarks, HttpStatus.OK);
 	}
@@ -163,6 +165,35 @@ public class LandmarkController {
         return ResponseEntity.ok(updatedLandmark);
     }
 
+	@GetMapping("/upgrade")
+	public ResponseEntity<?> upgradeUser(
+		@RequestParam(name="subscriptionDays", defaultValue = "28") long subscriptionDays,
+        @RequestParam(name="landmarkId") long landmarkId) {
+
+        if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+        }
+
+		Optional<Landmark> foundLandmark = landmarkService.findById(landmarkId);
+
+		if (!foundLandmark.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No se encuentra el landmark indicado."));
+		}
+		if(subscriptionDays<1){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("No puede subscribirse a días negativos o nulos"));
+		}
+
+        Landmark landmark = foundLandmark.get();
+		if(landmark.getEndPromotionDate()!=null && landmark.getEndPromotionDate().isAfter(LocalDateTime.now())){
+			landmark.setEndPromotionDate(landmark.getEndPromotionDate().plusDays(subscriptionDays));
+		} else {
+			landmark.setEndPromotionDate(LocalDateTime.now().plusDays(subscriptionDays));
+		}
+		Landmark updatedLandmark = landmarkService.save(landmark);
+		return ResponseEntity.ok(updatedLandmark);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> saveLandMark(@Valid @RequestBody LandmarkDto landmarkDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -187,6 +218,7 @@ public class LandmarkController {
         newLandmark.setCreateDate(LocalDateTime.now());
         newLandmark.setViews((long) 0);
         newLandmark.setImage(defaultImage.get());
+        newLandmark.setEndPromotionDate(null);
         Landmark createdLandmark = landmarkService.save(newLandmark);
         
         if(landmarkDto.getActivity()!=null) {

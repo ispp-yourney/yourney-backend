@@ -37,4 +37,6 @@ public interface LandmarkProjection {
     Long getViews();
 
     ImageProjection getImage();
+
+    LocalDateTime getEndPromotionDate();
 }

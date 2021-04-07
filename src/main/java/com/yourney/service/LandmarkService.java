@@ -4,7 +4,8 @@ package com.yourney.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.yourney.model.Landmark;
@@ -17,8 +18,8 @@ public class LandmarkService {
     @Autowired
     private LandmarkRepository landmarkRepository;
 
-    public Iterable<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size) {
-        return landmarkRepository.searchByProperties(country, city, name, PageRequest.of(0, size));
+    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size, Pageable pageable) {
+        return landmarkRepository.searchByProperties(country, city, name, pageable);
     }
 
     public Iterable<Landmark> findAll() {
