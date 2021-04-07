@@ -176,7 +176,7 @@ public class LandmarkController {
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
 
-		Optional<Image> defaultImage = imageService.findById(1);
+		Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));

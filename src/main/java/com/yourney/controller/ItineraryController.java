@@ -173,7 +173,7 @@ public class ItineraryController {
 		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "status", "createDate", "activities", "author",
 				"views", "image");
 
-		Optional<Image> defaultImage = imageService.findById(1);
+		Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));

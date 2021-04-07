@@ -91,10 +91,10 @@ public class ImageController {
         updatedItinerary.setImage(createdImage);
         itineraryService.save(updatedItinerary);
 
-        if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null && currentItineraryImage.getId()!=1){
+        if(currentItineraryImage!=null && currentItineraryImage.getCloudinaryId() != null && currentItineraryImage.getId()!=78){
             cloudinaryService.delete(currentItineraryImage.getCloudinaryId());
         }
-        if(currentItineraryImage!=null && currentItineraryImage.getId()!=1){
+        if(currentItineraryImage!=null && currentItineraryImage.getId()!=78){
             imageService.deleteById(currentItineraryImage.getId());
         }
 
@@ -132,10 +132,10 @@ public class ImageController {
         updatedLandmark.setImage(createdImage);
         landmarkService.save(updatedLandmark);
 
-        if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null && currentLandmarkImage.getId()!=1){
+        if(currentLandmarkImage!=null && currentLandmarkImage.getCloudinaryId() != null && currentLandmarkImage.getId()!=78){
             cloudinaryService.delete(currentLandmarkImage.getCloudinaryId());
         }
-        if(currentLandmarkImage!=null && currentLandmarkImage.getId()!=1){
+        if(currentLandmarkImage!=null && currentLandmarkImage.getId()!=78){
             imageService.deleteById(currentLandmarkImage.getId());
         }
 
@@ -171,10 +171,10 @@ public class ImageController {
         updatedUser.setImage(createdImage);
         userService.save(updatedUser);
 
-        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=78){
             cloudinaryService.delete(currentUserImage.getCloudinaryId());
         }
-        if(currentUserImage!=null && currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getId()!=78){
             imageService.deleteById(currentUserImage.getId());
         }
 
@@ -206,7 +206,7 @@ public class ImageController {
                     .body(new Message("No es posible eliminar imágenes a un itinerario del que no es dueño."));
         }
 
-        Optional<Image> defaultImage = imageService.findById(1);
+        Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message(IMAGE_NOT_FOUND_STRING));
@@ -214,10 +214,10 @@ public class ImageController {
         updatedItinerary.setImage(defaultImage.get());
         itineraryService.save(updatedItinerary);
 
-        if (image.getCloudinaryId() != null && image.getId() != 1) {
+        if (image.getCloudinaryId() != null && image.getId() != 78) {
             cloudinaryService.delete(image.getCloudinaryId());
         }
-        if(image.getId()!=1){
+        if(image.getId()!=78){
             imageService.deleteById(image.getId());
         }  else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -247,7 +247,7 @@ public class ImageController {
                     .body(new Message("El POI indicado no contiene ninguna imagen"));
         }
 
-        Optional<Image> defaultImage = imageService.findById(1);
+        Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message(IMAGE_NOT_FOUND_STRING));
@@ -255,10 +255,10 @@ public class ImageController {
         updatedLandmark.setImage(defaultImage.get());
         landmarkService.save(updatedLandmark);
 
-        if (image.getCloudinaryId() != null && image.getId() != 1) {
+        if (image.getCloudinaryId() != null && image.getId() != 78) {
             cloudinaryService.delete(image.getCloudinaryId());
         }
-        if(image.getId()!=1){
+        if(image.getId()!=78){
             imageService.deleteById(image.getId());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -283,7 +283,7 @@ public class ImageController {
         User updatedUser = user.get();
         Image currentUserImage = updatedUser.getImage();
 
-        Optional<Image> defaultImage = imageService.findById(1);
+        Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message(IMAGE_NOT_FOUND_STRING));
@@ -292,10 +292,10 @@ public class ImageController {
         updatedUser.setImage(defaultImage.get());
         userService.save(updatedUser);
 
-        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getCloudinaryId() != null && currentUserImage.getId()!=78){
             cloudinaryService.delete(currentUserImage.getCloudinaryId());
         }
-        if(currentUserImage!=null && currentUserImage.getId()!=1){
+        if(currentUserImage!=null && currentUserImage.getId()!=78){
             imageService.deleteById(currentUserImage.getId());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
