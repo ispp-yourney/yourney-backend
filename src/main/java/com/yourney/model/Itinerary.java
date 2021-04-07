@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -85,6 +86,7 @@ public class Itinerary {
 	private long calcPromotion;
 
 	@JsonManagedReference
+	@OrderBy("createDate desc")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Comment> comments;
 

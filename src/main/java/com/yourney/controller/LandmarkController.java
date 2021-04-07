@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ import com.yourney.model.Image;
 import com.yourney.model.Landmark;
 import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
+import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
@@ -65,6 +67,17 @@ public class LandmarkController {
     public ResponseEntity<Iterable<String>> listCities() {
         return ResponseEntity.ok(landmarkService.findAllCities());
     }
+
+	@GetMapping("/search")
+	public ResponseEntity<Iterable<LandmarkProjection>> searchByProperties(
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "") String name) {
+
+		Iterable<LandmarkProjection> landmarks = landmarkService.searchByProperties("%" + country + "%",
+				"%" + city + "%","%" + name + "%", size);
+
+		return new ResponseEntity<Iterable<LandmarkProjection>>(landmarks, HttpStatus.OK);
+	}
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteLandMark(@PathVariable("id") long id) {
@@ -163,7 +176,7 @@ public class LandmarkController {
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
 
-		Optional<Image> defaultImage = imageService.findById(1);
+		Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));

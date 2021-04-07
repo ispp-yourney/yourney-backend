@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
@@ -14,7 +15,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yourney.security.model.User;
 
 import org.hibernate.validator.constraints.Length;
@@ -23,7 +23,9 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "comments")
+@Table(name = "comments", indexes = {
+	@Index(columnList = "create_date desc")
+})
 public class Comment {
     
     @Id

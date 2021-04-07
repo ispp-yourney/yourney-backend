@@ -11,4 +11,8 @@ public interface AuthorProjection {
     String getFirstName();
 
     String getLastName();
+
+    String getImageUrl();
+
+    ImageProjection getImage();
 }
