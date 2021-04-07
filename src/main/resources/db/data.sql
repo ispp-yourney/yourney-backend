@@ -2,7 +2,7 @@
 
 INSERT INTO images(name, cloudinary_id, image_url) VALUES 
     ('imagenLosAngeles', NULL,
-     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg')                                            -- 1
+     'https://storage.googleapis.com/md-media-cl/2019/04/promociones-aereas-los-angeles-capa2019-01.jpg'),                                                     -- 1
     ('imagenLaHabana', NULL,
      'https://elviajista.com/wp-content/uploads/2020/06/habanacuba-730x487.jpg'),     																			-- 2 
     ('imagenTokio', NULL,
