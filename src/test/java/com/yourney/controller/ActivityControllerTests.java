@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
+import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.security.model.User;
 import com.yourney.service.ActivityService;
@@ -56,7 +58,7 @@ class ActivityControllerTests {
 		User auth1 = new User();
 		
 		auth1.setId((long)1);
-		auth1.setEmail("test222@ewfwef.com");
+		auth1.setEmail("testuser@email.com");
 		auth1.setFirstName("Name 1");
 		auth1.setLastName("Surname 1");
 		auth1.setPassword("user1");
@@ -78,22 +80,23 @@ class ActivityControllerTests {
 	    
 	    given(this.itineraryService.findById((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
 	    
-	    
-	    
 		//Activity
 		Activity a1 = new Activity(); 
 
-		a1.setId(1);
+		a1.setId((long) 1);
 		a1.setTitle("comienza el test: Giralda");
 		a1.setDescription("lorem ipsum 0");
 		a1.setDay(1);
 		a1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 		a1.setItinerary(it1);
-		given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(a1));
+		given(this.activityService.findById((long) TEST_ACTIVITY_ID)).willReturn(Optional.of(a1));
+		given(this.activityService.existsById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(true);
 		Collection<Activity> activities = new ArrayList<>();
 		activities.add(a1);
 		
 		doReturn(a1).when(this.activityService).save(a1);
+		
+
 		
 		Activity a2 = new Activity(); 
 
@@ -113,6 +116,31 @@ class ActivityControllerTests {
 		Iterable<Activity> activitiesList = new ArrayList<Activity>(activities);
 	
 		given(this.activityService.findAllActivityProjectionsByDayAndItinerary((long)ActivityControllerTests.TEST_ITINERARY_ID, 1)).willReturn(activitiesList);
+		
+		
+		// LADNMARKS
+	    
+	    Landmark la1 = new Landmark();
+	    
+	    la1.setCategory("category 1");
+	    la1.setCity("Sevilla");
+	    la1.setCountry("España");
+	    la1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    la1.setDescription("lorem ipsum 1");
+	    la1.setEmail("monumento1@email.com");
+	    la1.setId((long) 1);
+	    la1.setImage(null);
+	    la1.setImageUrl(null);
+	    la1.setInstagram(null);
+	    la1.setLatitude(60.0);
+	    la1.setLongitude(60.0);
+	    la1.setName("Monumento 1");
+	    la1.setPhone("+1 111111111");
+	    la1.setPrice(0.0);
+	    la1.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
+	    la1.setTwitter(null);
+	    la1.setViews((long) 10);
+	    la1.setWebsite(null);
 
 	}
 	
@@ -166,32 +194,64 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testCreateActivity() throws Exception {
-		Activity activityToPost = new Activity();
 		
-		activityToPost.setId(1);
-		activityToPost.setTitle("comienza el test: Giralda");
-		activityToPost.setDescription("lorem ipsum 0");
-		activityToPost.setDay(1);
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "lorem ipsum 0");
+		activityJSON.put("itinerary", 1);
+		activityJSON.put("title", "comienza el test: Giralda");
 		
 		this.mockMvc.perform(post("/activity/create")
 		.contentType(MediaType.APPLICATION_JSON)
-		.content("{\n" + 
-				"  \"day\": 1,\n" + 
-				"  \"description\": \"string\",\n" + 
-				"  \"id\": 1,\n" + 
-				"  \"itinerary\": 1,\n" + 
-				"  \"landmark\": null,\n" + 
-				"  \"title\": \"string\"\n" + 
-				"}"))
+		.content(activityJSON.toString()))
 
 		// Validate the response code and content type
 		.andExpect(status().isOk());
-//        .andExpect(content().contentType(MediaType.APPLICATION_JSON))	
+//        .andExpect(content().json(activityJSON.toString()));
+        
 
 //		// Validate the returned fields
 //        .andExpect(jsonPath("$.id", is(1)))
 //        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
 //        .andExpect(jsonPath("$.description", is("lorem ipsum 0")))
 //        .andExpect(jsonPath("$.day", is(1)));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateActivity() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "Descripcion de prueba");
+		activityJSON.put("title", "Titulo de prueba");
+		activityJSON.put("id", TEST_ACTIVITY_ID);
+		
+		this.mockMvc.perform(put("/activity/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("La actividad ha sido actualizada con éxito")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteActivity() throws Exception {
+		
+		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("Actividad eliminada correctamente")));
 	}
 }

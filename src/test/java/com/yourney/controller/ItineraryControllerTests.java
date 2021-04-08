@@ -59,6 +59,9 @@ class ItineraryControllerTests {
 	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
 	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
 	private static final Integer TEST_ITINERARY_MAXDAYS = 1000;
+	private static final String TEST_ITINERARY_NAME = "itinerary test 1";
+	private static final int TEST_ITINERARY_USER_ID = 1;
+	private static final String TEST_ITINERARY_USERNAME = "user1";
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -324,12 +327,23 @@ class ItineraryControllerTests {
 		itineraries2.add(itp2);
 		itineraries2.add(itp3);
 		Page<ItineraryProjection> itinerariesPage2 = new PageImpl<>(itineraries2);
-
+		
+		List<ItineraryProjection> itineraries3 = new ArrayList<>();
+		itineraries3.add(itp1);
+		Page<ItineraryProjection> itinerariesPage3 = new PageImpl<>(itineraries3);
+		
+		List<ItineraryProjection> itineraries4 = new ArrayList<>();
+		itineraries4.add(itp1);
+		itineraries4.add(itp3);
+		Page<ItineraryProjection> itinerariesPage4 = new PageImpl<>(itineraries4);
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
+	    given(this.itineraryService.searchByName(pageable, "%"+TEST_ITINERARY_NAME+"%")).willReturn(itinerariesPage3);
+	    given(this.itineraryService.searchByUserId(pageable, (long) TEST_ITINERARY_USER_ID)).willReturn(itinerariesPage4);
+	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
 
 	}
 	
@@ -397,6 +411,69 @@ class ItineraryControllerTests {
         .andExpect(jsonPath("$.content[2].budget", is(100.)))
         .andExpect(jsonPath("$.content[2].estimatedDays").doesNotExist())
         .andExpect(jsonPath("$.content[2].views", is(15)));
+	}
+	
+	@Test
+	void testSearchItinerariesByName() throws Exception {
+		this.mockMvc.perform(get("/itinerary/searchByName?page={page}&size={size}&name={name}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_NAME))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)));
+		
+	}
+	
+	@Test
+	void testListItinerariesByUserId() throws Exception {
+		this.mockMvc.perform(get("/itinerary/searchByUserId?page={page}&size={size}&userId={userId}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_USER_ID))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)));;
+		
+	}
+	
+	@Test
+	void testListItinerariesByUsername() throws Exception {
+		this.mockMvc.perform(get("/itinerary/user/{username}?page={page}&size={size}", TEST_ITINERARY_USERNAME, TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)));;
+		
 	}
 
 }
