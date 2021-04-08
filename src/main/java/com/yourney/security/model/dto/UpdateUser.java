@@ -9,13 +9,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class NewUser {
-
-	@NotBlank(message = "El nombre de usuario es obligatorio")
-	private String username;
-
-	@NotBlank(message = "La contraseña es obligatoria")
-	private String password;
+public class UpdateUser {
 
 	@NotBlank(message = "El nombre es obligatorio")
 	private String firstName;
@@ -26,7 +20,5 @@ public class NewUser {
 	@Email(message = "El correo electrónico introducido no es válido")
 	@NotBlank(message = "El correo electrónico es obligatorio")
 	private String email;
-
-	private Set<String> roles = new HashSet<>();
 
 }
