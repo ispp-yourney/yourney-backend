@@ -78,6 +78,7 @@ public class ItineraryController {
 					.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 		} else if (!itinerary.getAuthor().getUsername().equals(currentUsername)) {
 			itinerary.setViews(itinerary.getViews() + 1);
+			itinerary.getActivities().stream().map(a->a.getLandmark()).forEach(l->l.setViews(l.getViews() + 1));
 			itineraryService.save(itinerary);
 		}
 

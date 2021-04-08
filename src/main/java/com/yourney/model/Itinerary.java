@@ -82,7 +82,7 @@ public class Itinerary {
 	@Formula("(select case when u.expiration_date >= CURRENT_DATE then u.plan else 0 end from users u where u.id=author_id)")
 	private Integer calcPlan;
 
-	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
+	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.end_promotion_date >= CURRENT_DATE)")
 	private long calcPromotion;
 
 	@JsonManagedReference

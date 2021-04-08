@@ -19,4 +19,6 @@ public interface ItineraryProjection {
     Double getBudget();
 
     StatusType getStatus();
+
+    Double getAvgRating();    
 }

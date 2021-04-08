@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.Matchers.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -63,7 +64,7 @@ class LandmarkControllerTests {
 	    l1.setCity("Sevilla");
 	    l1.setLatitude(37.38618100597202);
 	    l1.setLongitude(-5.992615925346369);
-	    l1.setPromoted(true);
+	    l1.setEndPromotionDate(LocalDateTime.of(2025, 12, 10, 8, 6, 4));
 	    l1.setEmail("giralda@email.com");
 	    l1.setInstagram(null);
 	    l1.setPhone("123456789");

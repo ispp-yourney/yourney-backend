@@ -51,7 +51,7 @@ public class Landmark {
 
 	private Double longitude;
 
-	private boolean promoted;
+	private LocalDateTime endPromotionDate;
 
 	private String category;
 
