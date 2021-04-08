@@ -38,6 +38,7 @@ import com.yourney.security.model.User;
 import com.yourney.security.model.dto.JwtDto;
 import com.yourney.security.model.dto.LoginUser;
 import com.yourney.security.model.dto.NewUser;
+import com.yourney.security.model.dto.UpdateUser;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ImageService;
@@ -179,5 +180,35 @@ public class AuthController {
 		User updatedUser = userService.save(user);
 
 		return ResponseEntity.ok(updatedUser);
-	}	
+	}
+
+	@GetMapping("/update")
+	public ResponseEntity<?> updateUser(
+		@Valid @RequestBody final UpdateUser updateUser, final BindingResult result) {
+		
+		String username = userService.getCurrentUsername();
+		Optional<User> userToUpdate = this.userService.getByUsername(username);
+		
+		if (!userToUpdate.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el usuario indicado"));
+		}
+
+		User user = userToUpdate.get();
+
+		if (result.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+		}
+
+		if (this.userService.existsByEmail(updateUser.getEmail()) &&  !(updateUser.getEmail().equals(user.getEmail()))) {
+			return new ResponseEntity<>(new Message("Email ya existente"), HttpStatus.BAD_REQUEST);
+		}
+
+		user.setFirstName(updateUser.getFirstName());
+		user.setLastName(updateUser.getLastName());
+		user.setEmail(updateUser.getEmail());
+		this.userService.save(user);
+
+		return new ResponseEntity<>(new Message("Usuario actualizado correctamente"), HttpStatus.OK);
+	}
+
 }
