@@ -1,5 +1,9 @@
 package com.yourney.paypal.controller;
 
+import java.util.Optional;
+
+import javax.websocket.server.PathParam;
+
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.Capture;
 import com.paypal.orders.LinkDescription;
@@ -8,16 +12,22 @@ import com.paypal.orders.PurchaseUnit;
 import com.paypal.payments.Refund;
 import com.yourney.paypal.service.CaptureOrderService;
 import com.yourney.paypal.service.CreateOrderService;
+import com.yourney.security.model.User;
+import com.yourney.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/paypal")
+@CrossOrigin
 public class PayPalController {
 
     @Autowired
@@ -26,63 +36,76 @@ public class PayPalController {
     @Autowired
     private CreateOrderService createOrderService;
 
-    @GetMapping("/create")
-    public String create() {
-        String redirectUrl = "/";
-        try {
-            // Creating Order
-            HttpResponse<Order> orderResponse = createOrderService.createOrder(false);
-            String orderId = "";
-            System.out.println("Creating Order...");
-            if (orderResponse.statusCode() == 201){
-                orderId = orderResponse.result().id();
-                System.out.println("Links:");
-                for (LinkDescription link : orderResponse.result().links()) {
-                    System.out.println("\t" + link.rel() + ": " + link.href());
+    @Autowired
+    private UserService userService;
 
-                    if (link.rel().equals("approve")) {
-                        redirectUrl = link.href();
-                    }
+    @Value("${paypal.frontend-url}")
+    private String frontendUrl;
+
+    @GetMapping("/create/{orderType}")
+    public String create(@PathVariable String orderType) {
+        String redirectUrl = "redirect:" + frontendUrl;
+        String id = "";
+
+        switch (orderType.toUpperCase()) {
+            case "SUBSCRIPTION":
+                
+                String currentUser = userService.getCurrentUsername();
+                if (currentUser.equals("anonymousUser")) {
+                    return redirectUrl + "/error";
                 }
-            }            
 
-        } catch(Exception e){
-            e.printStackTrace();
+                Optional<User> findUser =  userService.getByUsername(currentUser);
+
+                if (!findUser.isPresent()) {
+                    return redirectUrl + "/error";
+                }
+
+                User user = findUser.get();
+                id = user.getId().toString();
+
+                break;
+
+            case "SPONSORSHIP":
+                
+                break;
+        
+            default:
+                break;
         }
 
-        return "redirect:" + redirectUrl;
-    }
-
-    @GetMapping("/capture")
-    public String capture(@RequestParam("token") String token, @RequestParam("PayerID") String payerId) {
         try {
-
-            // Capturing Order
-            System.out.println("Capturing Order...");
-            HttpResponse<Order> orderResponse = captureOrderService.captureOrder(token, false);
-            String captureId = "";
-            if (orderResponse.statusCode() == 201){
-                System.out.println("Captured Successfully");
-                System.out.println("Status Code: " + orderResponse.statusCode());
-                System.out.println("Status: " + orderResponse.result().status());
-                System.out.println("Order ID: " + orderResponse.result().id());
-                System.out.println("Links:");
-                for (LinkDescription link : orderResponse.result().links()) {
-                    System.out.println("\t" + link.rel() + ": " + link.href());
-                }
-                System.out.println("Capture ids:");
-    			for (PurchaseUnit purchaseUnit : orderResponse.result().purchaseUnits()) {
-    				for (Capture capture : purchaseUnit.payments().captures()) {
-    					System.out.println("\t" + capture.id());
-    					captureId = capture.id();
-    				}
-    			}
+            // Creating Order
+            HttpResponse<Order> orderResponse = createOrderService.createOrder(orderType.toUpperCase(), id);
+            System.out.println("Creating Order...");
+            if (orderResponse.statusCode() != 201){
+                return redirectUrl + "/error";         
+            } else if (orderResponse.statusCode() == 201) {
+                return "redirect:" + orderResponse.result().links().get(1).href();
             }
 
         } catch(Exception e){
             e.printStackTrace();
         }
 
-        return "redirect:http://localhost:8080/userProfile";
+        return redirectUrl + "/error";
+    }
+
+    @GetMapping("/capture")
+    public String capture(@RequestParam("token") String token, @RequestParam("PayerID") String payerId) {
+
+        String redirectUrl = "redirect:" + frontendUrl;
+
+        try {
+            // Capturing Order
+            System.out.println("Capturing Order...");
+            String returnUrl = captureOrderService.captureOrder(token);
+            redirectUrl =  redirectUrl + returnUrl;
+
+        } catch(Exception e){
+            return redirectUrl + "/error";
+        }
+
+        return redirectUrl;
     }
 }

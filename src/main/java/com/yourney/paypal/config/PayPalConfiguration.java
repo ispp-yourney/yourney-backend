@@ -30,6 +30,7 @@ public class PayPalConfiguration {
 
 	@Value("${paypal.client.secret}")
 	private String clientSecret;
+	
 
 	@Bean
 	public PayPalEnvironment paypalEnviroment() {
