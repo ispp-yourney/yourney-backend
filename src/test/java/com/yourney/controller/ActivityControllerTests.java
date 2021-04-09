@@ -180,7 +180,7 @@ class ActivityControllerTests {
 				"  \"description\": \"string\",\n" + 
 				"  \"id\": 1,\n" + 
 				"  \"itinerary\": 1,\n" + 
-				"  \"landmark\": null,\n" + 
+				"  \"landmark\": 0,\n" + 
 				"  \"title\": \"string\"\n" + 
 				"}"))
 

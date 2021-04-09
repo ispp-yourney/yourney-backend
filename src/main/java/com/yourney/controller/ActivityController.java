@@ -7,12 +7,14 @@ import javax.validation.Valid;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
+import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ActivityDto;
 import com.yourney.model.dto.Message;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
+import com.yourney.service.LandmarkService;
 import com.yourney.utils.ValidationUtils;
 
 import org.springframework.beans.BeanUtils;
@@ -41,6 +43,9 @@ public class ActivityController {
 
     @Autowired
     private ItineraryService itineraryService;
+    
+    @Autowired
+    private LandmarkService landmarkService;
 
     @Autowired
     private UserService userService;
@@ -114,6 +119,22 @@ public class ActivityController {
 
         newActivity.setItinerary(itinerary);
         newActivity.setCreateDate(LocalDateTime.now());
+        
+        if (activityDto.getLandmark() != 0) {
+        	
+        	Optional<Landmark> findLandmark = landmarkService.findById(activityDto.getLandmark());
+            
+            if (!findLandmark.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new Message("El punto de interés indicado para la actividad no existe"));
+            }
+            
+            Landmark landmark = findLandmark.get();
+            
+            newActivity.setLandmark(landmark);
+     
+        }
+        
         Activity createdActivity = activityService.save(newActivity);
         return ResponseEntity.ok(createdActivity);
     }
