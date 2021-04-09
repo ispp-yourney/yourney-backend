@@ -2,6 +2,7 @@ package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.yourney.model.Activity;
+import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
@@ -103,27 +107,25 @@ class ItineraryControllerTests {
 		
 		User us1 = new User();
 		
-		us1.setEmail("user1@email.com");
-		us1.setExpirationDate(null);
-		us1.setFirstName("Firstname1");
 		us1.setId((long)1);
-		us1.setLastName("Lastname1");
-		us1.setPassword("password1");
-		us1.setPlan(0);
-		us1.setRoles(roles);
+		us1.setEmail("testuser@email.com");
+		us1.setFirstName("Name 1");
+		us1.setLastName("Surname 1");
+		us1.setPassword("user1");
 		us1.setUsername("user1");
+		us1.setPlan(0);
 		
 		User us2 = new User();
 		
-		us1.setEmail("user2@email.com");
-		us1.setExpirationDate(null);
-		us1.setFirstName("Firstname2");
-		us1.setId((long)2);
-		us1.setLastName("Lastname2");
-		us1.setPassword("password2");
-		us1.setPlan(0);
-		us1.setRoles(roles);
-		us1.setUsername("user2");
+		us2.setEmail("user2@email.com");
+		us2.setExpirationDate(null);
+		us2.setFirstName("Firstname2");
+		us2.setId((long)2);
+		us2.setLastName("Lastname2");
+		us2.setPassword("password2");
+		us2.setPlan(0);
+		us2.setRoles(roles);
+		us2.setUsername("user2");
 		
 		
 		// ITINERARIOS
@@ -165,6 +167,21 @@ class ItineraryControllerTests {
 	    it3.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it3.setViews(15);
 	    it3.setAuthor(us1);
+	    
+	    
+	    Itinerary it1Actualizado = new Itinerary();
+	    
+	    it1Actualizado.setId((long)1);
+	    it1Actualizado.setName("itinerary test 1 actualizado");
+	    it1Actualizado.setDescription("lorem ipsum 1 actualizado");
+	    it1Actualizado.setStatus(StatusType.PUBLISHED);
+	    it1Actualizado.setBudget(10.);
+	    it1Actualizado.setEstimatedDays(2);
+	    it1Actualizado.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    it1Actualizado.setViews(0);
+	    it1Actualizado.setAuthor(us1);
+	    
+
 	    
 	    
 	    // LADNMARKS
@@ -311,6 +328,11 @@ class ItineraryControllerTests {
 		ac5.setLandmark(la4);
 		
 		
+		//IMAGE
+		
+		Image img = new Image();
+		
+		
 		// PAGEABLE
 		Pageable pageable = PageRequest.of(TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE);
 		ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -342,11 +364,14 @@ class ItineraryControllerTests {
 		itineraries4.add(itp3);
 		Page<ItineraryProjection> itinerariesPage4 = new PageImpl<>(itineraries4);
 		
-		itp1 = factory.createProjection(ItineraryProjection.class, it1);
-		itp3 = factory.createProjection(ItineraryProjection.class, it3);
-		itineraries2.add(itp1);
-		itineraries2.add(itp3);
+		List<Activity> activities = new ArrayList<>();
+		activities.add(ac1);
+		activities.add(ac2);
 		
+		it1.setActivities(activities);
+		
+		Optional<User> usuario = Optional.of(us1);
+		Optional<Image> imagen = Optional.of(img);
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
@@ -358,9 +383,12 @@ class ItineraryControllerTests {
 	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
 
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
-	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage3);
-	    given(this.itineraryService.searchByUsername(pageable, us1.getUsername())).willReturn(itinerariesPage3);
-	    given(this.itineraryService.searchByUsername(pageable, us1.getUsername())).willReturn(itinerariesPage3);
+	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario);
+	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage4);
+	    given(this.itineraryService.searchByCurrentUsername(pageable, us1.getUsername())).willReturn(itinerariesPage4);
+	    given(this.imageService.findById(78)).willReturn(imagen);
+	    
+	    given(this.itineraryService.save(it1Actualizado)).willReturn(it1Actualizado);
 	    
 	}
 	
@@ -493,31 +521,74 @@ class ItineraryControllerTests {
 		
 	}
 
-//	@Test
-//	@WithMockUser(username = "user1", password = "password1")
-//	void testCreateItinerary() throws Exception {
-//		
-//		JSONObject activityJSON = new JSONObject();
-//		
-//		activityJSON.put("budget", 0);
-//		activityJSON.put("description", "Sevilla");
-//		activityJSON.put("estimatedDays", 1);
-//		activityJSON.put("name", "Sevilla");
-//		activityJSON.put("recomendedSeason", "WINTER");
-//		activityJSON.put("status", "DRAFT");
-//		
-//		this.mockMvc.perform(post("/itinerary/create")
-//		.contentType(MediaType.APPLICATION_JSON)
-//		.content(activityJSON.toString()))
-//
-//		// Validate the response code and content type
-//		.andExpect(status().isOk())
-//        
-//
-////		// Validate the returned fields
-//        .andExpect(jsonPath("$.id", is(1)))
-//        .andExpect(jsonPath("$.description", is("Sevilla")))
-//        .andExpect(jsonPath("$.name", is("Sevilla")));
-//	}
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateItinerary() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+        
+
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.name", is("itinerary test 1")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateItinerary() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", 1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 1 actualizado")))
+        .andExpect(jsonPath("$.name", is("itinerary test 1 actualizado")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteItinerary() throws Exception {
+		
+		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+	}
 	
 }
