@@ -16,14 +16,14 @@ public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
     @Query("select distinct i FROM Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) and i.budget <= :maxBudget and i.estimatedDays <= :maxDays order by i.calcPromotion desc, i.calcPlan desc, i.views desc")
     Page<ItineraryProjection> searchByProperties(String country, String city, Double maxBudget, Integer maxDays, Pageable pageable);
 
-    @Query("select it from Itinerary it where it.status = 'PUBLISHED' and LOWER(it.name) LIKE LOWER(:cadena) order by cPlan desc, calcPromotion desc, views desc, create_date desc")
+    @Query("select it from Itinerary it where it.status = 'PUBLISHED' and LOWER(it.name) LIKE LOWER(:cadena) order by calcPlan desc, calcPromotion desc, views desc, create_date desc")
     Page<ItineraryProjection> searchByName(Pageable pageable, String cadena);
 
-    final String HAVERSINE_FORMULA = "(6371 * acos(cos(radians(:latitude)) * cos(radians(ac.landmark.latitude)) * cos(radians(ac.landmark.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(ac.landmark.latitude))))";
+    final String HAVERSINE_FORMULA = "(6371 * acos(cos(radians(:latitude)) * cos(radians(a.landmark.latitude)) * cos(radians(a.landmark.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(a.landmark.latitude))))";
 
-    @Query("select distinct ac.itinerary.id as id, ac.itinerary.name as name, ac.itinerary.description as description, ac.itinerary.image.imageUrl as imageUrl, ac.itinerary.author.username as username, ac.itinerary.views as views, ac.itinerary.calcPlan as calcPlan, "
+    @Query("select distinct i.id as id, i.name as name, i.description as description, i.image.imageUrl as imageUrl, i.author.username as username, i.views as views, i.calcPlan as calcPlan, i.budget as budget, i.status as status, i.avgRating as avgRating, "
             + HAVERSINE_FORMULA
-            + " as distance, ac.itinerary.calcPromotion as calcPromotion from Activity ac where ac.itinerary.status='PUBLISHED' order by distance asc, ac.itinerary.calcPlan desc, ac.itinerary.calcPromotion desc, ac.itinerary.views desc")
+            + " as distance, i.calcPromotion as calcPromotion FROM Itinerary i left join i.activities a where i.status='PUBLISHED' order by distance asc, i.calcPlan desc, i.calcPromotion desc, i.views desc")
     Page<ItineraryProjection> searchByDistance(Double latitude, Double longitude, Pageable pageable);
 
     @Query("select it from Itinerary it where it.status = 'PUBLISHED' and it.author.id =:userId order by it.calcPromotion desc, it.views desc")
