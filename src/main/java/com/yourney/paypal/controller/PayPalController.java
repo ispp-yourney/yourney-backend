@@ -35,7 +35,7 @@ public class PayPalController {
     @Value("${paypal.frontend-url}")
     private String frontendUrl;
 
-    private final String ERROR_URI = "/error";
+    private static final String ERROR_URI = "/error";
 
     @GetMapping("/create/{orderType}")
     public String create(@PathVariable String orderType) {

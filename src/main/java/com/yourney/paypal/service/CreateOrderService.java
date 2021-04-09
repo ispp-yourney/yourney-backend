@@ -30,8 +30,8 @@ public class CreateOrderService {
 	@Value("${paypal.callback-url}")
 	private String paypalCallbackUrl;
 
-	private final String SUBSCRIPTION_PRICE = "2.00";
-	private final String SPONSORSHIP_PRICE = "200.00";
+	private static final String SUBSCRIPTION_PRICE = "2.00";
+	private static final String SPONSORSHIP_PRICE = "200.00";
 
 	private OrderRequest buildSubscriptionRequestBody(String id) {
 		OrderRequest orderRequest = new OrderRequest();
