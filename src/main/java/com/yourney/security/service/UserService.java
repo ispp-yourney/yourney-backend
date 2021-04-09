@@ -18,6 +18,10 @@ public class UserService {
 	@Autowired
 	UserRepository userRepository;
 
+	public Optional<User> getOneById(long id) {
+		return userRepository.findById(id);
+	}
+
 	public Optional<User> getByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
