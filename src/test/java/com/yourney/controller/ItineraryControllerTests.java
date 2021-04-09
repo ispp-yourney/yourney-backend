@@ -1,10 +1,10 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
-
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
@@ -49,6 +49,7 @@ import com.yourney.service.LandmarkService;
 class ItineraryControllerTests {
 
 	private static final int TEST_ITINERARY_ID_1 = 1;
+	private static final int TEST_USER_ID_1 = 1;
 	private static final int TEST_ITINERARY_PAGE = 1;
 	private static final int TEST_ITINERARY_SIZE = 10;
 	private static final String TEST_ITINERARY_COUNTRY_1 = "Brazil";
@@ -117,7 +118,7 @@ class ItineraryControllerTests {
 		us1.setEmail("user2@email.com");
 		us1.setExpirationDate(null);
 		us1.setFirstName("Firstname2");
-		us1.setId((long)1);
+		us1.setId((long)2);
 		us1.setLastName("Lastname2");
 		us1.setPassword("password2");
 		us1.setPlan(0);
@@ -138,6 +139,8 @@ class ItineraryControllerTests {
 	    it1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it1.setViews(0);
 	    it1.setAuthor(us1);
+	    
+	    doReturn(it1).when(this.itineraryService).save(any());
 	    
 	    Itinerary it2 = new Itinerary();
 	    
@@ -326,9 +329,11 @@ class ItineraryControllerTests {
 		itineraries2.add(itp1);
 		itineraries2.add(itp2);
 		itineraries2.add(itp3);
+		
 		Page<ItineraryProjection> itinerariesPage2 = new PageImpl<>(itineraries2);
 		
 		List<ItineraryProjection> itineraries3 = new ArrayList<>();
+		
 		itineraries3.add(itp1);
 		Page<ItineraryProjection> itinerariesPage3 = new PageImpl<>(itineraries3);
 		
@@ -337,14 +342,26 @@ class ItineraryControllerTests {
 		itineraries4.add(itp3);
 		Page<ItineraryProjection> itinerariesPage4 = new PageImpl<>(itineraries4);
 		
+		itp1 = factory.createProjection(ItineraryProjection.class, it1);
+		itp3 = factory.createProjection(ItineraryProjection.class, it3);
+		itineraries2.add(itp1);
+		itineraries2.add(itp3);
+		
+		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
+
 	    given(this.itineraryService.searchByName(pageable, "%"+TEST_ITINERARY_NAME+"%")).willReturn(itinerariesPage3);
 	    given(this.itineraryService.searchByUserId(pageable, (long) TEST_ITINERARY_USER_ID)).willReturn(itinerariesPage4);
 	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
 
+	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
+	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage3);
+	    given(this.itineraryService.searchByUsername(pageable, us1.getUsername())).willReturn(itinerariesPage3);
+	    given(this.itineraryService.searchByUsername(pageable, us1.getUsername())).willReturn(itinerariesPage3);
+	    
 	}
 	
 	@Test
@@ -476,4 +493,31 @@ class ItineraryControllerTests {
 		
 	}
 
+//	@Test
+//	@WithMockUser(username = "user1", password = "password1")
+//	void testCreateItinerary() throws Exception {
+//		
+//		JSONObject activityJSON = new JSONObject();
+//		
+//		activityJSON.put("budget", 0);
+//		activityJSON.put("description", "Sevilla");
+//		activityJSON.put("estimatedDays", 1);
+//		activityJSON.put("name", "Sevilla");
+//		activityJSON.put("recomendedSeason", "WINTER");
+//		activityJSON.put("status", "DRAFT");
+//		
+//		this.mockMvc.perform(post("/itinerary/create")
+//		.contentType(MediaType.APPLICATION_JSON)
+//		.content(activityJSON.toString()))
+//
+//		// Validate the response code and content type
+//		.andExpect(status().isOk())
+//        
+//
+////		// Validate the returned fields
+//        .andExpect(jsonPath("$.id", is(1)))
+//        .andExpect(jsonPath("$.description", is("Sevilla")))
+//        .andExpect(jsonPath("$.name", is("Sevilla")));
+//	}
+	
 }

@@ -1,9 +1,9 @@
+
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
 
 import static org.mockito.Mockito.doReturn;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
@@ -30,6 +30,7 @@ import com.yourney.model.StatusType;
 import com.yourney.security.model.User;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
+import static org.mockito.ArgumentMatchers.any;
 
 
 @SpringBootTest
@@ -39,6 +40,7 @@ class ActivityControllerTests {
 	private static final int TEST_ACTIVITY_ID = 1;
 	private static final int TEST_ACTIVITY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID = 1;
+	private static final int TEST_LANDMARK_ID = 1;
 	
 	@Autowired
 	protected ActivityController activityController;
@@ -94,10 +96,8 @@ class ActivityControllerTests {
 		given(this.activityService.existsById((long)ActivityControllerTests.TEST_ACTIVITY_ID)).willReturn(true);
 		Collection<Activity> activities = new ArrayList<>();
 		activities.add(a1);
-		
-		doReturn(a1).when(this.activityService).save(a1);
-		
-
+				
+		doReturn(a1).when(this.activityService).save(any());
 		
 		Activity a2 = new Activity(); 
 
@@ -117,7 +117,6 @@ class ActivityControllerTests {
 		Iterable<Activity> activitiesList = new ArrayList<Activity>(activities);
 	
 		given(this.activityService.findAllActivityProjectionsByDayAndItinerary((long)ActivityControllerTests.TEST_ITINERARY_ID, 1)).willReturn(activitiesList);
-		
 		
 		// LADNMARKS
 	    
@@ -202,21 +201,21 @@ class ActivityControllerTests {
 		activityJSON.put("description", "lorem ipsum 0");
 		activityJSON.put("itinerary", 1);
 		activityJSON.put("title", "comienza el test: Giralda");
+		activityJSON.put("landmark", 0);
 		
 		this.mockMvc.perform(post("/activity/create")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(activityJSON.toString()))
 
 		// Validate the response code and content type
-		.andExpect(status().isOk());
-//        .andExpect(content().json(activityJSON.toString()));
+		.andExpect(status().isOk())
         
 
 //		// Validate the returned fields
-//        .andExpect(jsonPath("$.id", is(1)))
-//        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
-//        .andExpect(jsonPath("$.description", is("lorem ipsum 0")))
-//        .andExpect(jsonPath("$.day", is(1)));
+        .andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.title", is("comienza el test: Giralda")))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 0")))
+        .andExpect(jsonPath("$.day", is(1)));
 	}
 	
 	@Test
@@ -256,3 +255,4 @@ class ActivityControllerTests {
         .andExpect(jsonPath("$.text", is("Actividad eliminada correctamente")));
 	}
 }
+
