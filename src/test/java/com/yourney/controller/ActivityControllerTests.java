@@ -1,6 +1,7 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.doReturn;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
