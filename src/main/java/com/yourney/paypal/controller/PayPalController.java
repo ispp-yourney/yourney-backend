@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.Order;
+import com.yourney.model.dto.Message;
 import com.yourney.paypal.service.CaptureOrderService;
 import com.yourney.paypal.service.CreateOrderService;
 import com.yourney.security.model.User;
@@ -11,6 +12,8 @@ import com.yourney.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,13 +41,12 @@ public class PayPalController {
     private static final String ERROR_URI = "/error";
 
     @GetMapping("/create/{orderType}")
-    public String create(@PathVariable String orderType) {
-        String redirectUrl = "redirect:" + frontendUrl;
+    public ResponseEntity<?> create(@PathVariable String orderType) {
         String id = "";
 
         String currentUser = userService.getCurrentUsername();
         if (currentUser.equals("anonymousUser")) {
-            return redirectUrl + ERROR_URI;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("Un usuario anónimo no puede mejorar su plan"));
         }
 
         switch (orderType.toUpperCase()) {
@@ -52,7 +54,7 @@ public class PayPalController {
                 Optional<User> findUser =  userService.getByUsername(currentUser);
 
                 if (!findUser.isPresent()) {
-                    return redirectUrl + ERROR_URI;
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario actual no existe"));
                 }
 
                 User user = findUser.get();
@@ -64,20 +66,20 @@ public class PayPalController {
                 break;
         
             default:
-                return redirectUrl + ERROR_URI;
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("El tipo de pago es inválido"));
         }
 
         try {
             HttpResponse<Order> orderResponse = createOrderService.createOrder(orderType.toUpperCase(), id);
             if (orderResponse.statusCode() == 201) {
-                return "redirect:" + orderResponse.result().links().get(1).href();
-            } else {
-                return redirectUrl + ERROR_URI;         
+                return ResponseEntity.ok(new Message(orderResponse.result().links().get(1).href()));
             }
 
         } catch(Exception e){
-            return redirectUrl + ERROR_URI;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Error al realizar la solicitud de pago"));
         }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Error al realizar la solicitud de pago"));
     }
 
     @GetMapping("/capture")
