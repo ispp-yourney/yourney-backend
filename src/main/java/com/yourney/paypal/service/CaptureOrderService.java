@@ -5,16 +5,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.paypal.orders.*;
+import com.yourney.paypal.exception.CheckoutException;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
-import com.paypal.http.serializer.Json;
 
 @Service
 public class CaptureOrderService {
@@ -24,9 +23,6 @@ public class CaptureOrderService {
 
 	@Autowired
 	private UserService userService;
-
-	@Value("${paypal.frontend-url}")
-    private String frontendUrl;
 	
 	public OrderRequest buildRequestBody() {
 		return new OrderRequest();
@@ -34,17 +30,14 @@ public class CaptureOrderService {
 
 	public HttpResponse<Order> getOrder(String orderId) throws IOException {
 		OrdersGetRequest request = new OrdersGetRequest(orderId);
-		HttpResponse<Order> response = paypalClient.execute(request);
-		return response;
+		return paypalClient.execute(request);
 	}
 
 
-	public String captureOrder(String orderId) throws IOException {
+	public String captureOrder(String orderId) throws IOException, CheckoutException {
 		OrdersCaptureRequest request = new OrdersCaptureRequest(orderId);
 		request.requestBody(buildRequestBody());
 		HttpResponse<Order> response = paypalClient.execute(request);
-
-		System.out.println("Order ID: " + response.result().id());
 
 		response = getOrder(response.result().id());
 
@@ -56,7 +49,7 @@ public class CaptureOrderService {
 				Optional<User> foundUser = userService.getOneById(Long.parseLong(id));
 
 				if (!foundUser.isPresent()) {
-					return "/error";
+					throw new CheckoutException();
 				}
 		
 				int subscriptionDays = Integer.parseInt(sku.split("-")[1]);
@@ -72,17 +65,16 @@ public class CaptureOrderService {
 				
 				User updatedUser = userService.save(user);
 
-				if (updatedUser == null) {
-					return "/error";
-				} else {
+				if (updatedUser != null) {
 					return "/perfil/" + user.getUsername();
 				}
-			} else if (sku.contains("SPO-")) {
+
+			} /* else if (sku.contains("SPO-")) {
 				
-			}
+			} */
 		}
 
-		return "/error";
+		throw new CheckoutException();
 	}
 
 	

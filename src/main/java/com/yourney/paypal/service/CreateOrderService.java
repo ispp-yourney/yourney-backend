@@ -6,22 +6,16 @@ import java.util.List;
 
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
-import com.paypal.http.serializer.Json;
-import com.paypal.orders.AddressPortable;
 import com.paypal.orders.AmountBreakdown;
 import com.paypal.orders.AmountWithBreakdown;
 import com.paypal.orders.ApplicationContext;
 import com.paypal.orders.Item;
-import com.paypal.orders.LinkDescription;
 import com.paypal.orders.Money;
-import com.paypal.orders.Name;
 import com.paypal.orders.Order;
 import com.paypal.orders.OrderRequest;
 import com.paypal.orders.OrdersCreateRequest;
-import com.paypal.orders.Payee;
-import com.paypal.orders.PaymentInstruction;
 import com.paypal.orders.PurchaseUnitRequest;
-import com.paypal.orders.ShippingDetail;
+import com.yourney.paypal.exception.CheckoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,25 +30,25 @@ public class CreateOrderService {
 	@Value("${paypal.callback-url}")
 	private String paypalCallbackUrl;
 
+	private final String SUBSCRIPTION_PRICE = "2.00";
+	private final String SPONSORSHIP_PRICE = "200.00";
 
 	private OrderRequest buildSubscriptionRequestBody(String id) {
 		OrderRequest orderRequest = new OrderRequest();
 		orderRequest.checkoutPaymentIntent("CAPTURE");
-
-		System.out.println(paypalCallbackUrl);
 		
 		ApplicationContext applicationContext = new ApplicationContext().brandName("YOURNEY").landingPage("BILLING")
 				.cancelUrl(paypalCallbackUrl + "/paypal/cancel").returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
 		orderRequest.applicationContext(applicationContext);
 
-		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<PurchaseUnitRequest>();
+		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
 		PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId(id)
 				.description("Subscripción de usuario de 30 días").softDescriptor("SUBSCRIPTION")
-				.amountWithBreakdown(new AmountWithBreakdown().currencyCode("EUR").value("2.00")
-						.amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("EUR").value("2.00"))))
+				.amountWithBreakdown(new AmountWithBreakdown().currencyCode("EUR").value(SUBSCRIPTION_PRICE)
+						.amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("EUR").value(SUBSCRIPTION_PRICE))))
 				.items(List.of(
 					new Item().name("Subscripción").description("Subscripción de usuario de 30 días")
-						.unitAmount(new Money().currencyCode("EUR").value("2.00"))
+						.unitAmount(new Money().currencyCode("EUR").value(SUBSCRIPTION_PRICE))
 						.quantity("1").sku("SUB-30")
 				));
 		purchaseUnitRequests.add(purchaseUnitRequest);
@@ -65,21 +59,19 @@ public class CreateOrderService {
 	private OrderRequest buildSponsorshipRequestBody(String id) {
 		OrderRequest orderRequest = new OrderRequest();
 		orderRequest.checkoutPaymentIntent("CAPTURE");
-
-		System.out.println(paypalCallbackUrl);
 		
 		ApplicationContext applicationContext = new ApplicationContext().brandName("YOURNEY").landingPage("BILLING")
 				.cancelUrl(paypalCallbackUrl + "/paypal/cancel").returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
 		orderRequest.applicationContext(applicationContext);
 
-		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<PurchaseUnitRequest>();
+		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
 		PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId(id)
 				.description("Patrocinio de un punto de interés por 30 días").softDescriptor("SPONSORSHIP")
-				.amountWithBreakdown(new AmountWithBreakdown().currencyCode("EUR").value("200.00")
-						.amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("EUR").value("200.00"))))
+				.amountWithBreakdown(new AmountWithBreakdown().currencyCode("EUR").value(SPONSORSHIP_PRICE)
+						.amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("EUR").value(SPONSORSHIP_PRICE))))
 				.items(List.of(
 					new Item().name("Patrocinio").description("Patrocinio de un punto de interés por 30 días")
-						.unitAmount(new Money().currencyCode("EUR").value("200.00"))
+						.unitAmount(new Money().currencyCode("EUR").value(SPONSORSHIP_PRICE))
 						.quantity("1").sku("SPO-30")
 				));
 		purchaseUnitRequests.add(purchaseUnitRequest);
@@ -88,7 +80,7 @@ public class CreateOrderService {
 	}
 
 
-	public HttpResponse<Order> createOrder(String orderType, String id) throws IOException {
+	public HttpResponse<Order> createOrder(String orderType, String id) throws IOException, CheckoutException {
 		OrdersCreateRequest request = new OrdersCreateRequest();
 		request.header("prefer","return=representation");
 
@@ -102,11 +94,10 @@ public class CreateOrderService {
 				break;
 
 			default:
-				break;
+				throw new CheckoutException();
 		}
 
-		HttpResponse<Order> response = paypalClient.execute(request);
-		return response;
+		return paypalClient.execute(request);
 	}
 
 }
