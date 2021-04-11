@@ -69,9 +69,7 @@ public class CaptureOrderService {
 					return "/perfil/" + user.getUsername();
 				}
 
-			} /* else if (sku.contains("SPO-")) {
-				
-			} */
+			}
 		}
 
 		throw new CheckoutException();
