@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.Order;
+import com.yourney.model.Landmark;
 import com.yourney.model.dto.Message;
 import com.yourney.paypal.service.CaptureOrderService;
 import com.yourney.paypal.service.CreateOrderService;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
+import com.yourney.service.LandmarkService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,13 +37,16 @@ public class PayPalController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LandmarkService landmarkService;
+
     @Value("${paypal.frontend-url}")
     private String frontendUrl;
 
     private static final String ERROR_URI = "/error";
 
     @GetMapping("/create/{orderType}")
-    public ResponseEntity<?> create(@PathVariable String orderType) {
+    public ResponseEntity<?> create(@PathVariable String orderType, @RequestParam(name = "id", defaultValue = "0", required = false) Long landmarkId) {
         String id = "";
 
         String currentUser = userService.getCurrentUsername();
@@ -62,7 +67,18 @@ public class PayPalController {
                 break;
 
             case "SPONSORSHIP":
-                id = "";
+                
+                if (landmarkId == 0) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("No se ha intoducido un id válido."));
+                }
+
+                Optional<Landmark> findLandmark = landmarkService.findById(landmarkId);
+
+                if (!findLandmark.isPresent()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe una ubicación con el id indicado"));
+                }
+
+                id = landmarkId.toString();
                 break;
         
             default:

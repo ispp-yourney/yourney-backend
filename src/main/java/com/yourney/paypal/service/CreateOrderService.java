@@ -30,6 +30,9 @@ public class CreateOrderService {
 	@Value("${paypal.callback-url}")
 	private String paypalCallbackUrl;
 
+	@Value("${paypal.frontend-url}")
+	private String frontendUrl;
+
 	private static final String SUBSCRIPTION_PRICE = "2.00";
 	private static final String SPONSORSHIP_PRICE = "200.00";
 
@@ -38,7 +41,7 @@ public class CreateOrderService {
 		orderRequest.checkoutPaymentIntent("CAPTURE");
 		
 		ApplicationContext applicationContext = new ApplicationContext().brandName("YOURNEY").landingPage("BILLING")
-				.cancelUrl(paypalCallbackUrl + "/paypal/cancel").returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
+				.cancelUrl(frontendUrl).returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
 		orderRequest.applicationContext(applicationContext);
 
 		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
@@ -61,7 +64,7 @@ public class CreateOrderService {
 		orderRequest.checkoutPaymentIntent("CAPTURE");
 		
 		ApplicationContext applicationContext = new ApplicationContext().brandName("YOURNEY").landingPage("BILLING")
-				.cancelUrl(paypalCallbackUrl + "/paypal/cancel").returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
+				.cancelUrl(frontendUrl).returnUrl(paypalCallbackUrl + "/paypal/capture").userAction("CONTINUE");
 		orderRequest.applicationContext(applicationContext);
 
 		List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
