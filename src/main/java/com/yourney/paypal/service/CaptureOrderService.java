@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.paypal.orders.*;
+import com.yourney.model.Landmark;
 import com.yourney.paypal.exception.CheckoutException;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
+import com.yourney.service.LandmarkService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class CaptureOrderService {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private LandmarkService landmarkService;
+
 	public OrderRequest buildRequestBody() {
 		return new OrderRequest();
 	}
@@ -69,9 +74,27 @@ public class CaptureOrderService {
 					return "/perfil/" + user.getUsername();
 				}
 
-			} /* else if (sku.contains("SPO-")) {
+			} else if (sku.contains("SPO-")) {
+				Optional<Landmark> foundLandmark = landmarkService.findById(Long.parseLong(id));
 				
-			} */
+				int sponsorshipDays = Integer.parseInt(sku.split("-")[1]);
+				if (!foundLandmark.isPresent()) {
+					throw new CheckoutException();
+				}
+
+				Landmark landmark = foundLandmark.get();
+				if(landmark.getEndPromotionDate()!=null && landmark.getEndPromotionDate().isAfter(LocalDateTime.now())){
+					landmark.setEndPromotionDate(landmark.getEndPromotionDate().plusDays(sponsorshipDays));
+				} else {
+					landmark.setEndPromotionDate(LocalDateTime.now().plusDays(sponsorshipDays));
+				}
+
+				Landmark updatedLandmark = landmarkService.save(landmark);
+
+				if (updatedLandmark != null) {
+					return "/punto_interes/" + landmark.getId();
+				}
+			}
 		}
 
 		throw new CheckoutException();
