@@ -38,6 +38,7 @@ import static org.mockito.ArgumentMatchers.any;
 class ActivityControllerTests {
 
 	private static final int TEST_ACTIVITY_ID = 1;
+	private static final int TEST_ACTIVITY_ID_NOT_FOUND = 10;
 	private static final int TEST_ACTIVITY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID = 1;
 	private static final int TEST_LANDMARK_ID = 1;
@@ -84,6 +85,8 @@ class ActivityControllerTests {
 	    given(this.itineraryService.findById((long)ActivityControllerTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
 	    
 		//Activity
+	    given(this.activityService.findById((long)ActivityControllerTests.TEST_ACTIVITY_ID_NOT_FOUND)).willReturn(Optional.empty());
+	    
 		Activity a1 = new Activity(); 
 
 		a1.setId((long) 1);
@@ -192,6 +195,14 @@ class ActivityControllerTests {
 	}
 	
 	@Test
+	void testShowActivityIdNotFound() throws Exception {
+		this.mockMvc.perform(get("/activity/show/{id}", TEST_ACTIVITY_ID_NOT_FOUND))
+		// Validate the response code and content type
+		.andExpect(status().isNotFound());
+	
+	}
+	
+	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testCreateActivity() throws Exception {
 		
@@ -219,6 +230,27 @@ class ActivityControllerTests {
 	}
 	
 	@Test
+	void testCreateActivityNotRegistered() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "lorem ipsum 0");
+		activityJSON.put("itinerary", 1);
+		activityJSON.put("title", "comienza el test: Giralda");
+		activityJSON.put("landmark", 0);
+		
+		this.mockMvc.perform(post("/activity/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de creación sin registrarse.")));
+	}
+	
+	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testUpdateActivity() throws Exception {
 		
@@ -243,6 +275,51 @@ class ActivityControllerTests {
 	
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateActivityNotFound() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "Descripcion de prueba");
+		activityJSON.put("title", "Titulo de prueba");
+		activityJSON.put("id", TEST_ACTIVITY_ID_NOT_FOUND);
+		
+		this.mockMvc.perform(put("/activity/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("La actividad indicada no existe")));
+	}
+	
+	@Test
+	void testUpdateActivityNotRegistered() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "Descripcion de prueba");
+		activityJSON.put("title", "Titulo de prueba");
+		activityJSON.put("id", TEST_ACTIVITY_ID);
+		
+		this.mockMvc.perform(put("/activity/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("No puede añadir una actividad a un itinerario del que no es dueño.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
 	void testDeleteActivity() throws Exception {
 		
 		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
@@ -253,6 +330,33 @@ class ActivityControllerTests {
 		
 		// Validate the returned fields
         .andExpect(jsonPath("$.text", is("Actividad eliminada correctamente")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteActivityNotFound() throws Exception {
+		
+		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID_NOT_FOUND))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("No existe la actividad indicada")));
+	}
+	
+	@Test
+	void testDeleteActivityNotRegistered() throws Exception {
+		
+		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("No puede eliminar una actividad de un itinerario del que no es creador.")));
 	}
 }
 

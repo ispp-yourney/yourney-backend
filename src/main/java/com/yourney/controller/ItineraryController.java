@@ -207,7 +207,7 @@ public class ItineraryController {
 
 		if (username.equals("anonymousUser")) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
-					.body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+					.body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
 		}
 
 		Optional<Itinerary> itineraryToUpdate = itineraryService.findById(itineraryDto.getId());
@@ -220,7 +220,7 @@ public class ItineraryController {
 
 		if (!itinerary.getAuthor().getUsername().equals(username)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-					new Message("El usuario no tiene permiso de modficación de este itinerario, que no es suyo."));
+					new Message("El usuario no tiene permiso de modificación de este itinerario, que no es suyo."));
 		}
 		BeanUtils.copyProperties(itineraryDto, itinerary, "id", "createDate", "activities", "author", "views", "image");
 
