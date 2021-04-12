@@ -12,25 +12,25 @@ project:
   members:
     member1:
       name: 'Eduardo Miguel'
-      surname: 'Botía Domingo'
+      surname: 'Botia Domingo'
       githubUsername: 'edubotdom'
     member2:
       name: 'Antonio'
-      surname: 'Suárez Bono'
+      surname: 'Suarez Bono'
       githubUsername: 'antsuabon'
     member3:
-      name: 'José Manuel'
-      surname: 'Sánchez Ruiz' 
+      name: 'Jose Manuel'
+      surname: 'Sanchez Ruiz' 
       githubUsername: 'jossanrui5'
     member4:
       name: 'Javier'
-      surname: 'Vázquez Zambrano' 
+      surname: 'Vazquez Zambrano' 
       githubUsername: 'javvazzam'
     member5:
       name: 'Julia'
       surname: 'Soult Toscano'
       githubUsername: 'julsoutos'
     member6:
-      name: 'Jesús'
-      surname: 'Gámez Larrad'
+      name: 'Jesus'
+      surname: 'Gamez Larrad'
       githubUsername: 'jesgamlar'
