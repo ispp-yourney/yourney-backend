@@ -88,7 +88,7 @@ public class LandmarkController {
 
         if (!foundLandmark.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("El usuario no tiene permiso de eliminar sin registrarse."));
+                    .body(new Message("El punto de interés que intenta eliminar no existe."));
         }
 
         String username = userService.getCurrentUsername();
@@ -145,7 +145,7 @@ public class LandmarkController {
 
         if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+                    .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
         }
 
 		if (!foundLandmark.isPresent()) {
@@ -172,7 +172,7 @@ public class LandmarkController {
 
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+                        .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
         }
 
 		Optional<Landmark> foundLandmark = landmarkService.findById(landmarkId);

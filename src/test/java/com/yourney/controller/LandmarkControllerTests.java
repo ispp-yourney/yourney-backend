@@ -1,7 +1,8 @@
 package com.yourney.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.CoreMatchers.isA;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import com.yourney.model.Image;
 import com.yourney.model.Landmark;
 import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.service.ActivityService;
@@ -40,6 +46,10 @@ import com.yourney.service.LandmarkService;
 class LandmarkControllerTests {
 
 	private static final int TEST_LANDMARK_ID = 1;
+	private static final int TEST_LANDMARK_ID_NOT_FOUND = 4;
+	private static final int TEST_LANDMARK_ID2 = 2;
+	private static final int TEST_LANDMARK_ID3 = 3;
+	private static final int TEST_IMAGE_ID = 78;
 	private static final String TEST_LANDMARK_COUNTRY = "España";
 	private static final String TEST_LANDMARK_CITY = "Sevilla";
 	private static final String TEST_LANDMARK_NAME = "Giralda";
@@ -88,7 +98,7 @@ class LandmarkControllerTests {
 	    l1.setImage(null);
 	    
 	    Landmark l2 = new Landmark();
-	    l2.setId((long)2);
+	    l2.setId((long)TEST_LANDMARK_ID2);
 	    l2.setName("Coliseo romano");
 	    l2.setDescription("lorem ipsum");
 	    l2.setPrice(0.);
@@ -106,6 +116,32 @@ class LandmarkControllerTests {
 	    l2.setViews((long)0);
 	    l2.setImage(null);
 	    
+	    Landmark landmarkCreado = new Landmark();
+	    landmarkCreado.setId((long)TEST_LANDMARK_ID3);
+	    landmarkCreado.setCategory(null);
+	    landmarkCreado.setCity("Sevilla");
+	    landmarkCreado.setCountry("Spain");
+	    landmarkCreado.setDescription("description test");
+	    landmarkCreado.setEmail("test@gmail.com");
+	    landmarkCreado.setInstagram("https://instagram.com/testlandmark");
+	    landmarkCreado.setLatitude(0.);
+	    landmarkCreado.setLongitude(0.);
+	    landmarkCreado.setName("Landmark test");
+	    landmarkCreado.setTwitter("https://twitter.com/testlandmark");
+	    landmarkCreado.setPhone("+1 3234645145");
+	    landmarkCreado.setPrice(0.);
+	    landmarkCreado.setWebsite("https://www.testlandmark.com/");
+	    
+	    
+	    
+	    
+	    //Images
+	    Image i1 = new Image();
+	    i1.setId(TEST_LANDMARK_ID);
+	    i1.setName("Image test landmark");
+	    i1.setImageUrl("https://elviajista.com/wp-content/uploads/2020/06/habanacuba-730x487.jpg");
+	    
+
 	    Collection<String> countryList = new ArrayList<>();
 	    countryList.add(l1.getCountry());
 	    countryList.add(l2.getCountry());
@@ -126,11 +162,12 @@ class LandmarkControllerTests {
 		Page<LandmarkProjection> landmarksPage1 = new PageImpl<>(landmarks1);
 	    
 	    given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID)).willReturn(Optional.of(l1));
+	    given(this.imageService.findById((long)LandmarkControllerTests.TEST_IMAGE_ID)).willReturn(Optional.of(i1));
 	    given(this.landmarkService.findAllCountries()).willReturn(countryList);
 	    given(this.landmarkService.findCitiesByCountry(TEST_LANDMARK_COUNTRY)).willReturn(cityByCountryList);
 	    given(this.landmarkService.findAllCities()).willReturn(cityList);
 	    given(this.landmarkService.searchByProperties("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%","%" + TEST_LANDMARK_NAME + "%", TEST_LANDMARK_SIZE, pageable)).willReturn(landmarksPage1);
-		
+	    doReturn(landmarkCreado).when(this.landmarkService).save(any());
 	}
 	
 	@Test
@@ -203,6 +240,235 @@ class LandmarkControllerTests {
         .andExpect(jsonPath("$.country", is("España")))
         .andExpect(jsonPath("$.city", is("Sevilla")));
 	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmark() throws Exception {
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("category", null);
+		activityJSON.put("city", "Sevilla");
+		activityJSON.put("country", "Spain");
+		activityJSON.put("description", "description test");
+		activityJSON.put("email", "test@gmail.com");
+		activityJSON.put("country", "Spain");
+		activityJSON.put("instagram", "https://instagram.com/testlandmark");
+		activityJSON.put("latitude", 0);
+		activityJSON.put("longitude", 0);
+		activityJSON.put("name", "Landmark test");
+		activityJSON.put("twitter", "https://twitter.com/testlandmark");
+		activityJSON.put("phone", "+1 3234645145");
+		activityJSON.put("price", 0);
+		activityJSON.put("website", "https://www.testlandmark.com/");
+		
+		this.mockMvc.perform(post("/landmark/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)))
+        .andExpect(jsonPath("$.city", is("Sevilla")))
+        .andExpect(jsonPath("$.country", is("Spain")))
+        .andExpect(jsonPath("$.email", is("test@gmail.com")))
+        .andExpect(jsonPath("$.latitude", is(0.)))
+        .andExpect(jsonPath("$.longitude", is(0.)))
+        .andExpect(jsonPath("$.name", is("Landmark test")))
+        .andExpect(jsonPath("$.instagram", is("https://instagram.com/testlandmark")))
+        .andExpect(jsonPath("$.description", is("description test")))
+        .andExpect(jsonPath("$.price", is(0.)))
+        .andExpect(jsonPath("$.twitter", is("https://twitter.com/testlandmark")))
+        .andExpect(jsonPath("$.website", is("https://www.testlandmark.com/")))
+        .andExpect(jsonPath("$.phone", is("+1 3234645145")));
+	}
+	
+	@Test
+	void testCreateLandmarkNotRegistered() throws Exception {
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("category", null);
+		activityJSON.put("city", "Sevilla");
+		activityJSON.put("country", "Spain");
+		activityJSON.put("description", "description test");
+		activityJSON.put("email", "test@gmail.com");
+		activityJSON.put("country", "Spain");
+		activityJSON.put("instagram", "https://instagram.com/testlandmark");
+		activityJSON.put("latitude", 0);
+		activityJSON.put("longitude", 0);
+		activityJSON.put("name", "Landmark test");
+		activityJSON.put("twitter", "https://twitter.com/testlandmark");
+		activityJSON.put("phone", "+1 3234645145");
+		activityJSON.put("price", 0);
+		activityJSON.put("website", "https://www.testlandmark.com/");
+		
+		this.mockMvc.perform(post("/landmark/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso para crear POI sin registrarse.")));
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateLandmark() throws Exception {
+		JSONObject landmarkJSON = new JSONObject();
+		
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+1 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+		landmarkJSON.put("id", TEST_LANDMARK_ID);
+		
+		this.mockMvc.perform(put("/landmark/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)))
+        .andExpect(jsonPath("$.city", is("Sevilla")))
+        .andExpect(jsonPath("$.country", is("Spain")))
+        .andExpect(jsonPath("$.email", is("test@gmail.com")))
+        .andExpect(jsonPath("$.latitude", is(0.)))
+        .andExpect(jsonPath("$.longitude", is(0.)))
+        .andExpect(jsonPath("$.name", is("Landmark test")))
+        .andExpect(jsonPath("$.instagram", is("https://instagram.com/testlandmark")))
+        .andExpect(jsonPath("$.description", is("description test")))
+        .andExpect(jsonPath("$.price", is(0.)))
+        .andExpect(jsonPath("$.twitter", is("https://twitter.com/testlandmark")))
+        .andExpect(jsonPath("$.website", is("https://www.testlandmark.com/")))
+        .andExpect(jsonPath("$.phone", is("+1 3234645145")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateLandmarkNotFound() throws Exception {
+		JSONObject landmarkJSON = new JSONObject();
+		
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+1 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+		landmarkJSON.put("id", TEST_LANDMARK_ID_NOT_FOUND);
+		
+		this.mockMvc.perform(put("/landmark/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("No existe el POI indicado")));
+        
+	}
+	
+	@Test
+	void testUpdateLandmarkNotRegistered() throws Exception {
+		JSONObject landmarkJSON = new JSONObject();
+		
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+1 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+		landmarkJSON.put("id", TEST_LANDMARK_ID);
+		
+		this.mockMvc.perform(put("/landmark/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso de modificación sin registrarse.")));
+        
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteItinerary() throws Exception {
+		
+		this.mockMvc.perform(delete("/landmark/delete/{id}", TEST_LANDMARK_ID))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El punto de interés ha sido eliminado correctamente.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteItineraryNotFound() throws Exception {
+		
+		this.mockMvc.perform(delete("/landmark/delete/{id}", TEST_LANDMARK_ID_NOT_FOUND))
+		
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El punto de interés que intenta eliminar no existe.")));
+	}
+	
+	@Test
+	void testDeleteItineraryNotRegistered() throws Exception {
+		
+		this.mockMvc.perform(delete("/landmark/delete/{id}", TEST_LANDMARK_ID))
+		
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de eliminar sin registrarse.")));
+	}
+
 
 	
 }

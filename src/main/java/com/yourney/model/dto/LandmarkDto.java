@@ -2,6 +2,7 @@ package com.yourney.model.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
@@ -35,6 +36,7 @@ public class LandmarkDto {
 
     private String category;
 
+    @Email(message = "El campo email no tiene el formato correcto")
     private String email;
 
     private String phone;
