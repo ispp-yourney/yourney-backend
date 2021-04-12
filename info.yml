@@ -1,0 +1,36 @@
+project:
+  name: 'ispp-yourney-backend'
+  owner: 'morning'
+  teamId: '1'
+  identities:
+    github:
+      url: 'https://github.com/ispp-yourney/yourney-backend'
+    heroku:
+      url: 'https://be-dev-yourney.herokuapp.com'
+    travis:
+      url: 'https://travis-ci.org/github/ispp-yourney/yourney-backend'
+  members:
+    member1:
+      name: 'Eduardo Miguel'
+      surname: 'Botía Domingo'
+      githubUsername: 'edubotdom'
+    member2:
+      name: 'Antonio'
+      surname: 'Suárez Bono'
+      githubUsername: 'antsuabon'
+    member3:
+      name: 'José Manuel'
+      surname: 'Sánchez Ruiz' 
+      githubUsername: 'jossanrui5'
+    member4:
+      name: 'Javier'
+      surname: 'Vázquez Zambrano' 
+      githubUsername: 'javvazzam'
+    member5:
+      name: 'Julia'
+      surname: 'Soult Toscano'
+      githubUsername: 'julsoutos'
+    member6:
+      name: 'Jesús'
+      surname: 'Gámez Larrad'
+      githubUsername: 'jesgamlar'
