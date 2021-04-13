@@ -46,10 +46,11 @@ import com.yourney.service.LandmarkService;
 class LandmarkControllerTests {
 
 	private static final int TEST_LANDMARK_ID = 1;
-	private static final int TEST_LANDMARK_ID_NOT_FOUND = 5;
 	private static final int TEST_LANDMARK_ID2 = 2;
 	private static final int TEST_LANDMARK_ID3 = 3;
-	private static final int TEST_LANDMARK_ID4 = 4;	
+	private static final int TEST_LANDMARK_ID4 = 4;
+	private static final int TEST_LANDMARK_ID_NOT_FOUND = 5;	
+	private static final int TEST_LANDMARK_ID6 = 6;	
 	private static final int TEST_IMAGE_ID = 78;
 	private static final String TEST_LANDMARK_COUNTRY = "España";
 	private static final String TEST_LANDMARK_CITY = "Sevilla";
@@ -136,6 +137,25 @@ class LandmarkControllerTests {
 	    l4.setViews((long)0);
 	    l4.setImage(null);
 
+	    Landmark l6 = new Landmark();
+	    l6.setId((long)TEST_LANDMARK_ID6);
+	    l6.setName("Landmark 6 name");
+	    l6.setDescription("Landmark 6 desc");
+	    l6.setPrice(0.);
+	    l6.setCountry("Italia");
+	    l6.setCity("Roma");
+	    l6.setLatitude(37.38618100597202);
+	    l6.setLongitude(-5.992615925346369);
+	    l6.setEndPromotionDate(null);
+	    l6.setEmail("coliseo@email.com");
+	    l6.setInstagram(null);
+	    l6.setPhone("123456789");
+	    l6.setTwitter(null);
+	    l6.setWebsite(null);
+	    l6.setCategory("Monumento histórico");
+	    l6.setViews(null);
+	    l6.setImage(null);
+
 		Activity activity_l4 = new Activity(); 
 		activity_l4.setId(1);
 		activity_l4.setTitle("termina el test: Giralda");
@@ -189,6 +209,7 @@ class LandmarkControllerTests {
 	    
 
 		given(this.landmarkService.existsActivityByLandmarkId((long)LandmarkControllerTests.TEST_LANDMARK_ID4)).willReturn(true);
+		given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID6)).willReturn(Optional.of(l6));
 		given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID4)).willReturn(Optional.of(l4));
 	    given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID)).willReturn(Optional.of(l1));
 	    given(this.imageService.findById((long)LandmarkControllerTests.TEST_IMAGE_ID)).willReturn(Optional.of(i1));
@@ -196,7 +217,7 @@ class LandmarkControllerTests {
 	    given(this.landmarkService.findCitiesByCountry(TEST_LANDMARK_COUNTRY)).willReturn(cityByCountryList);
 	    given(this.landmarkService.findAllCities()).willReturn(cityList);
 	    given(this.landmarkService.searchByProperties("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%","%" + TEST_LANDMARK_NAME + "%", TEST_LANDMARK_SIZE, pageable)).willReturn(landmarksPage1);
-	    doReturn(landmarkCreado).when(this.landmarkService).save(any());
+		doReturn(landmarkCreado).when(this.landmarkService).save(any());
 	}
 	
 	@Test
@@ -269,7 +290,26 @@ class LandmarkControllerTests {
         .andExpect(jsonPath("$.country", is("España")))
         .andExpect(jsonPath("$.city", is("Sevilla")));
 	}
+
+	@Test
+	void testShowNonExistantLandMark() throws Exception {
+		this.mockMvc.perform(get("/landmark/show/{id}", TEST_LANDMARK_ID_NOT_FOUND))
+		// Validate the response code and content type
+		.andExpect(status().isNotFound())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+	}
 	
+	@Test
+	void testShowLandMarkNullViews() throws Exception {
+		this.mockMvc.perform(get("/landmark/show/{id}", TEST_LANDMARK_ID6))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.views", is(1)));
+	}
+
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testCreateLandmark() throws Exception {
@@ -512,4 +552,73 @@ class LandmarkControllerTests {
 		.andExpect(jsonPath("$.text", is("El punto de interés se encuentra asociado con al menos una actividad.")));
 	}
 	
+	@Test
+	void testUpgradeNonAuthorizedLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}", TEST_LANDMARK_ID))
+		
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de modificación sin registrarse.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpgradeNonExistantLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}", TEST_LANDMARK_ID_NOT_FOUND))
+		
+		// Validate the response code and content type
+		.andExpect(status().isNotFound())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No se encuentra el landmark indicado.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpgradeNegativeDaysLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}&subscriptionDays={subscriptionDays}", TEST_LANDMARK_ID4, -33))
+		
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No puede subscribirse a días negativos o nulos")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpgradeExistingDateLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}&subscriptionDays={subscriptionDays}", TEST_LANDMARK_ID4, 33))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpgradeNonExistingDateLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}&subscriptionDays={subscriptionDays}", TEST_LANDMARK_ID4, 33))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)));
+	}
+
 }
