@@ -20,11 +20,11 @@ public class LandmarkDto {
     private Long id;
 
     @NotBlank(message = "El campo nombre es obligatorio")
-    @Length(max = 100)
+    @Length(max = 50, message = "El tamaño del campo nombre es demasiado largo, y el máximo son 50 caracteres.")
     private String name;
 
     @NotBlank(message = "El campo nombre es obligatorio")
-    @Length(max = 255)
+    @Length(max = 1000, message = "El tamaño del campo descripción es demasiado largo, y el máximo son 1000 caracteres.")
     private String description;
 
     @Min(value = 0, message = "El precio mínimo es 0")
@@ -36,10 +36,10 @@ public class LandmarkDto {
     @NotBlank(message = "El campo ciudad es obligatorio")
     private String city;
     
-    @Range(min = -90, max = 90)
+    @Range(min = -90, max = 90, message = "La latitud debe encontrarse entre -90 y 90")
     private Double latitude;
 
-    @Range(min = -180, max = 180)
+    @Range(min = -180, max = 180, message = "La longitud debe encontrarse entre -180 y 180")
     private Double longitude;
 
     private String category;
@@ -47,7 +47,7 @@ public class LandmarkDto {
     @Email
     private String email;
 
-    @Length(max = 50)
+    @Length(max = 50, message = "El campo teléfono es demasiado largo")
     private String phone;
 
     @URL(message = "El campo website se trata de una URL")

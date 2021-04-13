@@ -34,12 +34,12 @@ public class Landmark {
 
 	@NotBlank
 	@Column(nullable = false)
-	@Length(max = 100)
+	@Length(max = 50)
 	private String name;
 
 	@NotBlank
 	@Column(nullable = false)
-	@Length(max = 255)
+	@Length(max = 1000)
 	private String description;
 
 	@Range(min = 0)
