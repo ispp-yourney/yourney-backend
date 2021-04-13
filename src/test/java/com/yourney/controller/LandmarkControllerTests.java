@@ -46,7 +46,7 @@ import com.yourney.service.LandmarkService;
 class LandmarkControllerTests {
 
 	private static final int TEST_LANDMARK_ID = 1;
-	private static final int TEST_LANDMARK_ID_NOT_FOUND = 4;
+	private static final int TEST_LANDMARK_ID_NOT_FOUND = 5;
 	private static final int TEST_LANDMARK_ID2 = 2;
 	private static final int TEST_LANDMARK_ID3 = 3;
 	private static final int TEST_LANDMARK_ID4 = 4;	
