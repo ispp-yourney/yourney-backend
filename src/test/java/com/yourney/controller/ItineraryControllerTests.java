@@ -2,7 +2,6 @@ package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,7 +53,6 @@ class ItineraryControllerTests {
 
 	private static final int TEST_ITINERARY_ID_1 = 1;
 	private static final int TEST_ITINERARY_ID_NOT_FOUND = 10;
-	private static final int TEST_USER_ID_1 = 1;
 	private static final int TEST_ITINERARY_PAGE = 1;
 	private static final int TEST_ITINERARY_SIZE = 10;
 	private static final String TEST_ITINERARY_COUNTRY_1 = "Brazil";
