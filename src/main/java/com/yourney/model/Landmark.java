@@ -37,18 +37,26 @@ public class Landmark {
 	@Length(max = 100)
 	private String name;
 
+	@NotBlank
+	@Column(nullable = false)
 	@Length(max = 255)
 	private String description;
 
 	@Range(min = 0)
 	private Double price;
-
+	
+	@NotBlank
+	@Column(nullable = false)
 	private String country;
 
+	@NotBlank
+	@Column(nullable = false)
 	private String city;
 
+	@Range(min = -90, max = 90)
 	private Double latitude;
 
+	@Range(min = -180, max = 180)
 	private Double longitude;
 
 	private LocalDateTime endPromotionDate;
