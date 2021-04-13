@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.yourney.model.Activity;
 import com.yourney.model.Image;
 import com.yourney.model.Landmark;
 import com.yourney.model.projection.LandmarkProjection;
@@ -48,6 +49,7 @@ class LandmarkControllerTests {
 	private static final int TEST_LANDMARK_ID_NOT_FOUND = 4;
 	private static final int TEST_LANDMARK_ID2 = 2;
 	private static final int TEST_LANDMARK_ID3 = 3;
+	private static final int TEST_LANDMARK_ID4 = 4;	
 	private static final int TEST_IMAGE_ID = 78;
 	private static final String TEST_LANDMARK_COUNTRY = "España";
 	private static final String TEST_LANDMARK_CITY = "Sevilla";
@@ -114,7 +116,34 @@ class LandmarkControllerTests {
 	    l2.setCategory("Monumento histórico");
 	    l2.setViews((long)0);
 	    l2.setImage(null);
-	    
+
+	    Landmark l4 = new Landmark();
+	    l4.setId((long)TEST_LANDMARK_ID4);
+	    l4.setName("Landmark 4 name");
+	    l4.setDescription("Landmark 4 desc");
+	    l4.setPrice(0.);
+	    l4.setCountry("Italia");
+	    l4.setCity("Roma");
+	    l4.setLatitude(37.38618100597202);
+	    l4.setLongitude(-5.992615925346369);
+	    l4.setEndPromotionDate(LocalDateTime.of(2025, 12, 10, 8, 6, 4));
+	    l4.setEmail("coliseo@email.com");
+	    l4.setInstagram(null);
+	    l4.setPhone("123456789");
+	    l4.setTwitter(null);
+	    l4.setWebsite(null);
+	    l4.setCategory("Monumento histórico");
+	    l4.setViews((long)0);
+	    l4.setImage(null);
+
+		Activity activity_l4 = new Activity(); 
+		activity_l4.setId(1);
+		activity_l4.setTitle("termina el test: Giralda");
+		activity_l4.setDescription("lorem ipsum 1");
+		activity_l4.setDay(2);
+		activity_l4.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		activity_l4.setLandmark(l4);
+
 	    Landmark landmarkCreado = new Landmark();
 	    landmarkCreado.setId((long)TEST_LANDMARK_ID3);
 	    landmarkCreado.setCategory(null);
@@ -130,8 +159,6 @@ class LandmarkControllerTests {
 	    landmarkCreado.setPhone("+1 3234645145");
 	    landmarkCreado.setPrice(0.);
 	    landmarkCreado.setWebsite("https://www.testlandmark.com/");
-	    
-	    
 	    
 	    
 	    //Images
@@ -160,6 +187,9 @@ class LandmarkControllerTests {
 		landmarks1.add(lap1);
 		Page<LandmarkProjection> landmarksPage1 = new PageImpl<>(landmarks1);
 	    
+
+		given(this.landmarkService.existsActivityByLandmarkId((long)LandmarkControllerTests.TEST_LANDMARK_ID4)).willReturn(true);
+		given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID4)).willReturn(Optional.of(l4));
 	    given(this.landmarkService.findById((long)LandmarkControllerTests.TEST_LANDMARK_ID)).willReturn(Optional.of(l1));
 	    given(this.imageService.findById((long)LandmarkControllerTests.TEST_IMAGE_ID)).willReturn(Optional.of(i1));
 	    given(this.landmarkService.findAllCountries()).willReturn(countryList);
@@ -468,6 +498,18 @@ class LandmarkControllerTests {
 		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de eliminar sin registrarse.")));
 	}
 
-
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteLandmarkWithActivity() throws Exception {
+		
+		this.mockMvc.perform(delete("/landmark/delete/{id}", TEST_LANDMARK_ID4))
+		
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El punto de interés se encuentra asociado con al menos una actividad.")));
+	}
 	
 }

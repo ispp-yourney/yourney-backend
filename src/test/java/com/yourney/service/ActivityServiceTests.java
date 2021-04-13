@@ -24,7 +24,7 @@ import com.yourney.security.model.User;
 
 
 @SpringBootTest
-public class ActivityServiceTests {
+class ActivityServiceTests {
 
 	private static final long	TEST_ACTIVITY_ID	= 1;
 	private static final long	TEST_ITINERARY_ID	= 1;
