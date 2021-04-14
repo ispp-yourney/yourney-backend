@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,11 @@ import com.yourney.security.model.User;
 class ActivityServiceTests {
 
 	private static final long	TEST_ACTIVITY_ID	= 1;
+	private static final long	TEST_ACTIVITY_ID_2	= 2;
+	private static final long	TEST_ACTIVITY_ID_3	= 3;
+	private static final long	TEST_ACTIVITY_ID_4	= 1;
 	private static final long	TEST_ITINERARY_ID	= 1;
+	private static final long	TEST_ITINERARY_ID_2	= 2;
 	
 	@Autowired
 	protected ActivityService activityService;
@@ -42,7 +47,10 @@ class ActivityServiceTests {
 	private ItineraryRepository itineraryRepository;
 
 
-	public Activity activity = new Activity();
+	public Activity a1 = new Activity();
+	public Activity a2 = new Activity(); 
+	public Activity a3 = new Activity(); 
+	public Activity a4 = new Activity(); 
 	
 	@BeforeEach
 	void setup() {
@@ -71,35 +79,63 @@ class ActivityServiceTests {
 	    it1.setViews(0);
 	    it1.setAuthor(auth1);
 	    
+	    Itinerary it2 = new Itinerary();
+	    
+	    it2.setId((long)ActivityServiceTests.TEST_ITINERARY_ID_2);
+	    it2.setName("itinerary test 1");
+	    it2.setDescription("lorem ipsum");
+	    it2.setStatus(StatusType.PUBLISHED);
+	    it2.setBudget(10.);
+	    it2.setEstimatedDays(1);
+	    it2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    it2.setViews(0);
+	    it2.setAuthor(auth1);
+	    
 //	    doReturn(Optional.of(it1)).when(this.itineraryRepository).findById(ActivityServiceTests.TEST_ITINERARY_ID);
 	    given(this.itineraryRepository.findById(ActivityServiceTests.TEST_ITINERARY_ID)).willReturn(Optional.of(it1));
 	    
 		//Activity
 
-		this.activity.setId(ActivityServiceTests.TEST_ACTIVITY_ID);
-		this.activity.setTitle("comienza el test: Giralda");
-		this.activity.setDescription("lorem ipsum 0");
-		this.activity.setDay(1);
-		this.activity.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		this.activity.setItinerary(it1);
+		this.a1.setId(ActivityServiceTests.TEST_ACTIVITY_ID);
+		this.a1.setTitle("comienza el test: Giralda");
+		this.a1.setDescription("lorem ipsum 0");
+		this.a1.setDay(1);
+		this.a1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		this.a1.setItinerary(it1);
 		Collection<Activity> activities = new ArrayList<>();
-		activities.add(this.activity);
+		activities.add(this.a1);
 		
 //		doReturn(Optional.of(this.activity)).when(this.activityRepository).findById(ActivityServiceTests.TEST_ACTIVITY_ID);
-		given(this.activityRepository.findById(ActivityServiceTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(this.activity));
+		given(this.activityRepository.findById(ActivityServiceTests.TEST_ACTIVITY_ID)).willReturn(Optional.of(this.a1));
 
+
+		this.a2.setId(ActivityServiceTests.TEST_ACTIVITY_ID_2);
+		this.a2.setTitle("sigue el test: Giralda");
+		this.a2.setDescription("lorem ipsum 1");
+		this.a2.setDay(2);
+		this.a2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		this.a2.setItinerary(it1);
+		activities.add(this.a2);
 		
-		Activity a2 = new Activity(); 
-
-		a2.setId(2);
-		a2.setTitle("termina el test: Giralda");
-		a2.setDescription("lorem ipsum 1");
-		a2.setDay(2);
-		a2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		a2.setItinerary(it1);
-		activities.add(a2);
+		this.a3.setId(ActivityServiceTests.TEST_ACTIVITY_ID_3);
+		this.a3.setTitle("termina el test: Giralda");
+		this.a3.setDescription("lorem ipsum 2");
+		this.a3.setDay(2);
+		this.a3.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		this.a3.setItinerary(it1);
+		activities.add(this.a3);
+		
+		this.a4.setId(ActivityServiceTests.TEST_ACTIVITY_ID_4);
+		this.a4.setTitle("comienza el test: Giralda");
+		this.a4.setDescription("lorem ipsum 0");
+		this.a4.setDay(1);
+		this.a4.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+		this.a4.setItinerary(it2);
+		Collection<Activity> activities2 = new ArrayList<>();
+		activities2.add(this.a4);
 		
 		it1.setActivities(activities);
+		it2.setActivities(activities2);
 		
 		
 		// LADNMARKS
@@ -125,6 +161,30 @@ class ActivityServiceTests {
 	    la1.setTwitter(null);
 	    la1.setViews((long) 10);
 	    la1.setWebsite(null);
+	    
+	    List<Activity> list1 = new ArrayList<>();
+	    list1.add(this.a1);
+	    list1.add(this.a2);
+	    list1.add(this.a3);
+	    list1.add(this.a4);
+	    Iterable<Activity> iterable1 = list1;
+	    
+	    List<Activity> list2 = new ArrayList<>();
+	    list2.add(this.a2);
+	    list2.add(this.a3);
+	    Iterable<Activity> iterable2 = list2;
+	    
+	    List<Activity> list3 = new ArrayList<>();
+	    list3.add(this.a1);
+	    list3.add(this.a2);
+	    list3.add(this.a3);
+	    Iterable<Activity> iterable3 = list3;
+	    
+	    given(this.activityRepository.findAll()).willReturn(iterable1);
+	    given(this.activityRepository.save(this.a1)).willReturn(this.a1);
+	    given(this.activityRepository.existsById(this.a1.getId())).willReturn(true);
+	    given(this.activityRepository.findAllActivityProjectionsByDayAndItinerary(it1.getId(), 2)).willReturn(iterable2);
+	    given(this.activityRepository.findActivityByItinerary(it1.getId())).willReturn(iterable3);
 
 	}
 	
@@ -134,287 +194,62 @@ class ActivityServiceTests {
 		Optional<Activity> expected = this.activityService.findById(ActivityServiceTests.TEST_ACTIVITY_ID);
 
 		assertTrue(expected.isPresent());
-		assertSame(expected.get(), this.activity);
+		assertSame(expected.get(), this.a1);
 	}
+	
+	@Test
+	void testFindAll() {
 
-//	@Test
-//	@Transactional
-//	public void shouldInsertAirport() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(2000);
-//		airport.setMaxNumberOfClients(25000);
-//		airport.setLatitude(40.642098);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("WTF");
-//		airport.setCity("New York");
-//
-//		try {
-//			this.airportService.saveAirport(airport);
-//		} catch (DataAccessException | IncorrectCartesianCoordinatesException e) {
-//			e.printStackTrace();
-//		}
-//
-//		assertThat(airport.getId().longValue()).isNotEqualTo(0);
-//
-//		Collection<Airport> airports = this.airportService.findAirportsByName("JFK Airport");
-//		int found = airports.size();
-//
-//		assertThat(found).isGreaterThan(0);
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldThrowInsertExceptionIncorretCardinalCoordinates() {
-//
-//		Airport airportWithIncorretCardinalCoordinates = new Airport();
-//		airportWithIncorretCardinalCoordinates.setName("JFK Airport");
-//		airportWithIncorretCardinalCoordinates.setMaxNumberOfPlanes(2000);
-//		airportWithIncorretCardinalCoordinates.setMaxNumberOfClients(25000);
-//		airportWithIncorretCardinalCoordinates.setLatitude(92.5);
-//		airportWithIncorretCardinalCoordinates.setLongitude(-73.789288);
-//		airportWithIncorretCardinalCoordinates.setCode("JFK");
-//		airportWithIncorretCardinalCoordinates.setCity("New York");
-//
-//		assertThrows(IncorrectCartesianCoordinatesException.class, () -> {
-//			airportService.saveAirport(airportWithIncorretCardinalCoordinates);
-//		});
-//	}
-///*
-//	@Test
-//	@Transactional
-//	public void shouldThrowDuplicatedAirportNameException() {
-//		Airport firstAirport = new Airport();
-//		firstAirport.setName("JFK Airport");
-//		firstAirport.setMaxNumberOfPlanes(2000);
-//		firstAirport.setMaxNumberOfClients(25000);
-//		firstAirport.setLatitude(17.5);
-//		firstAirport.setLongitude(-73.789288);
-//		firstAirport.setCode("JFK");
-//		firstAirport.setCity("New York");
-//
-//		try {
-//			airportService.saveAirport(firstAirport);
-//		} catch (DataAccessException e) {
-//			e.printStackTrace();
-//		} catch (IncorrectCartesianCoordinatesException e) {
-//			e.printStackTrace();
-//		} 
-//
-//		Airport secondAirport = new Airport();
-//		secondAirport.setName("JFK Airport");
-//		secondAirport.setMaxNumberOfPlanes(100);
-//		secondAirport.setMaxNumberOfClients(1000);
-//		secondAirport.setLatitude(60.2);
-//		secondAirport.setLongitude(-173.789288);
-//		secondAirport.setCode("NYC");
-//		secondAirport.setCity("New York City");
-//
-//		assertThrows(DuplicatedAirportNameException.class, () -> {
-//			airportService.saveAirport(secondAirport);
-//		});
-//
-//	}
-//*/
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertNegativeMaxNumberOfPlanes() {
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(-1);
-//		airport.setMaxNumberOfClients(25000);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertNegativeMaxNumberOfClients() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(1000);
-//		airport.setMaxNumberOfClients(-1);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldInsert0MaxNumberOfPlanes() {
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(0);
-//		airport.setMaxNumberOfClients(25000);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York");
-//
-//		try {
-//			this.airportService.saveAirport(airport);
-//		} catch (DataAccessException | IncorrectCartesianCoordinatesException e) {
-//			e.printStackTrace();
-//		}
-//
-//		assertThat(airport.getId().longValue()).isNotEqualTo(0);
-//
-//		Collection<Airport> airports = this.airportService.findAirportsByName("JFK Airport");
-//		int found = airports.size();
-//
-//		assertThat(found).isEqualTo(1);
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldInsert0MaxNumberOfClients() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(1000);
-//		airport.setMaxNumberOfClients(0);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("ASB");
-//		airport.setCity("New York");
-//
-//		try {
-//			this.airportService.saveAirport(airport);
-//		} catch (DataAccessException | IncorrectCartesianCoordinatesException e) {
-//			e.printStackTrace();
-//		}
-//
-//		assertThat(airport.getId().longValue()).isNotEqualTo(0);
-//
-//		Collection<Airport> airports = this.airportService.findAirportsByName("JFK Airport");
-//		int found = airports.size();
-//
-//		assertThat(found).isGreaterThan(0);
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertBigMaxNumberOfPlanes() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(30001);
-//		airport.setMaxNumberOfClients(12125);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertBigMaxNumberOfClients() {
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(12125);
-//		airport.setMaxNumberOfClients(30001);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertCodeWithMoreThan3Letters() {
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(12125);
-//		airport.setMaxNumberOfClients(10001);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFKF");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertCodeWithNumbers() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(12125);
-//		airport.setMaxNumberOfClients(10001);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JF4");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertCodeWithLessThan3Letters() {
-//
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport");
-//		airport.setMaxNumberOfPlanes(12125);
-//		airport.setMaxNumberOfClients(10001);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JF");
-//		airport.setCity("New York");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//
-//	}
-//
-//	@Test
-//	@Transactional
-//	public void shouldNotInsertCityWithNumbers() {
-//		Airport airport = new Airport();
-//		airport.setName("JFK Airport 1");
-//		airport.setMaxNumberOfPlanes(12125);
-//		airport.setMaxNumberOfClients(10001);
-//		airport.setLatitude(17.5);
-//		airport.setLongitude(-73.789288);
-//		airport.setCode("JFK");
-//		airport.setCity("New York 1");
-//
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			airportService.saveAirport(airport);
-//		});
-//	}
+		Iterable<Activity> expected = this.activityService.findAll(); 
+		List<Activity> result = new ArrayList<Activity>();
+		expected.forEach(result::add);
 
+		assertTrue(result.size() == 4);
+		assertSame(result.get(0), this.a1);
+		assertSame(result.get(1), this.a2);
+		assertSame(result.get(2), this.a3);
+		assertSame(result.get(3), this.a4);
+	}
+	
+	@Test
+	void testSave() {
+
+		Activity expected = this.activityService.save(this.a1); 
+
+		assertSame(expected, this.a1);
+	}
+	
+	@Test
+	void testExistsById() {
+
+		Boolean expected = this.activityService.existsById(this.a1.getId()); 
+
+		assertTrue(expected);
+	}
+	
+	@Test
+	void testFindAllActivityProjectionsByDayAndItinerary() {
+
+		Iterable<Activity> expected = this.activityService.findAllActivityProjectionsByDayAndItinerary(ActivityServiceTests.TEST_ITINERARY_ID, 2); 
+		List<Activity> result = new ArrayList<Activity>();
+		expected.forEach(result::add);
+
+		assertTrue(result.size() == 2);
+		assertSame(result.get(0), this.a2);
+		assertSame(result.get(1), this.a3);
+	}
+	
+	@Test
+	void testFindActivityByItinerary() {
+
+		Iterable<Activity> expected = this.activityService.findActivityByItinerary(ActivityServiceTests.TEST_ITINERARY_ID); 
+		List<Activity> result = new ArrayList<Activity>();
+		expected.forEach(result::add);
+
+		assertTrue(result.size() == 3);
+		assertSame(result.get(0), this.a1);
+		assertSame(result.get(1), this.a2);
+		assertSame(result.get(2), this.a3);
+	}
+	
 }
