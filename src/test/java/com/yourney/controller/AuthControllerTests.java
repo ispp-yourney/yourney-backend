@@ -7,10 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,32 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.projection.ProjectionFactory;
-import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.yourney.model.Activity;
-import com.yourney.model.Image;
-import com.yourney.model.Itinerary;
-import com.yourney.model.Landmark;
-import com.yourney.model.StatusType;
-import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.controller.AuthController;
 import com.yourney.security.model.Role;
 import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
-import com.yourney.service.ActivityService;
-import com.yourney.service.ImageService;
-import com.yourney.service.ItineraryService;
-import com.yourney.service.LandmarkService;
 
 
 @SpringBootTest
