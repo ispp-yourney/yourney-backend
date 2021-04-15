@@ -1,6 +1,7 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -8,9 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,23 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.projection.ProjectionFactory;
-import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.yourney.model.Activity;
 import com.yourney.model.Comment;
 import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
-import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
-import com.yourney.model.projection.ItineraryProjection;
 import com.yourney.security.model.Role;
 import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
@@ -56,20 +45,8 @@ class CommentControllerTests {
 	private static final int TEST_COMMENT_ID_1 = 1;
 	private static final int TEST_COMMENT_ID_NOT_FOUND = 4;
 	private static final int TEST_ITINERARY_ID_1 = 1;
+	private static final int TEST_ITINERARY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID_NOT_FOUND = 10;
-	private static final int TEST_ITINERARY_PAGE = 1;
-	private static final int TEST_ITINERARY_SIZE = 10;
-	private static final String TEST_ITINERARY_COUNTRY_1 = "Brazil";
-	private static final String TEST_ITINERARY_CITY_1 = "Rio de Janeiro";
-	private static final String TEST_ITINERARY_COUNTRY_2 = "Francia";
-	private static final String TEST_ITINERARY_CITY_2 = "ParÃ­s";
-	private static final Double TEST_ITINERARY_MAXBUDGET = 9000.;
-	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
-	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
-	private static final Integer TEST_ITINERARY_MAXDAYS = 1000;
-	private static final String TEST_ITINERARY_NAME = "itinerary test 1";
-	private static final int TEST_ITINERARY_USER_ID = 1;
-	private static final String TEST_ITINERARY_USERNAME = "user1";
 	
 	@Autowired
 	protected CommentController commentController;
@@ -154,6 +131,21 @@ class CommentControllerTests {
 
 	    doReturn(it1).when(this.itineraryService).save(any());
 	    
+	    Itinerary it2 = new Itinerary();
+	    
+	    it2.setId((long)1);
+	    it2.setName("itinerary test 1");
+	    it2.setDescription("lorem ipsum 1");
+	    it2.setStatus(StatusType.DRAFT);
+	    it2.setBudget(10.);
+	    it2.setEstimatedDays(2);
+	    it2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    it2.setViews(0);
+	    it2.setAuthor(us1);
+	    
+	    it2.toString();
+	    it2.hashCode();
+	    
 	  //Comments
 	  	Comment c1 = new Comment();
 	  		
@@ -177,6 +169,7 @@ class CommentControllerTests {
 		given(this.commentService.findById((long) TEST_COMMENT_ID_1)).willReturn(Optional.of(c1));
 		given(this.commentService.findById((long) TEST_COMMENT_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
+	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_2)).willReturn(Optional.of(it2));
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario);
@@ -273,6 +266,27 @@ class CommentControllerTests {
 
 //		// Validate the returned fields
         .andExpect(jsonPath("$.text", is("El itinerario que se quiere comentar no existe")));
+	}
+	
+	@Test
+	void testCreateCommentItineraryDraft() throws Exception {
+
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("content", "Comentario de prueba");
+		activityJSON.put("rating", 4);
+		activityJSON.put("itinerary", TEST_ITINERARY_ID_2);
+		
+		this.mockMvc.perform(post("/comment/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No tiene permisos para comentar este itinerario")));
 	}
 	
 	@Test

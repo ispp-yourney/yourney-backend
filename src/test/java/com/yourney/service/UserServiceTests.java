@@ -2,16 +2,13 @@
 package com.yourney.service;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.ArgumentMatchers.any;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.yourney.model.Activity;
-import com.yourney.model.Itinerary;
-import com.yourney.model.Landmark;
-import com.yourney.model.StatusType;
-import com.yourney.repository.ActivityRepository;
-import com.yourney.repository.ItineraryRepository;
 import com.yourney.security.model.User;
 import com.yourney.security.repository.UserRepository;
 import com.yourney.security.service.UserService;
