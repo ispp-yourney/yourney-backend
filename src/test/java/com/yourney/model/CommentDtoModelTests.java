@@ -14,6 +14,8 @@ import com.yourney.model.dto.CommentDto;
 class CommentDtoModelTests {
 
 	CommentDto c1;
+	Comment c2;
+	CommentDto c3;
 	
 	@BeforeEach
 	void setup() {
@@ -22,7 +24,7 @@ class CommentDtoModelTests {
 		c1.setItinerary(null);
 		c1.setRating(5);
 
-		Comment c2 = new Comment();
+		c2 = new Comment();
 		c2.setAuthor(null);
 		c2.setContent("content2");
 		c2.setCreateDate(LocalDateTime.now());
@@ -30,8 +32,7 @@ class CommentDtoModelTests {
 		c2.setItinerary(null);
 		c2.setRating(5);
 
-		c2.toString();
-		c2.hashCode();
+		c3 = new CommentDto(1l, "content3", 5);
 
 	}
 
@@ -43,10 +44,12 @@ class CommentDtoModelTests {
 	@Test
 	void testHashcode() {
 		assertNotNull(c1.hashCode());
+		assertNotNull(c2.hashCode());
 	}
 
 	@Test
 	void testToString() {
 		assertNotEquals(c1.toString(),"");
+		assertNotEquals(c2.toString(),"");
 	}
 }

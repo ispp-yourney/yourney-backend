@@ -313,23 +313,23 @@ class AuthControllerTests {
 		.andExpect(jsonPath("$.lastName", is("Surname 1")));
 	}
 	
-//	@Test
-//	void testLogin() throws Exception {
-//		
-//		JSONObject activityJSON = new JSONObject();
-//		
-//		activityJSON.put("password", "user1");
-//		activityJSON.put("username", "user1");
-//		
-//		this.mockMvc.perform(post("/auth/login")
-//		.contentType(MediaType.APPLICATION_JSON)
-//		.content(activityJSON.toString()))
-//
-//		// Validate the response code and content type
-//		.andExpect(status().isOk())
-//        
-//
-////		// Validate the returned fields
-//        .andExpect(jsonPath("$.text", is("Usuario creado correctamente")));
-//	}
+	@Test
+	void testFailedLogin() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("password", "user3");
+		activityJSON.put("username", "user3");
+		
+		this.mockMvc.perform(post("/auth/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isUnauthorized())
+        
+
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("El usuario o la contraseña es inválido")));
+	}
 }

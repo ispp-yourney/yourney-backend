@@ -20,6 +20,7 @@ class ActivityDtoModelTests {
 	Landmark l2;
 	Itinerary it1;
 	Itinerary it2;
+	ActivityDto a3;
 
 
 	@BeforeEach
@@ -36,6 +37,8 @@ class ActivityDtoModelTests {
 		a2.setTitle("comienza el test: Giralda");
 		a2.setDescription("lorem ipsum 1");
 		a2.setDay(1);
+
+		a3 = new ActivityDto(3l, "title", "description", 1, 1l, 1l);
 
 		//Landmark
 	    l1 = new Landmark();
@@ -120,6 +123,7 @@ class ActivityDtoModelTests {
 	@Test
 	void testHashcode() {
 		assertNotNull(a1.hashCode());
+		assertNotNull(a3.hashCode());
 	}
 
 	@Test

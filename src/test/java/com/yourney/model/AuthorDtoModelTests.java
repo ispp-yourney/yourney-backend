@@ -16,6 +16,7 @@ class AuthorDtoModelTests {
 
 	AuthorDto a1;
 	AuthorDto a2;
+	AuthorDto a3;
 	
 	@BeforeEach
 	void setup() {
@@ -32,6 +33,8 @@ class AuthorDtoModelTests {
 		a2.setId(2L);
 		a2.setLastName("lastName 2");
 		a2.setUsername("username2");
+
+		a3 = new AuthorDto(3l, "Author 3", "author2@email.com", "username2", "lastName 2");
 	
 	}
 
