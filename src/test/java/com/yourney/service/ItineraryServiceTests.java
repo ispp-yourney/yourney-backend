@@ -50,7 +50,6 @@ class ItineraryServiceTests {
 	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
 	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
 	private static final String TEST_ITINERARY_NAME = "itinerary test 0";
-	private static final int TEST_ITINERARY_USER_ID = 1;
 	private static final String TEST_ITINERARY_USERNAME = "user1";
 	
 	@Autowired
