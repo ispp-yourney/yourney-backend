@@ -1,6 +1,8 @@
 
 package com.yourney.service;
 
+import static org.junit.Assert.assertFalse;
+
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertTrue;
@@ -25,9 +27,7 @@ import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import com.yourney.model.Activity;
-import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
-import com.yourney.model.StatusType;
 import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.repository.ActivityRepository;
 import com.yourney.repository.ItineraryRepository;
@@ -39,21 +39,9 @@ import com.yourney.security.model.User;
 class LandmarkServiceTests {
 
 	private static final long	TEST_ACTIVITY_ID_1	= 1;
-	private static final long	TEST_ACTIVITY_ID_2	= 2;
-	private static final long	TEST_ACTIVITY_ID_3	= 3;
-	private static final long	TEST_ACTIVITY_ID_4	= 1;
-	private static final long	TEST_ITINERARY_ID	= 1;
-	private static final long	TEST_ITINERARY_ID_2	= 2;
 	private static final long TEST_LANDMARK_ID1 = 1;
 	private static final long TEST_LANDMARK_ID2 = 2;
-	private static final long TEST_LANDMARK_ID3 = 3;
-	private static final long TEST_LANDMARK_ID4 = 4;
 	private static final long TEST_LANDMARK_ID_NOT_FOUND = 5;	
-	private static final long TEST_LANDMARK_ID6 = 6;	
-	private static final long TEST_IMAGE_ID = 78;
-	private static final String TEST_LANDMARK_COUNTRY = "España";
-	private static final String TEST_LANDMARK_CITY = "Sevilla";
-	private static final String TEST_LANDMARK_NAME = "Giralda";
 	private static final int TEST_LANDMARK_PAGE = 1;
 	private static final int TEST_LANDMARK_SIZE = 10;
 	
@@ -164,8 +152,10 @@ class LandmarkServiceTests {
 		
 		
 		given(this.landmarkRepository.findById(TEST_LANDMARK_ID1)).willReturn(Optional.of(l1));
+		given(this.landmarkRepository.findById(TEST_LANDMARK_ID_NOT_FOUND)).willReturn(Optional.empty());
 		given(this.landmarkRepository.findAll()).willReturn(landmarks);
 		given(this.landmarkRepository.existsActivityByLandmarkId(TEST_LANDMARK_ID1)).willReturn(true);
+		given(this.landmarkRepository.existsActivityByLandmarkId(TEST_LANDMARK_ID_NOT_FOUND)).willReturn(false);
 		given(this.landmarkRepository.searchByProperties(l1.getCountry(), l1.getCity(), l1.getName(), pageable)).willReturn(landmarksPage1);
 	    doReturn(l1).when(this.landmarkRepository).save(any());
 	    given(this.landmarkService.findAllCountries()).willReturn(countryList);
@@ -186,11 +176,27 @@ class LandmarkServiceTests {
 	}
 	
 	@Test
+	void testFindByIdNotFound() {
+
+		Optional<Landmark> expected = this.landmarkService.findById(LandmarkServiceTests.TEST_LANDMARK_ID_NOT_FOUND);
+
+		assertFalse(expected.isPresent());
+	}
+	
+	@Test
 	void testExistsActivityByLandmarkId() {
 
 		Boolean expected = this.landmarkService.existsActivityByLandmarkId(LandmarkServiceTests.TEST_LANDMARK_ID1);
 
 		assertSame(expected, true);
+	}
+	
+	@Test
+	void testExistsActivityByLandmarkIdNotFound() {
+
+		Boolean expected = this.landmarkService.existsActivityByLandmarkId(LandmarkServiceTests.TEST_LANDMARK_ID_NOT_FOUND);
+
+		assertSame(expected, false);
 	}
 	
 	@Test
@@ -248,6 +254,6 @@ class LandmarkServiceTests {
 
 		assertSame(expected, this.l1);
 	}
-
+	
 	
 }

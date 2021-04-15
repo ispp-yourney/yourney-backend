@@ -2,7 +2,7 @@
 package com.yourney.service;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -27,7 +27,9 @@ import com.yourney.security.service.UserService;
 class UserServiceTests {
 
 	private static final String	TEST_USER_USERNAME	= "user1";
+	private static final String	TEST_USER_USERNAME_NOT_FOUND = "Username Not Found";
 	private static final String	TEST_USER_EMAIL	= "testuser@email.com";
+	private static final String	TEST_USER_EMAIL_NOT_FOUND	= "Email Not Found";
 	
 	@Autowired
 	protected UserService userService;
@@ -52,11 +54,13 @@ class UserServiceTests {
 		auth1.setUsername(TEST_USER_USERNAME);
 		auth1.setPlan(0);
 		
-		given(this.userRepository.findByUsername(auth1.getUsername())).willReturn(Optional.of(auth1));
-		given(this.userRepository.existsByUsername(auth1.getUsername())).willReturn(true);
-		given(this.userRepository.existsByEmail(auth1.getEmail())).willReturn(true);
+		given(this.userRepository.findByUsername(TEST_USER_USERNAME)).willReturn(Optional.of(auth1));
+		given(this.userRepository.findByUsername(TEST_USER_USERNAME_NOT_FOUND)).willReturn(Optional.empty());
+		given(this.userRepository.existsByUsername(TEST_USER_USERNAME)).willReturn(true);
+		given(this.userRepository.existsByUsername(TEST_USER_USERNAME_NOT_FOUND)).willReturn(false);
+		given(this.userRepository.existsByEmail(TEST_USER_EMAIL)).willReturn(true);
+		given(this.userRepository.existsByEmail(TEST_USER_EMAIL_NOT_FOUND)).willReturn(false);
 		doReturn(auth1).when(this.userRepository).save(any());
-//		given(this.userService.getCurrentUsername()).willReturn(auth1.getUsername());
 	
 	}
 	
@@ -68,6 +72,14 @@ class UserServiceTests {
 		assertTrue(expected.isPresent());
 		assertSame(expected.get(), this.auth1);
 		
+	}
+	
+	@Test
+	void testGetByUsernameNotFound() {
+
+		Optional<User> expected = this.userService.getByUsername(TEST_USER_USERNAME_NOT_FOUND);
+
+		assertFalse(expected.isPresent());
 		
 	}
 	
@@ -81,6 +93,15 @@ class UserServiceTests {
 	}
 	
 	@Test
+	void testexistByUsernameNotFound() {
+
+		Boolean expected = this.userService.existsByUsername(TEST_USER_USERNAME_NOT_FOUND);
+
+		assertFalse(expected);
+		
+	}
+	
+	@Test
 	void testexistByEmail() {
 
 		Boolean expected = this.userService.existsByEmail(TEST_USER_EMAIL);
@@ -89,14 +110,30 @@ class UserServiceTests {
 		
 	}
 	
+
+	@Test
+	void testexistByEmailNotFound() {
+
+		Boolean expected = this.userService.existsByEmail(TEST_USER_EMAIL_NOT_FOUND);
+
+		assertFalse(expected);
+		
+	}
+	
 	@Test
 	@WithMockUser(username = TEST_USER_USERNAME, password = "user1")
 	void testGetCurrentUsername() {
 
 		String expected = this.userService.getCurrentUsername(); 
-		System.out.println(expected);
-		System.out.println(TEST_USER_USERNAME);
 		assertEquals(expected, this.auth1.getUsername());
+	}
+	
+	@Test
+	void testSave() {
+
+		User expected = this.userService.save(this.auth1); 
+
+		assertSame(expected, this.auth1);
 	}
 	
 }
