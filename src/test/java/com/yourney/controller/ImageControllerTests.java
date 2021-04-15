@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,6 +26,7 @@ import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.security.model.User;
+import com.yourney.security.service.UserService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
 import com.yourney.service.LandmarkService;
@@ -42,12 +44,15 @@ class ImageControllerTests {
 	private static final int TEST_IMAGE_ID = 1;
 	private static final int TEST_INEXISTENT_ID = 99;
 	private static final int TEST_DEFAULT_IMAGE_ID = 78;
-	
+
 	@MockBean
 	protected LandmarkService landmarkService;
 
 	@MockBean
 	protected ItineraryService itineraryService;
+
+	@Autowired
+	protected UserService userService;
 
 	@Autowired
 	protected ImageController imageController;
@@ -85,6 +90,20 @@ class ImageControllerTests {
 		us1.setUsername("user1");
 		us1.setPlan(0);
 		
+		userService.save(us1);
+
+		User us2 = new User();
+		us2.setId((long)2);
+		us2.setEmail("testuser2@email.com");
+		us2.setFirstName("Name 2");
+		us2.setLastName("Surname 2");
+		us2.setPassword("user2");
+		us2.setUsername("user2");
+		us2.setPlan(0);
+		us2.setImage(i1);
+		
+		userService.save(us2);
+
 		// ITINERARIOS
 		
 		Itinerary it1 = new Itinerary();
@@ -159,6 +178,8 @@ class ImageControllerTests {
 		
 		doReturn(it1).when(this.itineraryService).save(any());
 
+		//given(this.userService.getCurrentUsername()).willReturn(Optional.of(us1));
+		//given(this.userService.getByUsername("user1")).willReturn(Optional.of(us1));
 		given(this.landmarkService.findById((long)TEST_LANDMARK_ID3)).willReturn(Optional.of(l3));
 		given(this.landmarkService.findById((long)TEST_LANDMARK_ID2)).willReturn(Optional.of(l2));
 		given(this.landmarkService.findById((long)TEST_LANDMARK_ID)).willReturn(Optional.of(l1));
@@ -333,6 +354,171 @@ void testDeleteForLandmark() throws Exception {
 	// Validate the returned fields
 	.andExpect(jsonPath("$.text", is("Imagen eliminada correctamente")));
 }
+
+@Test
+void testAnonymousDeleteForUser() throws Exception {
+	
+	this.mockMvc.perform(delete("/image/deleteForUser"))
+	
+	// Validate the response code and content type
+	.andExpect(status().isForbidden())
+	.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	
+
+	// Validate the returned fields
+	.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de eliminación sin registrarse.")));
+	}
+
+@Test
+@WithMockUser(username = "user99", password = "user99")
+void testNoUserDeleteForUser() throws Exception {
+	
+	this.mockMvc.perform(delete("/image/deleteForUser"))
+	
+	// Validate the response code and content type
+	.andExpect(status().isNotFound())
+	.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	
+
+	// Validate the returned fields
+	.andExpect(jsonPath("$.text", is("El usuario al que desea asignar la imagen no existe.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testNoImageFromUserDeleteForUser() throws Exception {
+	
+		this.mockMvc.perform(delete("/image/deleteForUser"))
+		
+		// Validate the response code and content type
+		.andExpect(status().isNotFound())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene ninguna foto asociada.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user2", password = "user2")
+	void testImageDeleteForUser() throws Exception {
+	
+		this.mockMvc.perform(delete("/image/deleteForUser"))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Imagen eliminada correctamente")));
+	}
+
+
+	@Test
+	void testAnonymousUploadForUser() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", "an image".getBytes());
+
+		this.mockMvc.perform(multipart("/image/uploadForUser")
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de creación sin registrarse.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testWrongUploadForUser() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", new byte[]{});
+
+		this.mockMvc.perform(multipart("/image/uploadForUser")
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("La imagen no es válida")));
+	}
+
+	@Test
+	void testAnonymousUploadForItinerary() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", "an image".getBytes());
+
+		this.mockMvc.perform(multipart("/image/uploadForItinerary/{itineraryId}", TEST_ITINERARY_ID)
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de creación sin registrarse.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testWrongUploadForItinerary() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", new byte[]{});
+
+		this.mockMvc.perform(multipart("/image/uploadForItinerary/{itineraryId}", TEST_ITINERARY_ID)
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("La imagen no es válida")));
+	}
+
+	@Test
+	void testAnonymousUploadForLandmark() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", "an image".getBytes());
+
+		this.mockMvc.perform(multipart("/image/uploadForLandmark/{landmarkId}", TEST_LANDMARK_ID)
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de creación sin registrarse.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testWrongUploadForLandmark() throws Exception {
+		
+		MockMultipartFile image = new MockMultipartFile("multipartFile", "image.jpg", "text/plain", new byte[]{});
+
+		this.mockMvc.perform(multipart("/image/uploadForLandmark/{landmarkId}", TEST_LANDMARK_ID)
+		.file("multipartFile",image.getBytes()))
+		
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("La imagen no es válida")));
+	}
 /*
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
@@ -405,35 +591,6 @@ void testDeleteForLandmark() throws Exception {
 		.andExpect(status().is4xxClientError())
 		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso para crear POI sin registrarse.")));
 		
-	}
-	
-	
-	@Test
-	@WithMockUser(username = "user1", password = "user1")
-	void testDeleteItinerary() throws Exception {
-		
-		this.mockMvc.perform(delete("/landmark/delete/{id}", TEST_LANDMARK_ID))
-		
-		// Validate the response code and content type
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        
-
-//		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("El punto de interés ha sido eliminado correctamente.")));
-		}
-	@Test
-	@WithMockUser(username = "user1", password = "user1")
-	void testUpgradeNegativeDaysLandmark() throws Exception {
-		
-		this.mockMvc.perform(get("/landmark/upgrade?landmarkId={landmarkId}&subscriptionDays={subscriptionDays}", TEST_LANDMARK_ID4, -33))
-		
-		// Validate the response code and content type
-		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-
-		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("No puede subscribirse a días negativos o nulos")));
 	}
 */
 }
