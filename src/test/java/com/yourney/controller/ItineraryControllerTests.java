@@ -141,6 +141,9 @@ class ItineraryControllerTests {
 	    it1.setViews(0);
 	    it1.setAuthor(us1);
 	    
+		it1.toString();
+		it1.hashCode();
+
 	    doReturn(it1).when(this.itineraryService).save(any());
 	    
 	    Itinerary it2 = new Itinerary();
@@ -206,6 +209,9 @@ class ItineraryControllerTests {
 	    la1.setTwitter(null);
 	    la1.setViews((long) 10);
 	    la1.setWebsite(null);
+
+		la1.hashCode();
+		la1.toString();
 	    
 	    Landmark la2 = new Landmark();
 	    
@@ -326,6 +332,8 @@ class ItineraryControllerTests {
 		ac5.setItinerary(it3);
 		ac5.setLandmark(la4);
 		
+		ac5.toString();
+		ac5.hashCode();
 		
 		//IMAGE
 		

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 import com.yourney.model.dto.AuthorDto;
+import com.yourney.security.model.PrincipalUser;
 class AuthorDtoModelTests {
 
 	AuthorDto a1;
@@ -35,8 +36,14 @@ class AuthorDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	public void testEqualsAuthorClass() {
 		EqualsVerifier.simple().forClass(AuthorDto.class).verify();
+	}
+
+
+	@Test
+	public void testEqualsPrincipalUserClass() {
+		EqualsVerifier.simple().forClass(PrincipalUser.class).verify();
 	}
 
 	@Test
