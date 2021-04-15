@@ -338,7 +338,7 @@ class LandmarkControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
-//		// Validate the returned fields
+		// Validate the returned fields
         .andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)))
         .andExpect(jsonPath("$.city", is("Sevilla")))
         .andExpect(jsonPath("$.country", is("Spain")))
@@ -411,7 +411,7 @@ class LandmarkControllerTests {
 		// Validate the response code and content type
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//		// Validate the returned fields
+		// Validate the returned fields
         .andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)))
         .andExpect(jsonPath("$.city", is("Sevilla")))
         .andExpect(jsonPath("$.country", is("Spain")))
@@ -456,7 +456,7 @@ class LandmarkControllerTests {
 		.andExpect(status().is4xxClientError())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
-//		// Validate the returned fields
+		// Validate the returned fields
         .andExpect(jsonPath("$.text", is("No existe el POI indicado")));
         
 	}
