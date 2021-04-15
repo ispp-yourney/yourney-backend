@@ -34,15 +34,8 @@ import com.yourney.security.service.UserService;
 @SpringBootTest
 class UserServiceTests {
 
-	private static final long	TEST_USER_ID	= 1;
 	private static final String	TEST_USER_USERNAME	= "user1";
 	private static final String	TEST_USER_EMAIL	= "testuser@email.com";
-	private static final long	TEST_ACTIVITY_ID	= 1;
-	private static final long	TEST_ACTIVITY_ID_2	= 2;
-	private static final long	TEST_ACTIVITY_ID_3	= 3;
-	private static final long	TEST_ACTIVITY_ID_4	= 1;
-	private static final long	TEST_ITINERARY_ID	= 1;
-	private static final long	TEST_ITINERARY_ID_2	= 2;
 	
 	@Autowired
 	protected UserService userService;

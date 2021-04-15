@@ -74,7 +74,7 @@ public class CommentController {
         
         if (!findAuthor.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El usuario actual no existe");
+                    .body(new Message("El usuario actual no existe"));
         }
         
         User author = findAuthor.get();

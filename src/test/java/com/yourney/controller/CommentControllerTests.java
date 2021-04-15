@@ -154,43 +154,6 @@ class CommentControllerTests {
 
 	    doReturn(it1).when(this.itineraryService).save(any());
 	    
-	    Itinerary it2 = new Itinerary();
-	    
-	    it2.setId((long)2);
-	    it2.setName("itinerary test 2");
-	    it2.setDescription("lorem ipsum 2");
-	    it2.setStatus(StatusType.PUBLISHED);
-	    it2.setBudget(100.);
-	    it2.setEstimatedDays(3);
-	    it2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    it2.setViews(50);
-	    it2.setAuthor(us2);
-	    
-	    Itinerary it3 = new Itinerary();
-	    
-	    it3.setId((long)3);
-	    it3.setName("itinerary test 3");
-	    it3.setDescription("lorem ipsum 3");
-	    it3.setStatus(StatusType.PUBLISHED);
-	    it3.setBudget(100.);
-	    it3.setEstimatedDays(4);
-	    it3.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    it3.setViews(15);
-	    it3.setAuthor(us1);
-	    
-	    
-	    Itinerary it1Actualizado = new Itinerary();
-	    
-	    it1Actualizado.setId((long)1);
-	    it1Actualizado.setName("itinerary test 1 actualizado");
-	    it1Actualizado.setDescription("lorem ipsum 1 actualizado");
-	    it1Actualizado.setStatus(StatusType.PUBLISHED);
-	    it1Actualizado.setBudget(10.);
-	    it1Actualizado.setEstimatedDays(2);
-	    it1Actualizado.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    it1Actualizado.setViews(0);
-	    it1Actualizado.setAuthor(us1);
-	    
 	  //Comments
 	  	Comment c1 = new Comment();
 	  		
@@ -201,196 +164,12 @@ class CommentControllerTests {
 		c1.setAuthor(us1);
 	    
 	    
-	    // LADNMARKS
-	    
-	    Landmark la1 = new Landmark();
-	    
-	    la1.setCategory("category 1");
-	    la1.setCity(TEST_ITINERARY_CITY_1);
-	    la1.setCountry(TEST_ITINERARY_COUNTRY_1);
-	    la1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    la1.setDescription("lorem ipsum 1");
-	    la1.setEmail("monumento1@email.com");
-	    la1.setId((long) 1);
-	    la1.setImage(null);
-	    la1.setImageUrl(null);
-	    la1.setInstagram(null);
-	    la1.setLatitude(60.0);
-	    la1.setLongitude(60.0);
-	    la1.setName("Monumento 1");
-	    la1.setPhone("+1 111111111");
-	    la1.setPrice(0.0);
-	    la1.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
-	    la1.setTwitter(null);
-	    la1.setViews((long) 10);
-	    la1.setWebsite(null);
-
-		la1.hashCode();
-		la1.toString();
-	    
-	    Landmark la2 = new Landmark();
-	    
-	    la2.setCategory("category 2");
-	    la2.setCity(TEST_ITINERARY_CITY_1);
-	    la2.setCountry(TEST_ITINERARY_COUNTRY_1);
-	    la2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    la2.setDescription("lorem ipsum 2");
-	    la2.setEmail("monumento2@email.com");
-	    la2.setId((long) 2);
-	    la2.setImage(null);
-	    la2.setImageUrl(null);
-	    la2.setInstagram(null);
-	    la2.setLatitude(50.0);
-	    la2.setLongitude(50.0);
-	    la2.setName("Monumento 2");
-	    la2.setPhone("+1 111111111");
-	    la2.setPrice(0.0);
-	    la2.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
-	    la2.setTwitter(null);
-	    la2.setViews((long) 10);
-	    la2.setWebsite(null);
-	    
-	    Landmark la3 = new Landmark();
-	    
-	    la3.setCategory("category 3");
-	    la3.setCity(TEST_ITINERARY_CITY_1);
-	    la3.setCountry(TEST_ITINERARY_COUNTRY_1);
-	    la3.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    la3.setDescription("lorem ipsum 3");
-	    la3.setEmail("monumento3@email.com");
-	    la3.setId((long) 3);
-	    la3.setImage(null);
-	    la3.setImageUrl(null);
-	    la3.setInstagram(null);
-	    la3.setLatitude(40.0);
-	    la3.setLongitude(40.0);
-	    la3.setName("Monumento 3");
-	    la3.setPhone("+1 111111111");
-	    la3.setPrice(0.0);
-	    la3.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
-	    la3.setTwitter(null);
-	    la3.setViews((long) 10);
-	    la3.setWebsite(null);
-	    
-	    Landmark la4 = new Landmark();
-	    
-	    la4.setCategory("category 4");
-	    la4.setCity(TEST_ITINERARY_CITY_2);
-	    la4.setCountry(TEST_ITINERARY_COUNTRY_2);
-	    la4.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-	    la4.setDescription("lorem ipsum 4");
-	    la4.setEmail("monumento4@email.com");
-	    la4.setId((long) 3);
-	    la4.setImage(null);
-	    la4.setImageUrl(null);
-	    la4.setInstagram(null);
-	    la4.setLatitude(30.0);
-	    la4.setLongitude(30.0);
-	    la4.setName("Monumento 4");
-	    la4.setPhone("+1 111111111");
-	    la4.setPrice(0.0);
-	    la4.setEndPromotionDate(LocalDateTime.of(2050, 10, 10, 10, 10, 10));
-	    la4.setTwitter(null);
-	    la4.setViews((long) 10);
-	    la4.setWebsite(null);
-
-	    
-	    // ACTIVIDADES
-	    
-	    Activity ac1 = new Activity(); 
-
-		ac1.setId(1);
-		ac1.setTitle("activity test 1");
-		ac1.setDescription("lorem ipsum 1");
-		ac1.setDay(1);
-		ac1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		ac1.setItinerary(it1);
-		ac1.setLandmark(la1);
-		
-		Activity ac2 = new Activity(); 
-
-		ac2.setId(2);
-		ac2.setTitle("activity test 2");
-		ac2.setDescription("lorem ipsum 2");
-		ac2.setDay(1);
-		ac2.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		ac2.setItinerary(it1);
-		ac2.setLandmark(la2);
-		
-		Activity ac3 = new Activity(); 
-
-		ac3.setId(3);
-		ac3.setTitle("activity test 3");
-		ac3.setDescription("lorem ipsum 3");
-		ac3.setDay(1);
-		ac3.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		ac3.setItinerary(it2);
-		ac3.setLandmark(la3);
-		
-		Activity ac4 = new Activity(); 
-
-		ac4.setId(4);
-		ac4.setTitle("activity test 4");
-		ac4.setDescription("lorem ipsum 4");
-		ac4.setDay(1);
-		ac4.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		ac4.setItinerary(it2);
-		ac4.setLandmark(la1);
-		
-		Activity ac5 = new Activity(); 
-
-		ac5.setId(4);
-		ac5.setTitle("activity test 5");
-		ac5.setDescription("lorem ipsum 5");
-		ac5.setDay(1);
-		ac5.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
-		ac5.setItinerary(it3);
-		ac5.setLandmark(la4);
-		
-		ac5.toString();
-		ac5.hashCode();
-		
 		//IMAGE
 		
 		Image img = new Image();
 		
 		
 		// PAGEABLE
-		Pageable pageable = PageRequest.of(TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE);
-		ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-		
-		List<ItineraryProjection> itineraries1 = new ArrayList<>();
-		ItineraryProjection itp1 = factory.createProjection(ItineraryProjection.class, it1);
-		ItineraryProjection itp2 = factory.createProjection(ItineraryProjection.class, it2);
-		itineraries1.add(itp1);
-		itineraries1.add(itp2);
-		Page<ItineraryProjection> itinerariesPage1 = new PageImpl<>(itineraries1);
-		
-		List<ItineraryProjection> itineraries2 = new ArrayList<>();
-		itp1 = factory.createProjection(ItineraryProjection.class, it1);
-		itp2 = factory.createProjection(ItineraryProjection.class, it2);
-		ItineraryProjection itp3 = factory.createProjection(ItineraryProjection.class, it3);
-		itineraries2.add(itp1);
-		itineraries2.add(itp2);
-		itineraries2.add(itp3);
-		
-		Page<ItineraryProjection> itinerariesPage2 = new PageImpl<>(itineraries2);
-		
-		List<ItineraryProjection> itineraries3 = new ArrayList<>();
-		
-		itineraries3.add(itp1);
-		Page<ItineraryProjection> itinerariesPage3 = new PageImpl<>(itineraries3);
-		
-		List<ItineraryProjection> itineraries4 = new ArrayList<>();
-		itineraries4.add(itp1);
-		itineraries4.add(itp3);
-		Page<ItineraryProjection> itinerariesPage4 = new PageImpl<>(itineraries4);
-		
-		List<Activity> activities = new ArrayList<>();
-		activities.add(ac1);
-		activities.add(ac2);
-		
-		it1.setActivities(activities);
 		
 		Optional<User> usuario = Optional.of(us1);
 		Optional<Image> imagen = Optional.of(img);
@@ -400,19 +179,8 @@ class CommentControllerTests {
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
-	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
-	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
-
-	    given(this.itineraryService.searchByName(pageable, "%"+TEST_ITINERARY_NAME+"%")).willReturn(itinerariesPage3);
-	    given(this.itineraryService.searchByUserId(pageable, (long) TEST_ITINERARY_USER_ID)).willReturn(itinerariesPage4);
-	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
-
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario);
-	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage4);
-	    given(this.itineraryService.searchByCurrentUsername(pageable, us1.getUsername())).willReturn(itinerariesPage4);
 	    given(this.imageService.findById(78)).willReturn(imagen);
-	    
-	    given(this.itineraryService.save(it1Actualizado)).willReturn(it1Actualizado);
 	    given(this.commentService.save(any())).willReturn(c1);
 	    
 	}
@@ -461,6 +229,50 @@ class CommentControllerTests {
 
 //		// Validate the returned fields
         .andExpect(jsonPath("$.text", is("El usuario no tiene permiso de comentar un itinerario sin registrarse")));
+	}
+	
+	@Test
+	void testCreateCommentNotRegistered2() throws Exception {
+		given(this.userService.getByUsername(any())).willReturn(Optional.empty());
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("content", "Comentario de prueba");
+		activityJSON.put("rating", 4);
+		activityJSON.put("itinerary", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(post("/comment/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+        
+
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("El usuario actual no existe")));
+	}
+	
+	@Test
+	void testCreateCommentItineraryNotFound() throws Exception {
+		given(this.userService.getByUsername(any())).willReturn(Optional.empty());
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("content", "Comentario de prueba");
+		activityJSON.put("rating", 4);
+		activityJSON.put("itinerary", TEST_ITINERARY_ID_NOT_FOUND);
+		
+		this.mockMvc.perform(post("/comment/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+        
+
+//		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("El itinerario que se quiere comentar no existe")));
 	}
 	
 	@Test
