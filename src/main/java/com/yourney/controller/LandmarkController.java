@@ -206,6 +206,14 @@ public class LandmarkController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El usuario no tiene permiso para crear POI sin registrarse."));
         }
+        
+        if (landmarkDto.getLatitude() != null && landmarkDto.getLongitude() == null) {
+        	return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("Debe especificar la longitud."));
+        }else if (landmarkDto.getLongitude() != null && landmarkDto.getLatitude() == null) {
+        	return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new Message("Debe especificar la latitud."));
+        }
 
 		Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {

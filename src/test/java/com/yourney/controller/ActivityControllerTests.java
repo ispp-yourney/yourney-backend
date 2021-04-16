@@ -223,6 +223,7 @@ class ActivityControllerTests {
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(activityJSON.toString()))
 
+
 		// Validate the response code and content type
 		.andExpect(status().isOk())
         

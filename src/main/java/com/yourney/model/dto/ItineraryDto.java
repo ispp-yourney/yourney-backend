@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import com.yourney.model.SeasonType;
 import com.yourney.model.StatusType;
 
+import org.hibernate.validator.constraints.Length;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +23,11 @@ public class ItineraryDto {
     private long id;
 
     @NotBlank(message = "El campo nombre es obligatorio")
+    @Length(max = 50, message = "El tamaño del campo nombre es demasiado largo, y el máximo son 50 caracteres.")
     private String name;
 
     @NotBlank(message = "El campo descripción es obligatorio")
+    @Length(max = 1000, message = "El tamaño del campo descripción es demasiado largo, y el máximo son 1000 caracteres.")
     private String description;
 
     @NotNull(message = "El campo presupuesto es obligatorio")
