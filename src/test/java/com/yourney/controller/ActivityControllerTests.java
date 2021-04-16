@@ -28,6 +28,7 @@ import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.security.model.User;
+import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +49,9 @@ class ActivityControllerTests {
 	@MockBean
 	private ActivityService activityService;
 	
+	@MockBean
+	private UserService userService;
+
 	@MockBean
 	protected ItineraryService itineraryService;
 	
@@ -120,6 +124,8 @@ class ActivityControllerTests {
 	
 		given(this.activityService.findAllActivityProjectionsByDayAndItinerary((long)ActivityControllerTests.TEST_ITINERARY_ID, 1)).willReturn(activitiesList);
 		
+		given(this.userService.getCurrentUsername()).willReturn("anonymousUser");
+		given(this.userService.getByUsername("user1")).willReturn(Optional.of(auth1));
 		// LADNMARKS
 	    
 	    Landmark la1 = new Landmark();
@@ -204,7 +210,7 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testCreateActivity() throws Exception {
-		
+		given(this.userService.getCurrentUsername()).willReturn("user1");
 		JSONObject activityJSON = new JSONObject();
 		
 		activityJSON.put("day", 1);
@@ -252,7 +258,7 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testUpdateActivity() throws Exception {
-		
+		given(this.userService.getCurrentUsername()).willReturn("user1");
 		JSONObject activityJSON = new JSONObject();
 		
 		activityJSON.put("day", 1);
@@ -275,7 +281,7 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testUpdateActivityNotFound() throws Exception {
-		
+		given(this.userService.getCurrentUsername()).willReturn("user1");
 		JSONObject activityJSON = new JSONObject();
 		
 		activityJSON.put("day", 1);
@@ -320,7 +326,7 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testDeleteActivity() throws Exception {
-		
+		given(this.userService.getCurrentUsername()).willReturn("user1");
 		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
 
 		// Validate the response code and content type
@@ -334,7 +340,7 @@ class ActivityControllerTests {
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testDeleteActivityNotFound() throws Exception {
-		
+		given(this.userService.getCurrentUsername()).willReturn("user1");
 		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID_NOT_FOUND))
 
 		// Validate the response code and content type
