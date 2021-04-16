@@ -74,7 +74,7 @@ public class CommentController {
         
         if (!findAuthor.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El usuario actual no existe");
+                    .body(new Message("El usuario actual no existe"));
         }
         
         User author = findAuthor.get();
@@ -95,7 +95,7 @@ public class CommentController {
         Optional<Comment> foundComment = commentService.findById(id);
 
         if (!foundComment.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el comentario indicada"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el comentario indicado"));
         }
 
         Comment commentToDelete = foundComment.get();

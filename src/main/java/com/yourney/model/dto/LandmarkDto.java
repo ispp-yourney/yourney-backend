@@ -12,9 +12,11 @@ import org.hibernate.validator.constraints.URL;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LandmarkDto {
 
     private Long id;
@@ -43,8 +45,8 @@ public class LandmarkDto {
     private Double longitude;
 
     private String category;
-    
-    @Email
+
+    @Email(message = "El campo email no tiene el formato correcto")
     private String email;
 
     @Length(max = 50, message = "El campo teléfono es demasiado largo")

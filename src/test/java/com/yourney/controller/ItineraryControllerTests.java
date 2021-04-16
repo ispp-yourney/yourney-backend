@@ -1,10 +1,10 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
-
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.yourney.model.Activity;
+import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
@@ -49,6 +52,9 @@ import com.yourney.service.LandmarkService;
 class ItineraryControllerTests {
 
 	private static final int TEST_ITINERARY_ID_1 = 1;
+	private static final int TEST_ITINERARY_ID_2 = 2;
+	private static final int TEST_ITINERARY_ID_4 = 4;
+	private static final int TEST_ITINERARY_ID_NOT_FOUND = 10;
 	private static final int TEST_ITINERARY_PAGE = 1;
 	private static final int TEST_ITINERARY_SIZE = 10;
 	private static final String TEST_ITINERARY_COUNTRY_1 = "Brazil";
@@ -59,6 +65,9 @@ class ItineraryControllerTests {
 	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
 	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
 	private static final Integer TEST_ITINERARY_MAXDAYS = 1000;
+	private static final String TEST_ITINERARY_NAME = "itinerary test 1";
+	private static final int TEST_ITINERARY_USER_ID = 1;
+	private static final String TEST_ITINERARY_USERNAME = "user1";
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -99,27 +108,25 @@ class ItineraryControllerTests {
 		
 		User us1 = new User();
 		
-		us1.setEmail("user1@email.com");
-		us1.setExpirationDate(null);
-		us1.setFirstName("Firstname1");
 		us1.setId((long)1);
-		us1.setLastName("Lastname1");
-		us1.setPassword("password1");
-		us1.setPlan(0);
-		us1.setRoles(roles);
+		us1.setEmail("testuser@email.com");
+		us1.setFirstName("Name 1");
+		us1.setLastName("Surname 1");
+		us1.setPassword("user1");
 		us1.setUsername("user1");
+		us1.setPlan(0);
 		
 		User us2 = new User();
 		
-		us1.setEmail("user2@email.com");
-		us1.setExpirationDate(null);
-		us1.setFirstName("Firstname2");
-		us1.setId((long)1);
-		us1.setLastName("Lastname2");
-		us1.setPassword("password2");
-		us1.setPlan(0);
-		us1.setRoles(roles);
-		us1.setUsername("user2");
+		us2.setEmail("user2@email.com");
+		us2.setExpirationDate(null);
+		us2.setFirstName("Firstname2");
+		us2.setId((long)2);
+		us2.setLastName("Lastname2");
+		us2.setPassword("user2");
+		us2.setPlan(0);
+		us2.setRoles(roles);
+		us2.setUsername("user2");
 		
 		
 		// ITINERARIOS
@@ -135,6 +142,11 @@ class ItineraryControllerTests {
 	    it1.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
 	    it1.setViews(0);
 	    it1.setAuthor(us1);
+	    
+		it1.toString();
+		it1.hashCode();
+
+	    doReturn(it1).when(this.itineraryService).save(any());
 	    
 	    Itinerary it2 = new Itinerary();
 	    
@@ -160,6 +172,33 @@ class ItineraryControllerTests {
 	    it3.setViews(15);
 	    it3.setAuthor(us1);
 	    
+	    Itinerary it4 = new Itinerary();
+	    
+	    it4.setId((long)4);
+	    it4.setName("itinerary test 4");
+	    it4.setDescription("lorem ipsum 4");
+	    it4.setStatus(StatusType.DRAFT);
+	    it4.setBudget(100.);
+	    it4.setEstimatedDays(4);
+	    it4.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    it4.setViews(15);
+	    it4.setAuthor(us2);
+	    
+	    
+	    Itinerary it1Actualizado = new Itinerary();
+	    
+	    it1Actualizado.setId((long)1);
+	    it1Actualizado.setName("itinerary test 1 actualizado");
+	    it1Actualizado.setDescription("lorem ipsum 1 actualizado");
+	    it1Actualizado.setStatus(StatusType.PUBLISHED);
+	    it1Actualizado.setBudget(10.);
+	    it1Actualizado.setEstimatedDays(2);
+	    it1Actualizado.setCreateDate(LocalDateTime.of(2021, 01, 20, 12, 25, 01));
+	    it1Actualizado.setViews(0);
+	    it1Actualizado.setAuthor(us1);
+	    
+
+	    
 	    
 	    // LADNMARKS
 	    
@@ -184,6 +223,9 @@ class ItineraryControllerTests {
 	    la1.setTwitter(null);
 	    la1.setViews((long) 10);
 	    la1.setWebsite(null);
+
+		la1.hashCode();
+		la1.toString();
 	    
 	    Landmark la2 = new Landmark();
 	    
@@ -304,6 +346,13 @@ class ItineraryControllerTests {
 		ac5.setItinerary(it3);
 		ac5.setLandmark(la4);
 		
+		ac5.toString();
+		ac5.hashCode();
+		
+		//IMAGE
+		
+		Image img = new Image();
+		
 		
 		// PAGEABLE
 		Pageable pageable = PageRequest.of(TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE);
@@ -323,17 +372,62 @@ class ItineraryControllerTests {
 		itineraries2.add(itp1);
 		itineraries2.add(itp2);
 		itineraries2.add(itp3);
+		
 		Page<ItineraryProjection> itinerariesPage2 = new PageImpl<>(itineraries2);
-
+		
+		List<ItineraryProjection> itineraries3 = new ArrayList<>();
+		
+		itineraries3.add(itp1);
+		Page<ItineraryProjection> itinerariesPage3 = new PageImpl<>(itineraries3);
+		
+		List<ItineraryProjection> itineraries4 = new ArrayList<>();
+		itineraries4.add(itp1);
+		itineraries4.add(itp3);
+		Page<ItineraryProjection> itinerariesPage4 = new PageImpl<>(itineraries4);
+		
+		List<ItineraryProjection> itineraries5 = new ArrayList<>();
+		itineraries5.add(itp2);
+		Page<ItineraryProjection> itinerariesPage5 = new PageImpl<>(itineraries5);
+		
+		List<Activity> activities = new ArrayList<>();
+		activities.add(ac1);
+		activities.add(ac2);
+		
+		List<Activity> activities2 = new ArrayList<>();
+		activities2.add(ac3);
+		activities2.add(ac4);
+		
+		it1.setActivities(activities);
+		it2.setActivities(activities2);
+		
+		Optional<User> usuario1 = Optional.of(us1);
+		Optional<Image> imagen = Optional.of(img);
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
+	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_2)).willReturn(Optional.of(it2));
+	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_4)).willReturn(Optional.of(it4));
+	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", 1000000000., 1000000000, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
 
+	    given(this.itineraryService.searchByName(pageable, "%"+TEST_ITINERARY_NAME+"%")).willReturn(itinerariesPage3);
+	    given(this.itineraryService.searchByUserId(pageable, (long) TEST_ITINERARY_USER_ID)).willReturn(itinerariesPage4);
+	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
+	    given(this.itineraryService.searchByUsername(pageable, "user2")).willReturn(itinerariesPage5);
+
+	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario1);
+	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage4);
+	    given(this.itineraryService.searchByCurrentUsername(pageable, us1.getUsername())).willReturn(itinerariesPage4);
+	    given(this.imageService.findById(78)).willReturn(imagen);
+	    
+	    given(this.itineraryService.save(it1Actualizado)).willReturn(it1Actualizado);
+	    
 	}
 	
 	@Test
+	@WithMockUser(username = "user1", password = "user1")
 	void testShowItinerary() throws Exception {
 		this.mockMvc.perform(get("/itinerary/show/{id}", TEST_ITINERARY_ID_1))
 		// Validate the response code and content type
@@ -350,8 +444,46 @@ class ItineraryControllerTests {
 	}
 	
 	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testShowItineraryNotAuthor() throws Exception {
+		this.mockMvc.perform(get("/itinerary/show/{id}", TEST_ITINERARY_ID_2))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(2)))
+        .andExpect(jsonPath("$.name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.status", is("PUBLISHED")))
+        .andExpect(jsonPath("$.budget", is(100.)))
+        .andExpect(jsonPath("$.estimatedDays", is(3)))
+        .andExpect(jsonPath("$.views", is(51)));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testShowItineraryStatusDraft() throws Exception {
+		this.mockMvc.perform(get("/itinerary/show/{id}", TEST_ITINERARY_ID_4))
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El itinerario solicitado no ha sido publicado por su autor.")));
+	}
+	
+	@Test
+	void testShowItineraryNotFound() throws Exception {
+		this.mockMvc.perform(get("/itinerary/show/{id}", TEST_ITINERARY_ID_NOT_FOUND))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+	}
+	
+	@Test
 	void testSearchByProperties() throws Exception {
-		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}&maxBudget={maxBudget}&maxDays={maxDays}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS))
+		this.mockMvc.perform(get("/itinerary/search?page={page}&size={size}&country={country}&city={city}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1))
 		// Validate the response code and content type
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -398,5 +530,441 @@ class ItineraryControllerTests {
         .andExpect(jsonPath("$.content[2].estimatedDays").doesNotExist())
         .andExpect(jsonPath("$.content[2].views", is(15)));
 	}
+	
+	@Test
+	void testSearchItinerariesByName() throws Exception {
+		this.mockMvc.perform(get("/itinerary/searchByName?page={page}&size={size}&name={name}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_NAME))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)));
+		
+	}
+	
+	@Test
+	void testListItinerariesByUserId() throws Exception {
+		this.mockMvc.perform(get("/itinerary/searchByUserId?page={page}&size={size}&userId={userId}", TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE, TEST_ITINERARY_USER_ID))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)));
+		
+	}
+	
+	@Test
+	void testListItinerariesByUsername() throws Exception {
+		this.mockMvc.perform(get("/itinerary/user/{username}?page={page}&size={size}", TEST_ITINERARY_USERNAME, TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)));
+		
+	}
+	
+	@Test
+	void testListItinerariesByUsernameDifferentUser() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		this.mockMvc.perform(get("/itinerary/user/{username}?page={page}&size={size}", TEST_ITINERARY_USERNAME, TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)));
+		
+	}
 
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateItinerary() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+        
+
+		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(TEST_ITINERARY_ID_1)))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.name", is("itinerary test 1")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateItineraryHasErrors() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("This is an error", "This is an error");
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+        
+		// Validate the returned fields
+        .andExpect(jsonPath("$.budget[0]", is("El campo presupuesto es obligatorio")));
+	}
+	
+	@Test
+	void testCreateItineraryAnonymousUser() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("anonymousUser");
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+        
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso de creación sin registrarse.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateItineraryImageNotFound() throws Exception {
+		Optional<Image> defaultImage = Optional.empty();
+		given(this.imageService.findById(78)).willReturn(defaultImage);
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isNotFound())
+        
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("La imagen seleccionada no ha sido encontrada.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateItineraryErrorWhenCreatingItinerary() throws Exception {
+		doReturn(null).when(this.itineraryService).save(any());
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isNotModified())
+        
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("Ha ocurrido un error a la hora de actualizar este itinerario.")));
+	}
+	
+	@Test
+	void testCreateItineraryNotRegistered() throws Exception {
+		
+		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		
+		this.mockMvc.perform(post("/itinerary/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+
+        .andExpect(jsonPath("$.text", is("El usuario debe estar registrado para publicar un itinerario.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateItinerary() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+        
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(TEST_ITINERARY_ID_1)))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 1 actualizado")))
+        .andExpect(jsonPath("$.name", is("itinerary test 1 actualizado")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateItineraryHasErrors() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("This is an error", "This is an error");
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isBadRequest())
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.budget[0]", is("El campo presupuesto es obligatorio")));
+	}
+	
+	@Test
+	void testUpdateItineraryAnonymousUser() throws Exception {
+		
+		given(this.userService.getCurrentUsername()).willReturn("anonymousUser");
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", "0");
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de modificación sin registrarse.")));
+	}
+	
+	@Test
+	void testUpdateItineraryErrorWhenUpdatingItinerary() throws Exception {
+		
+		doReturn(null).when(this.itineraryService).save(any());
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", "0");
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isNotModified())
+        
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Ha ocurrido un error a la hora de actualizar este itinerario.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testUpdateItineraryNotFound() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_NOT_FOUND);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+        
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+	}
+	
+	@Test
+	void testUpdateItineraryNotRegistered() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+        
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario no tiene permiso de modificación de este itinerario, que no es suyo.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteItinerary() throws Exception {
+		
+		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testDeleteItineraryNotFound() throws Exception {
+		
+		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_NOT_FOUND))
+		
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+	}
+	
+	@Test
+	void testDeleteItineraryNotRegistered() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
+		
+		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
+		
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("No puede borrar un itinerario que no es suyo")));
+	}
+	
 }

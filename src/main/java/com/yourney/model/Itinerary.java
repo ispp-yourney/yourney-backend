@@ -1,6 +1,7 @@
 package com.yourney.model;
 
 import java.time.LocalDateTime;
+
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
