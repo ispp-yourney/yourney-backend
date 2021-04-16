@@ -232,7 +232,7 @@ class AuthControllerTests {
 		activityJSON.put("lastName", "Surname updated");
 		activityJSON.put("id", TEST_USER_ID_1);
 		
-		this.mockMvc.perform(get("/auth/update")
+		this.mockMvc.perform(put("/auth/update")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(activityJSON.toString()))
 
@@ -256,7 +256,7 @@ class AuthControllerTests {
 		activityJSON.put("lastName", "Surname updated");
 		activityJSON.put("id", TEST_USER_NOT_FOUND);
 		
-		this.mockMvc.perform(get("/auth/update")
+		this.mockMvc.perform(put("/auth/update")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(activityJSON.toString()))
 
@@ -280,7 +280,7 @@ class AuthControllerTests {
 		activityJSON.put("lastName", "Surname updated");
 		activityJSON.put("id", TEST_USER_NOT_FOUND);
 		
-		this.mockMvc.perform(get("/auth/update")
+		this.mockMvc.perform(put("/auth/update")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(activityJSON.toString()))
 
