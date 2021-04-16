@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.yourney.model.Comment;
 import com.yourney.model.Image;
-import com.yourney.model.Itinerary;
-import com.yourney.model.StatusType;
-import com.yourney.repository.CommentRepository;
 import com.yourney.repository.ImageRepository;
-import com.yourney.security.model.User;
 
 @SpringBootTest
 class ImageServiceTests {
