@@ -11,7 +11,9 @@ import static org.hamcrest.Matchers.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,8 @@ import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
+import com.yourney.security.model.Role;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
@@ -61,6 +65,23 @@ class ActivityControllerTests {
 	@BeforeEach
 	void setup() {
 		
+		// ROLES
+		
+		Role ro1 = new Role();
+		
+		ro1.setId((long)1);
+		ro1.setRoleType(RoleType.ROLE_USER);
+		
+		Set<Role> roles = new HashSet<>();
+		roles.add(ro1);
+
+		Role ro2 = new Role();
+		ro2.setId((long)2);
+		ro2.setRoleType(RoleType.ROLE_ADMIN);
+		Set<Role> rolesAdmin = new HashSet<>();
+		rolesAdmin.add(ro1);
+		rolesAdmin.add(ro2);
+		
 		//User
 		User auth1 = new User();
 		
@@ -72,6 +93,17 @@ class ActivityControllerTests {
 		auth1.setUsername("user1");
 		auth1.setPlan(0);
 		
+		User admin = new User();
+		admin.setId((long)2);
+		admin.setId((long)2);
+		admin.setEmail("admin@email.com");
+		admin.setFirstName("Name 3");
+		admin.setLastName("Surname 3");
+		admin.setPassword("admin");
+		admin.setUsername("admin");
+		admin.setPlan(0);
+		admin.setRoles(rolesAdmin);
+
 	    //Itinerary
 	    Itinerary it1 = new Itinerary();
 	    
@@ -126,6 +158,7 @@ class ActivityControllerTests {
 		
 		given(this.userService.getCurrentUsername()).willReturn("anonymousUser");
 		given(this.userService.getByUsername("user1")).willReturn(Optional.of(auth1));
+		given(this.userService.getByUsername("admin")).willReturn(Optional.of(admin));
 		// LADNMARKS
 	    
 	    Landmark la1 = new Landmark();
@@ -278,6 +311,29 @@ class ActivityControllerTests {
 		// Validate the returned fields
         .andExpect(jsonPath("$.text", is("La actividad ha sido actualizada con éxito")));
 	}
+
+	@Test
+	@WithMockUser(username = "admin", password = "admin")
+	void testAdminUpdateActivity() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("day", 1);
+		activityJSON.put("description", "Descripcion de prueba");
+		activityJSON.put("title", "Titulo de prueba");
+		activityJSON.put("id", TEST_ACTIVITY_ID);
+		
+		this.mockMvc.perform(put("/activity/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("La actividad ha sido actualizada con éxito")));
+	}
 	
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
@@ -328,6 +384,20 @@ class ActivityControllerTests {
 	@WithMockUser(username = "user1", password = "user1")
 	void testDeleteActivity() throws Exception {
 		given(this.userService.getCurrentUsername()).willReturn("user1");
+		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		
+		// Validate the returned fields
+        .andExpect(jsonPath("$.text", is("Actividad eliminada correctamente")));
+	}
+
+	@Test
+	@WithMockUser(username = "admin", password = "admin")
+	void testAdminDeleteActivity() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
 		this.mockMvc.perform(delete("/activity/delete/{id}", TEST_ACTIVITY_ID))
 
 		// Validate the response code and content type

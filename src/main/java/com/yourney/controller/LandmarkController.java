@@ -81,6 +81,13 @@ public class LandmarkController {
 		return new ResponseEntity<Iterable<LandmarkProjection>>(landmarks, HttpStatus.OK);
 	}
 
+    @GetMapping("/hasActivity/{id}")
+    public ResponseEntity<Boolean> hasActivity(@PathVariable("id") long id) {
+		Boolean hasActivity = this.landmarkService.existsActivityByLandmarkId(id);
+
+		return new ResponseEntity<Boolean>(hasActivity, HttpStatus.OK);
+	}
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteLandMark(@PathVariable("id") long id) {
 

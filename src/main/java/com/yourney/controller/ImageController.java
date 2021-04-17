@@ -10,6 +10,7 @@ import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
 import com.yourney.model.dto.Message;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.CloudinaryService;
@@ -80,8 +81,11 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Message("El itinerario que intenta asociar a la imagen no existe"));
         }
+
         Itinerary updatedItinerary = itinerary.get();
-        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername())) {
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+        
+        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No es posible añadir imágenes a un itinerario del que no es dueño."));
         }
@@ -201,7 +205,9 @@ public class ImageController {
                     .body(new Message("El itinerario indicado no contiene ninguna imagen"));
         }
 
-        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername())) {
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+        if (!userService.getCurrentUsername().equals(updatedItinerary.getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No es posible eliminar imágenes a un itinerario del que no es dueño."));
         }

@@ -39,6 +39,7 @@ public class Activity {
 	@Column(nullable = false)
 	private Integer day;
 
+	@Column(name = "create_date", nullable = false)
 	private LocalDateTime createDate;
 
 	@JsonBackReference

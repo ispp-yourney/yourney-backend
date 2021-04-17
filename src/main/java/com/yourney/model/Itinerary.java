@@ -70,6 +70,7 @@ public class Itinerary {
 	private SeasonType recommendedSeason;
 
 	@JsonManagedReference
+	@OrderBy("createDate")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity> activities;
 
