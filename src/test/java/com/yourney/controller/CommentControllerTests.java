@@ -79,12 +79,18 @@ class CommentControllerTests {
 		// ROLES
 		
 		Role ro1 = new Role();
+		Role ro2 = new Role();
 		
 		ro1.setId((long)1);
 		ro1.setRoleType(RoleType.ROLE_USER);
 		
+		ro2.setId((long)2);
+		ro2.setRoleType(RoleType.ROLE_ADMIN);
+		
 		Set<Role> roles = new HashSet<>();
 		roles.add(ro1);
+
+		Set<Role> rolesAdmin = new HashSet<>(Set.of(ro1, ro2));
 		
 		
 		// USUARIOS
@@ -110,6 +116,17 @@ class CommentControllerTests {
 		us2.setPlan(0);
 		us2.setRoles(roles);
 		us2.setUsername("user2");
+
+		User admin = new User();
+		admin.setEmail("admin@email.com");
+		admin.setExpirationDate(null);
+		admin.setFirstName("admin");
+		admin.setId((long)3);
+		admin.setLastName("admin");
+		admin.setPassword("admin");
+		admin.setPlan(0);
+		admin.setRoles(rolesAdmin);
+		admin.setUsername("admin");
 		
 		
 		// ITINERARIOS
@@ -164,6 +181,7 @@ class CommentControllerTests {
 		// PAGEABLE
 		
 		Optional<User> usuario = Optional.of(us1);
+		Optional<User> adminUser = Optional.of(admin);
 		Optional<Image> imagen = Optional.of(img);
 		
 		given(this.commentService.findById((long) TEST_COMMENT_ID_1)).willReturn(Optional.of(c1));
@@ -173,6 +191,7 @@ class CommentControllerTests {
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario);
+		given(this.userService.getByUsername(admin.getUsername())).willReturn(adminUser);
 	    given(this.imageService.findById(78)).willReturn(imagen);
 	    given(this.commentService.save(any())).willReturn(c1);
 	    
@@ -302,6 +321,20 @@ class CommentControllerTests {
 		// Validate the returned fields
 		.andExpect(jsonPath("$.text", is("Comentario eliminado correctamente")));
 	}
+
+	@Test
+	void testAdminDeleteComment() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		this.mockMvc.perform(delete("/comment/delete/{id}", TEST_COMMENT_ID_1))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Comentario eliminado correctamente")));
+	}
 	
 	@Test
 	void testDeleteCommentNotFound() throws Exception {
@@ -331,75 +364,5 @@ class CommentControllerTests {
 
 		// Validate the returned fields
 		.andExpect(jsonPath("$.text", is("No puede eliminar un comentario de un itinerario del que no es creador")));
-	}
-	
-//	@Test
-//	void testCreateItineraryNotRegistered() throws Exception {
-//		
-//		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
-//		
-//		JSONObject activityJSON = new JSONObject();
-//		
-//		activityJSON.put("budget", 0);
-//		activityJSON.put("description", "lorem ipsum 1");
-//		activityJSON.put("estimatedDays", 1);
-//		activityJSON.put("name", "itinerary test 1");
-//		activityJSON.put("recomendedSeason", "WINTER");
-//		activityJSON.put("status", "DRAFT");
-//		
-//		this.mockMvc.perform(post("/itinerary/create")
-//		.contentType(MediaType.APPLICATION_JSON)
-//		.content(activityJSON.toString()))
-//
-//		// Validate the response code and content type
-//		.andExpect(status().is4xxClientError())
-//
-//        .andExpect(jsonPath("$.text", is("El usuario debe estar registrado para publicar un itinerario.")));
-//	}
-//	
-//	@Test
-//	@WithMockUser(username = "user1", password = "user1")
-//	void testDeleteItinerary() throws Exception {
-//		
-//		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
-//		
-//		// Validate the response code and content type
-//		.andExpect(status().isOk())
-//		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//        
-//
-////		// Validate the returned fields
-//		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
-//	}
-//	
-//	@Test
-//	@WithMockUser(username = "user1", password = "user1")
-//	void testDeleteItineraryNotFound() throws Exception {
-//		
-//		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_NOT_FOUND))
-//		
-//		// Validate the response code and content type
-//		.andExpect(status().is4xxClientError())
-//		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//        
-//
-////		// Validate the returned fields
-//		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
-//	}
-//	
-//	@Test
-//	void testDeleteItineraryNotRegistered() throws Exception {
-//		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
-//		
-//		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
-//		
-//		// Validate the response code and content type
-//		.andExpect(status().is4xxClientError())
-//		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//        
-//
-////		// Validate the returned fields
-//		.andExpect(jsonPath("$.text", is("No puede borrar un itinerario que no es suyo")));
-//	}
-	
+	}	
 }

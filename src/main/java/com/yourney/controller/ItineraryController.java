@@ -34,6 +34,7 @@ import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.ItineraryProjection;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
@@ -217,8 +218,9 @@ public class ItineraryController {
 		}
 
 		Itinerary itinerary = itineraryToUpdate.get();
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-		if (!itinerary.getAuthor().getUsername().equals(username)) {
+		if (!itinerary.getAuthor().getUsername().equals(username) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))){
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
 					new Message("El usuario no tiene permiso de modificación de este itinerario, que no es suyo."));
 		}
@@ -242,8 +244,9 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		} else {
 			Itinerary itinerary = foundItinerary.get();
+			Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-			if (!itinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+			if (!itinerary.getAuthor().getUsername().equals(userService.getCurrentUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {

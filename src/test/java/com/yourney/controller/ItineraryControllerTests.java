@@ -102,6 +102,13 @@ class ItineraryControllerTests {
 		
 		Set<Role> roles = new HashSet<>();
 		roles.add(ro1);
+
+		Role ro2 = new Role();
+		ro2.setId((long)2);
+		ro2.setRoleType(RoleType.ROLE_ADMIN);
+		Set<Role> rolesAdmin = new HashSet<>();
+		rolesAdmin.add(ro1);
+		rolesAdmin.add(ro2);
 		
 		
 		// USUARIOS
@@ -128,7 +135,17 @@ class ItineraryControllerTests {
 		us2.setRoles(roles);
 		us2.setUsername("user2");
 		
-		
+		User admin = new User();
+		admin.setEmail("admin@email.com");
+		admin.setExpirationDate(null);
+		admin.setFirstName("Firstname2");
+		admin.setId((long)3);
+		admin.setLastName("Lastname2");
+		admin.setPassword("admin");
+		admin.setPlan(0);
+		admin.setRoles(rolesAdmin);
+		admin.setUsername("admin");		
+
 		// ITINERARIOS
 		
 	    Itinerary it1 = new Itinerary();
@@ -401,6 +418,7 @@ class ItineraryControllerTests {
 		it2.setActivities(activities2);
 		
 		Optional<User> usuario1 = Optional.of(us1);
+		Optional<User> adminUser = Optional.of(admin);
 		Optional<Image> imagen = Optional.of(img);
 		
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_1)).willReturn(Optional.of(it1));
@@ -408,6 +426,8 @@ class ItineraryControllerTests {
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_4)).willReturn(Optional.of(it4));
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
+		given(this.userService.getByUsername(us1.getUsername())).willReturn(Optional.of(us1));
+		given(this.userService.getByUsername(admin.getUsername())).willReturn(Optional.of(admin));
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", 1000000000., 1000000000, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
@@ -418,6 +438,7 @@ class ItineraryControllerTests {
 	    given(this.itineraryService.searchByUsername(pageable, "user2")).willReturn(itinerariesPage5);
 
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario1);
+		given(this.userService.getByUsername(admin.getUsername())).willReturn(adminUser);
 	    given(this.itineraryService.searchByUserId(pageable, us1.getId())).willReturn(itinerariesPage4);
 	    given(this.itineraryService.searchByCurrentUsername(pageable, us1.getUsername())).willReturn(itinerariesPage4);
 	    given(this.imageService.findById(78)).willReturn(imagen);
@@ -795,6 +816,34 @@ class ItineraryControllerTests {
         .andExpect(jsonPath("$.description", is("lorem ipsum 1 actualizado")))
         .andExpect(jsonPath("$.name", is("itinerary test 1 actualizado")));
 	}
+
+	@Test
+	@WithMockUser(username = "admin", password = "admin")
+	void testAdminUpdateItinerary() throws Exception {
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("budget", 0);
+		activityJSON.put("description", "lorem ipsum 1 actualizado");
+		activityJSON.put("estimatedDays", 1);
+		activityJSON.put("name", "itinerary test 1 actualizado");
+		activityJSON.put("recomendedSeason", "WINTER");
+		activityJSON.put("status", "DRAFT");
+		activityJSON.put("id", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(put("/itinerary/update")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+        
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(TEST_ITINERARY_ID_1)))
+        .andExpect(jsonPath("$.description", is("lorem ipsum 1 actualizado")))
+        .andExpect(jsonPath("$.name", is("itinerary test 1 actualizado")));
+	}
 	
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
@@ -900,7 +949,7 @@ class ItineraryControllerTests {
 	
 	@Test
 	void testUpdateItineraryNotRegistered() throws Exception {
-		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
+		given(this.userService.getCurrentUsername()).willReturn("user99");
 		JSONObject activityJSON = new JSONObject();
 		
 		activityJSON.put("budget", 0);
@@ -936,6 +985,19 @@ class ItineraryControllerTests {
 //		// Validate the returned fields
 		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
 	}
+
+	@Test
+	@WithMockUser(username = "admin", password = "admin")
+	void testAdminDeleteItinerary() throws Exception {
+		
+		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+	}
 	
 	@Test
 	@WithMockUser(username = "user1", password = "user1")
@@ -954,7 +1016,7 @@ class ItineraryControllerTests {
 	
 	@Test
 	void testDeleteItineraryNotRegistered() throws Exception {
-		given(this.userService.getCurrentUsername()).willReturn("Unregistered");
+		given(this.userService.getCurrentUsername()).willReturn("user99");
 		
 		this.mockMvc.perform(delete("/itinerary/delete/{id}", TEST_ITINERARY_ID_1))
 		

@@ -11,6 +11,8 @@ import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ActivityDto;
 import com.yourney.model.dto.Message;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
@@ -154,12 +156,13 @@ public class ActivityController {
         }
 
         Activity activityToUpdate = foundActivity.get();
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
         if (!activityService.existsById(activityDto.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
-        if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername())) {
+        if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede añadir una actividad a un itinerario del que no es dueño."));
         }
@@ -180,8 +183,9 @@ public class ActivityController {
         }
 
         Activity activityToDelete = foundActivity.get();
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-        if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername())) {
+        if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar una actividad de un itinerario del que no es creador."));
         }

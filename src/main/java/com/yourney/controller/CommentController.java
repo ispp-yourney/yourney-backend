@@ -11,6 +11,7 @@ import com.yourney.model.Itinerary;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.CommentDto;
 import com.yourney.model.dto.Message;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.CommentService;
@@ -99,8 +100,9 @@ public class CommentController {
         }
 
         Comment commentToDelete = foundComment.get();
+        Optional<User> foundUser = userService.getByUsername(username);
 
-        if (!username.equals(commentToDelete.getAuthor().getUsername())) {
+        if (!username.equals(commentToDelete.getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar un comentario de un itinerario del que no es creador"));
         }
