@@ -621,4 +621,17 @@ class LandmarkControllerTests {
 		.andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3)));
 	}
 
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testHasActivityLandmark() throws Exception {
+		
+		this.mockMvc.perform(get("/landmark/hasActivity/{landmarkId}", TEST_LANDMARK_ID4))
+		
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(content().string("true"));
+	}
+
+
 }
