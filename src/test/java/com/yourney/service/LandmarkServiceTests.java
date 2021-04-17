@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 
@@ -188,7 +189,7 @@ class LandmarkServiceTests {
 
 		Boolean expected = this.landmarkService.existsActivityByLandmarkId(LandmarkServiceTests.TEST_LANDMARK_ID1);
 
-		assertSame(expected, true);
+		assertSame(true, expected);
 	}
 	
 	@Test
@@ -196,7 +197,7 @@ class LandmarkServiceTests {
 
 		Boolean expected = this.landmarkService.existsActivityByLandmarkId(LandmarkServiceTests.TEST_LANDMARK_ID_NOT_FOUND);
 
-		assertSame(expected, false);
+		assertSame(false, expected);
 	}
 	
 	@Test
@@ -206,7 +207,7 @@ class LandmarkServiceTests {
 		List<Landmark> result = new ArrayList<Landmark>();
 		expected.forEach(result::add);
 
-		assertTrue(result.size() == 2);
+		assertEquals(2,result.size());
 		assertSame(result.get(0), this.l1);
 		assertSame(result.get(1), this.landmarkCreado);
 	}
@@ -219,8 +220,8 @@ class LandmarkServiceTests {
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);
 		
-		assertTrue(result.size() == 1);
-		assertSame(result.get(0), "España");
+		assertEquals(1,result.size());
+		assertSame("España", result.get(0));
 	}
 	
 	@Test
@@ -231,8 +232,8 @@ class LandmarkServiceTests {
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);
 		
-		assertTrue(result.size() == 1);
-		assertSame(result.get(0), "Sevilla");
+		assertEquals(1,result.size());
+		assertSame("Sevilla",result.get(0));
 	}
 	
 	@Test
@@ -243,8 +244,8 @@ class LandmarkServiceTests {
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);
 		
-		assertTrue(result.size() == 1);
-		assertSame(result.get(0), "Sevilla");
+		assertEquals(1,result.size());
+		assertSame("Sevilla",result.get(0));
 	}
 	
 	@Test

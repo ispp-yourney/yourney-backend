@@ -1,6 +1,7 @@
 
 package com.yourney.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -254,7 +255,7 @@ class ItineraryServiceTests {
 		List<Itinerary> result = new ArrayList<Itinerary>();
 		expected.forEach(result::add);
 
-		assertTrue(result.size() == 2);
+		assertEquals(2,result.size());
 		assertSame(result.get(0), this.it1);
 		assertSame(result.get(1), this.it2);
 	}
@@ -263,41 +264,41 @@ class ItineraryServiceTests {
 	void testSearchByProperties() {
 		Page<ItineraryProjection> expected = this.itineraryService.searchByProperties(TEST_ITINERARY_COUNTRY_1, TEST_ITINERARY_CITY_1, TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable);
 
-		assertTrue(expected.getNumberOfElements() == 1);
-		assertSame((long) expected.toList().get(0).getId(), TEST_ITINERARY_ID);
+		assertEquals(1,expected.getNumberOfElements());
+		assertSame(TEST_ITINERARY_ID, (long) expected.toList().get(0).getId());
 	}
 	
 	@Test
 	void testSearchByDistance() {
 		Page<ItineraryProjection> expected = this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, this.pageable);
 
-		assertTrue(expected.getNumberOfElements() == 2);
-		assertSame((long) expected.toList().get(0).getId(), TEST_ITINERARY_ID);
-		assertSame((long) expected.toList().get(1).getId(), TEST_ITINERARY_ID_2);
+		assertEquals(2,expected.getNumberOfElements());
+		assertSame(TEST_ITINERARY_ID, (long) expected.toList().get(0).getId());
+		assertSame(TEST_ITINERARY_ID_2, (long) expected.toList().get(1).getId());
 	}
 	
 	@Test
 	void testSearchByName() {
 		Page<ItineraryProjection> expected = this.itineraryService.searchByName(this.pageable, TEST_ITINERARY_NAME);
 
-		assertTrue(expected.getNumberOfElements() == 1);
-		assertSame((long) expected.toList().get(0).getId(), TEST_ITINERARY_ID);
+		assertEquals(1,expected.getNumberOfElements());
+		assertSame(TEST_ITINERARY_ID, (long) expected.toList().get(0).getId());
 	}
 	
 	@Test
 	void testSearchByUsername() {
 		Page<ItineraryProjection> expected = this.itineraryService.searchByUsername(this.pageable, TEST_ITINERARY_USERNAME);
 
-		assertTrue(expected.getNumberOfElements() == 1);
-		assertSame((long) expected.toList().get(0).getId(), TEST_ITINERARY_ID);
+		assertEquals(1,expected.getNumberOfElements());
+		assertSame(TEST_ITINERARY_ID,(long) expected.toList().get(0).getId());
 	}
 	
 	@Test
 	void testSearchByCurrentUsername() {
 		Page<ItineraryProjection> expected = this.itineraryService.searchByCurrentUsername(this.pageable, TEST_ITINERARY_USERNAME);
 
-		assertTrue(expected.getNumberOfElements() == 1);
-		assertSame((long) expected.toList().get(0).getId(), TEST_ITINERARY_ID);
+		assertEquals(1,expected.getNumberOfElements());
+		assertSame(TEST_ITINERARY_ID,(long) expected.toList().get(0).getId());
 	}
 	
 	@Test

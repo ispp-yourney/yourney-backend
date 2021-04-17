@@ -21,7 +21,7 @@ class MessageDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(Message.class).verify();
 	}
 
@@ -32,6 +32,6 @@ class MessageDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(m1.toString(),"");
+		assertNotEquals("",m1.toString());
 	}
 }

@@ -39,13 +39,13 @@ class AuthorDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsAuthorClass() {
+	void testEqualsAuthorClass() {
 		EqualsVerifier.simple().forClass(AuthorDto.class).verify();
 	}
 
 
 	@Test
-	public void testEqualsPrincipalUserClass() {
+	void testEqualsPrincipalUserClass() {
 		EqualsVerifier.simple().forClass(PrincipalUser.class).verify();
 	}
 
@@ -66,6 +66,6 @@ class AuthorDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(a1.toString(),"");
+		assertNotEquals("",a1.toString());
 	}
 }

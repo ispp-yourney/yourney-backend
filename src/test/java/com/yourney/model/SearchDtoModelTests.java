@@ -22,7 +22,7 @@ class SearchDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(Search.class).verify();
 	}
 
@@ -33,6 +33,6 @@ class SearchDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(s1.toString(),"");
+		assertNotEquals("",s1.toString());
 	}
 }

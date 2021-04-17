@@ -20,7 +20,7 @@ class SeasonDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(SeasonDto.class).verify();
 	}
 
@@ -31,6 +31,6 @@ class SeasonDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(s1.toString(),"");
+		assertNotEquals("",s1.toString());
 	}
 }

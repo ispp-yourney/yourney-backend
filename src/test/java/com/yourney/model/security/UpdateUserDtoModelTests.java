@@ -64,7 +64,7 @@ class UpdateUserDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(UpdateUser.class).verify();
 	}
 
@@ -75,8 +75,8 @@ class UpdateUserDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(ro1.toString(),"");
-		assertNotEquals(pu1.toString(),"");
-		assertNotEquals(m1.toString(),"");
+		assertNotEquals("",ro1.toString());
+		assertNotEquals("",pu1.toString());
+		assertNotEquals("",m1.toString());
 	}
 }

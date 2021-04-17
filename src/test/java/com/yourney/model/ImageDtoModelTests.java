@@ -28,12 +28,12 @@ class ImageDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(ImageDto.class).verify();
 	}
 
 	@Test
-	public void testEqualsImageClass() {
+	void testEqualsImageClass() {
 		EqualsVerifier.simple().forClass(Image.class).withIgnoredAnnotations(Id.class).verify();
 		i1.toString();
 		i1.hashCode();
@@ -46,6 +46,6 @@ class ImageDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(s1.toString(),"");
+		assertNotEquals("",s1.toString());
 	}
 }
