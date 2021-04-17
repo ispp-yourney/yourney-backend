@@ -104,27 +104,27 @@ class ItineraryDtoModelTests {
 	}
 	
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(ItineraryDto.class).verify();
 	}
 
 	@Test
-	public void testEqualsLandmarkClass() {
+	void testEqualsLandmarkClass() {
 		EqualsVerifier.simple().withPrefabValues(Itinerary.class, it1, it2).forClass(Landmark.class).withIgnoredAnnotations(Id.class).verify();
 	}
 
 	@Test
-	public void testEqualsCommentClass() {
+	void testEqualsCommentClass() {
 		EqualsVerifier.simple().withPrefabValues(Itinerary.class, it1, it2).forClass(Comment.class).withIgnoredAnnotations(Id.class).verify();
 	}	
 
 	@Test
-	public void testEqualsItineraryClass() {
+	void testEqualsItineraryClass() {
 		EqualsVerifier.simple().withPrefabValues(Activity.class, ac1, ac2).withPrefabValues(Comment.class, c1, c2).forClass(Itinerary.class).withIgnoredAnnotations(Id.class).verify();
 	}	
 
 	@Test
-	public void testEqualsActivityClass() {
+	void testEqualsActivityClass() {
 		EqualsVerifier.simple().withPrefabValues(Activity.class, ac1, ac2).withPrefabValues(Itinerary.class, it1, it2).forClass(Activity.class).withIgnoredAnnotations(Id.class).verify();
 	}	
 	
@@ -145,6 +145,6 @@ class ItineraryDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(l1.toString(),"");
+		assertNotEquals("",l1.toString());
 	}
 }

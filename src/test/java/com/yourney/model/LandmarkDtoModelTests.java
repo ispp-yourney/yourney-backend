@@ -49,7 +49,7 @@ class LandmarkDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(LandmarkDto.class).verify();
 	}
 
@@ -65,6 +65,6 @@ class LandmarkDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(l1.toString(),"");
+		assertNotEquals("",l1.toString());
 	}
 }

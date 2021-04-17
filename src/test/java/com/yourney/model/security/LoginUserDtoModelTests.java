@@ -21,7 +21,7 @@ class LoginUserDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(LoginUser.class).verify();
 	}
 
@@ -32,6 +32,6 @@ class LoginUserDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(m1.toString(),"");
+		assertNotEquals("",m1.toString());
 	}
 }

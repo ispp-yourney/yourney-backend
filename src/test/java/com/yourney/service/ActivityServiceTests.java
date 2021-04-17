@@ -3,6 +3,7 @@ package com.yourney.service;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
@@ -204,7 +205,7 @@ class ActivityServiceTests {
 		List<Activity> result = new ArrayList<Activity>();
 		expected.forEach(result::add);
 
-		assertTrue(result.size() == 4);
+		assertEquals(4,result.size());
 		assertSame(result.get(0), this.a1);
 		assertSame(result.get(1), this.a2);
 		assertSame(result.get(2), this.a3);
@@ -234,7 +235,7 @@ class ActivityServiceTests {
 		List<Activity> result = new ArrayList<Activity>();
 		expected.forEach(result::add);
 
-		assertTrue(result.size() == 2);
+		assertEquals(2,result.size());
 		assertSame(result.get(0), this.a2);
 		assertSame(result.get(1), this.a3);
 	}
@@ -246,7 +247,7 @@ class ActivityServiceTests {
 		List<Activity> result = new ArrayList<Activity>();
 		expected.forEach(result::add);
 
-		assertTrue(result.size() == 3);
+		assertEquals(3,result.size());
 		assertSame(result.get(0), this.a1);
 		assertSame(result.get(1), this.a2);
 		assertSame(result.get(2), this.a3);

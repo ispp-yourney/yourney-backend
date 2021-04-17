@@ -37,7 +37,7 @@ class CommentDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(CommentDto.class).verify();
 	}
 
@@ -49,7 +49,7 @@ class CommentDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(c1.toString(),"");
-		assertNotEquals(c2.toString(),"");
+		assertNotEquals("",c1.toString());
+		assertNotEquals("",c2.toString());
 	}
 }

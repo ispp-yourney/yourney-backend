@@ -27,7 +27,7 @@ class JwtDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(JwtDto.class).verify();
 	}
 
@@ -38,6 +38,6 @@ class JwtDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(c1.toString(),"");
+		assertNotEquals("",c1.toString());
 	}
 }

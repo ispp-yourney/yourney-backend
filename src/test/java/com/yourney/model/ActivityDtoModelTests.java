@@ -106,7 +106,7 @@ class ActivityDtoModelTests {
 	}
 
 	@Test
-	public void testEqualsClass() {
+	void testEqualsClass() {
 		EqualsVerifier.simple().forClass(ActivityDto.class).verify();
 	}
 
@@ -128,6 +128,6 @@ class ActivityDtoModelTests {
 
 	@Test
 	void testToString() {
-		assertNotEquals(a1.toString(),"");
+		assertNotEquals("",a1.toString());
 	}
 }
