@@ -34,16 +34,28 @@ public class LandmarkService {
         return landmarkRepository.existsActivityByLandmarkId(id);
     }
 
-    public Iterable<String> findAllCountries() {
-        return landmarkRepository.findAllCountries();
+    public Iterable<String> findAllCountries(boolean itinerary) {
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCountriesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCountries();
+    	}
+        return res;
     }
 
     public Iterable<String> findCitiesByCountry(String name) {
         return landmarkRepository.findCitiesByCountry(name);
     }
 
-    public Iterable<String> findAllCities() {
-        return landmarkRepository.findAllCities();
+    public Iterable<String> findAllCities(boolean itinerary) {
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCitiesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCities();
+    	}
+        return res;
     }
 
     public Landmark save(Landmark landmark) {

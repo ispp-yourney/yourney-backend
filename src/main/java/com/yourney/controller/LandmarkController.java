@@ -55,8 +55,9 @@ public class LandmarkController {
     private static final String ANONYMOUS_USER_STRING = "anonymousUser";
 
     @GetMapping("/country/list")
-    public ResponseEntity<Iterable<String>> listCountries() {
-        return ResponseEntity.ok(landmarkService.findAllCountries());
+    public ResponseEntity<Iterable<String>> listCountries(
+    		@RequestParam(defaultValue = "false") boolean itinerary) {
+        return ResponseEntity.ok(landmarkService.findAllCountries(itinerary));
     }
 
     @GetMapping("/country/{name}/city/list")
@@ -65,8 +66,9 @@ public class LandmarkController {
     }
 
     @GetMapping("/city/list")
-    public ResponseEntity<Iterable<String>> listCities() {
-        return ResponseEntity.ok(landmarkService.findAllCities());
+    public ResponseEntity<Iterable<String>> listCities(
+    		@RequestParam(defaultValue = "false") boolean itinerary) {
+        return ResponseEntity.ok(landmarkService.findAllCities(itinerary));
     }
 
 	@GetMapping("/search")
