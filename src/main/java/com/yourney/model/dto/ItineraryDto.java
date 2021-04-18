@@ -2,6 +2,7 @@ package com.yourney.model.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ public class ItineraryDto {
 
     @NotNull(message = "El campo días estimados es obligatorio")
     @Min(value = 1, message = "La duración estimada mínima es 1")
+    @Max(value = 365, message = "La duración estimada máxima es 365")
     private Integer estimatedDays;
 
     private LocalDateTime createDate;

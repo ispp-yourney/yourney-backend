@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
@@ -23,9 +24,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "landmarks", indexes = {
-	@Index(columnList = "country, city, name")
-}) 
+@Table(name = "landmarks", indexes = { @Index(columnList = "country, city, name") })
 public class Landmark {
 
 	@Id
@@ -42,15 +41,17 @@ public class Landmark {
 	@Length(max = 1000)
 	private String description;
 
-	@Range(min = 0)
+	@Range(min = 0, max = 10000)
 	private Double price;
-	
+
 	@NotBlank
 	@Column(nullable = false)
+	@Length(max = 100)
 	private String country;
 
 	@NotBlank
 	@Column(nullable = false)
+	@Length(max = 100)
 	private String city;
 
 	@Range(min = -90, max = 90)
@@ -61,23 +62,29 @@ public class Landmark {
 
 	private LocalDateTime endPromotionDate;
 
+	@Length(max = 50)
 	private String category;
 
 	// Información de contacto
 
 	@Email
+	@Length(max = 100)
 	private String email;
 
 	@Length(max = 50)
+	@Pattern(regexp = "^(([+][(][0-9]{1,3}[)][ ])?([0-9]{6,12}))$")
 	private String phone;
 
 	@URL
+	@Length(max = 300)
 	private String website;
 
-	@Length(max = 500)
+	@URL
+	@Length(max = 300)
 	private String instagram;
 
 	@URL
+	@Length(max = 300)
 	private String twitter;
 
 	private LocalDateTime createDate;
