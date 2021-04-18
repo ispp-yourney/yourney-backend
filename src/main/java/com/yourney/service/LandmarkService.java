@@ -35,7 +35,13 @@ public class LandmarkService {
     }
 
     public Iterable<String> findAllCountries(boolean itinerary) {
-        return landmarkRepository.findAllCountries(itinerary);
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCountriesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCountries();
+    	}
+        return res;
     }
 
     public Iterable<String> findCitiesByCountry(String name) {
@@ -43,7 +49,13 @@ public class LandmarkService {
     }
 
     public Iterable<String> findAllCities(boolean itinerary) {
-        return landmarkRepository.findAllCities(itinerary);
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCitiesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCities();
+    	}
+        return res;
     }
 
     public Landmark save(Landmark landmark) {

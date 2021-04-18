@@ -62,7 +62,7 @@ class LandmarkServiceTests {
 	private ItineraryRepository itineraryRepository;
 
 	public Landmark l1 = new Landmark();
-	Landmark landmarkCreado = new Landmark();
+	public Landmark l2 = new Landmark();
 	Pageable pageable;
 	Page<LandmarkProjection> landmarksPage1;
 	
@@ -103,20 +103,21 @@ class LandmarkServiceTests {
 	    l1.setViews((long) 10);
 	    l1.setWebsite(null);
 	    
-	    landmarkCreado.setId((long)TEST_LANDMARK_ID2);
-	    landmarkCreado.setCategory(null);
-	    landmarkCreado.setCity("Sevilla");
-	    landmarkCreado.setCountry("Spain");
-	    landmarkCreado.setDescription("description test");
-	    landmarkCreado.setEmail("test@gmail.com");
-	    landmarkCreado.setInstagram("https://instagram.com/testlandmark");
-	    landmarkCreado.setLatitude(0.);
-	    landmarkCreado.setLongitude(0.);
-	    landmarkCreado.setName("Landmark test");
-	    landmarkCreado.setTwitter("https://twitter.com/testlandmark");
-	    landmarkCreado.setPhone("+1 3234645145");
-	    landmarkCreado.setPrice(0.);
-	    landmarkCreado.setWebsite("https://www.testlandmark.com/");
+	    
+	    l2.setId((long)TEST_LANDMARK_ID2);
+	    l2.setCategory(null);
+	    l2.setCity("París");
+	    l2.setCountry("Francia");
+	    l2.setDescription("description test");
+	    l2.setEmail("test@gmail.com");
+	    l2.setInstagram("https://instagram.com/testlandmark");
+	    l2.setLatitude(0.);
+	    l2.setLongitude(0.);
+	    l2.setName("Landmark test");
+	    l2.setTwitter("https://twitter.com/testlandmark");
+	    l2.setPhone("+1 3234645145");
+	    l2.setPrice(0.);
+	    l2.setWebsite("https://www.testlandmark.com/");
 	    
 	    //Activities
 	    Activity activity_l4 = new Activity(); 
@@ -131,16 +132,24 @@ class LandmarkServiceTests {
 		
 	    Collection<String> countryList = new ArrayList<>();
 	    countryList.add(l1.getCountry());
+	    countryList.add(l2.getCountry());
+	    
+	    Collection<String> countryListWithItinerary = new ArrayList<>();
+	    countryListWithItinerary.add(l1.getCountry());
 	    
 	    Collection<String> cityByCountryList = new ArrayList<>();
 	    cityByCountryList.add(l1.getCity());
 	    
 	    Collection<String> cityList = new ArrayList<>();
+	    cityList.add(l2.getCity());
 	    cityList.add(l1.getCity());
+	    
+	    Collection<String> cityListWithItinerary = new ArrayList<>();
+	    cityListWithItinerary.add(l1.getCity());
 	    
 	    Collection<Landmark> landmarks = new ArrayList<>();
 	    landmarks.add(l1);
-	    landmarks.add(landmarkCreado);
+	    landmarks.add(l2);
 	    
 	    Pageable pageable = PageRequest.of(TEST_LANDMARK_PAGE, TEST_LANDMARK_SIZE);
 		ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -159,9 +168,11 @@ class LandmarkServiceTests {
 		given(this.landmarkRepository.existsActivityByLandmarkId(TEST_LANDMARK_ID_NOT_FOUND)).willReturn(false);
 		given(this.landmarkRepository.searchByProperties(l1.getCountry(), l1.getCity(), l1.getName(), pageable)).willReturn(landmarksPage1);
 	    doReturn(l1).when(this.landmarkRepository).save(any());
-	    given(this.landmarkService.findAllCountries(false)).willReturn(countryList);
-	    given(this.landmarkService.findAllCities(false)).willReturn(cityList);
-	    given(this.landmarkService.findCitiesByCountry(l1.getCountry())).willReturn(cityByCountryList);
+	    given(this.landmarkRepository.findAllCountries()).willReturn(countryList);
+	    given(this.landmarkRepository.findManyCountriesWithItinerary()).willReturn(countryListWithItinerary);
+	    given(this.landmarkRepository.findAllCities()).willReturn(cityList);
+	    given(this.landmarkRepository.findManyCitiesWithItinerary()).willReturn(cityListWithItinerary);
+	    given(this.landmarkRepository.findCitiesByCountry(l1.getCountry())).willReturn(cityByCountryList);
 	    
 
 	}
@@ -209,7 +220,7 @@ class LandmarkServiceTests {
 
 		assertEquals(2,result.size());
 		assertSame(result.get(0), this.l1);
-		assertSame(result.get(1), this.landmarkCreado);
+		assertSame(result.get(1), this.l2);
 	}
 	
 	@Test
@@ -220,10 +231,23 @@ class LandmarkServiceTests {
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);
 		
+		assertEquals(2,result.size());
+		assertSame("España", result.get(0));
+		assertSame("Francia", result.get(1));
+	}
+	
+	@Test
+	void testFindAllCountriesWithItinerary() {
+
+		Iterable<String> expected = this.landmarkService.findAllCountries(true); 
+
+		List<String> result = new ArrayList<String>();
+		expected.forEach(result::add);
+		
 		assertEquals(1,result.size());
 		assertSame("España", result.get(0));
 	}
-	
+
 	@Test
 	void testFindCitiesByCountry() {
 
@@ -244,9 +268,23 @@ class LandmarkServiceTests {
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);
 		
+		assertEquals(2,result.size());
+		assertSame("París",result.get(0));
+		assertSame("Sevilla",result.get(1));
+	}
+	
+	@Test
+	void testFindAllCitiesWithItinerary() {
+
+		Iterable<String> expected = this.landmarkService.findAllCities(true); 
+
+		List<String> result = new ArrayList<String>();
+		expected.forEach(result::add);
+		
 		assertEquals(1,result.size());
 		assertSame("Sevilla",result.get(0));
 	}
+
 	
 	@Test
 	void testSave() {
