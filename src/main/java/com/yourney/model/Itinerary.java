@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,6 +25,7 @@ import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import lombok.Data;
 
@@ -50,9 +52,11 @@ public class Itinerary {
 	@Column(nullable = false)
 	private StatusType status;
 
+	@Min(0)
 	private Double budget;
 
 	@Column(name = "estimated_days")
+	@Range(min = 1, max = 365)
 	private Integer estimatedDays;
 
 	@Column(name = "create_date", nullable = false)

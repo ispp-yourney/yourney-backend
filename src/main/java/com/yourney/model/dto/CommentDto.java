@@ -27,5 +27,5 @@ public class CommentDto {
     @Min(value = 1, message = "La puntuación mínima es 1")
     @Max(value = 5, message = "La puntuación máxima es 5")
     private Integer rating;
-    
+
 }

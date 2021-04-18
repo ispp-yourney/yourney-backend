@@ -26,7 +26,7 @@ public class ActivityDto {
 	private String description;
 
 	@NotNull(message = "El campo días estimados es obligatorio")
-	@Min(value = 1, message = "La duración estimada mínima es 1")
+	@Min(value = 1, message = "El mínimo valor del día es 1")
 	private Integer day;
 
 	private Long itinerary;
