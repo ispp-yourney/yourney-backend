@@ -19,8 +19,8 @@ public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
     @Query("select distinct l.city from Landmark l where LOWER(l.country)=LOWER(:name) order by city")
     Iterable<String> findCitiesByCountry(@Param("name") String name);
 
-    @Query("select distinct l.city from Landmark l order by city")
-    Iterable<String> findAllCities();
+    @Query("select distinct l.city from Landmark l, Activity a WHERE :itinerary = false OR a.landmark = l order by city")
+    Iterable<String> findAllCities(@Param("itinerary") boolean itinerary);
 
     @Query("select case when count(ac)> 0 then true else false end from Activity ac where ac.landmark.id=:id")
     Boolean existsActivityByLandmarkId(Long id);

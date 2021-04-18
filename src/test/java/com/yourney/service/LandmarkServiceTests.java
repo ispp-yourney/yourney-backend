@@ -160,7 +160,7 @@ class LandmarkServiceTests {
 		given(this.landmarkRepository.searchByProperties(l1.getCountry(), l1.getCity(), l1.getName(), pageable)).willReturn(landmarksPage1);
 	    doReturn(l1).when(this.landmarkRepository).save(any());
 	    given(this.landmarkService.findAllCountries(false)).willReturn(countryList);
-	    given(this.landmarkService.findAllCities()).willReturn(cityList);
+	    given(this.landmarkService.findAllCities(false)).willReturn(cityList);
 	    given(this.landmarkService.findCitiesByCountry(l1.getCountry())).willReturn(cityByCountryList);
 	    
 
@@ -239,7 +239,7 @@ class LandmarkServiceTests {
 	@Test
 	void testFindAllCities() {
 
-		Iterable<String> expected = this.landmarkService.findAllCities(); 
+		Iterable<String> expected = this.landmarkService.findAllCities(false); 
 
 		List<String> result = new ArrayList<String>();
 		expected.forEach(result::add);

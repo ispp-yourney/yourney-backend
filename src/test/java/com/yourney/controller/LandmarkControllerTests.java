@@ -215,7 +215,7 @@ class LandmarkControllerTests {
 	    given(this.imageService.findById((long)LandmarkControllerTests.TEST_IMAGE_ID)).willReturn(Optional.of(i1));
 	    given(this.landmarkService.findAllCountries(false)).willReturn(countryList);
 	    given(this.landmarkService.findCitiesByCountry(TEST_LANDMARK_COUNTRY)).willReturn(cityByCountryList);
-	    given(this.landmarkService.findAllCities()).willReturn(cityList);
+	    given(this.landmarkService.findAllCities(false)).willReturn(cityList);
 	    given(this.landmarkService.searchByProperties("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%","%" + TEST_LANDMARK_NAME + "%", TEST_LANDMARK_SIZE, pageable)).willReturn(landmarksPage1);
 		doReturn(landmarkCreado).when(this.landmarkService).save(any());
 	}

@@ -42,8 +42,8 @@ public class LandmarkService {
         return landmarkRepository.findCitiesByCountry(name);
     }
 
-    public Iterable<String> findAllCities() {
-        return landmarkRepository.findAllCities();
+    public Iterable<String> findAllCities(boolean itinerary) {
+        return landmarkRepository.findAllCities(itinerary);
     }
 
     public Landmark save(Landmark landmark) {

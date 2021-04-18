@@ -66,8 +66,9 @@ public class LandmarkController {
     }
 
     @GetMapping("/city/list")
-    public ResponseEntity<Iterable<String>> listCities() {
-        return ResponseEntity.ok(landmarkService.findAllCities());
+    public ResponseEntity<Iterable<String>> listCities(
+    		@RequestParam(defaultValue = "false") boolean itinerary) {
+        return ResponseEntity.ok(landmarkService.findAllCities(itinerary));
     }
 
 	@GetMapping("/search")
