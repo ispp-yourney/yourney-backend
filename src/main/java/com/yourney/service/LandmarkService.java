@@ -34,8 +34,8 @@ public class LandmarkService {
         return landmarkRepository.existsActivityByLandmarkId(id);
     }
 
-    public Iterable<String> findAllCountries() {
-        return landmarkRepository.findAllCountries();
+    public Iterable<String> findAllCountries(boolean itinerary) {
+        return landmarkRepository.findAllCountries(itinerary);
     }
 
     public Iterable<String> findCitiesByCountry(String name) {

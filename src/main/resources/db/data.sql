@@ -455,7 +455,11 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
     0.0, 'España', 'Sevilla', 37.37597811939473, -5.989446712742345, NULL, NULL, NULL, '+(34) 955473232', NULL, 'https://www.sevilla.org/ayuntamiento/competencias-areas/area-de-habitat-urbano-cultura-y-turismo/servicio-de-parques-y-jardines/parques/parques-y-jardines-historicos-1/parque-de-maria-luisa', 'Parque', 75, 76, '2021-01-01 00:00:01'),
 	('Isla Mágica',																		-- 67
     'Parque temático basado en el Nuevo Mundo con montañas rusas, toboganes acuáticos, espectáculos y un lago.', 
-    0.0, 'España', 'Sevilla', 37.40632855625326, -5.999255630359631, '2022-02-02 11:16:20', NULL, NULL, '+(34) 902161716', NULL, 'http://www.islamagica.es/', 'Parque', 75, 77, '2021-01-01 00:00:01');
+    0.0, 'España', 'Sevilla', 37.40632855625326, -5.999255630359631, '2022-02-02 11:16:20', NULL, NULL, '+(34) 902161716', NULL, 'http://www.islamagica.es/', 'Parque', 75, 77, '2021-01-01 00:00:01'),
+	-- EXTRA
+    ('Museo Pushkin',																		
+    'Museo en un edificio clásico, con antigüedades, esculturas, cuadros y exposiciones temporales.', 
+    0.0, 'Rusia', 'Moscú', 55.74735972844458, 37.6050910408261, NULL, NULL, NULL, '+74956979578', NULL, 'https://pushkinmuseum.art/', 'Musea de Arte', 34, NULL, '2021-01-01 00:00:01');
 
 
 -- ACTIVITIES

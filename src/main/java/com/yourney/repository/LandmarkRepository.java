@@ -13,8 +13,8 @@ import com.yourney.model.projection.LandmarkProjection;
 @Repository
 public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
 
-    @Query("select distinct l.country from Landmark l order by country")
-    Iterable<String> findAllCountries();
+    @Query("select distinct l.country from Landmark l, Activity a WHERE :itinerary = false OR a.landmark = l ORDER BY country")
+    Iterable<String> findAllCountries(@Param("itinerary") boolean itinerary);
 
     @Query("select distinct l.city from Landmark l where LOWER(l.country)=LOWER(:name) order by city")
     Iterable<String> findCitiesByCountry(@Param("name") String name);
