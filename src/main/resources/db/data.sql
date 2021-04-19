@@ -211,34 +211,34 @@ INSERT INTO users_roles(user_id, role_id) VALUES
 INSERT INTO itineraries(name, description, status, recommended_season, budget, estimated_days, create_date, views, author_id, image_id) VALUES
     ('Una semana en Los Ángeles',
     'Situada en la coste oeste de los Estados Unidos, Los Ángeles es una ciudad de gran atractivo turístico. En este itinerario, os llevaré por algunos de los lugares más interesantes de esta gran ciudad, desde la playa de Venice hasta Hollywood, pasando por el Observatorio Griffith y el distrito comercial.',
-    'PUBLISHED', 'SPRING', 1400.0, 6, '2021-01-20 12:55:00', 43, 2, 1),     																					-- 78
+    'PUBLISHED', 'SPRING', 51.75, 6, '2021-01-20 12:55:00', 43, 2, 1),     																					-- 78
     ('Tu verano en La Habana',
     '¿Alguna vez haz soñado con visitar un país tropical donde el ambiente y las temperaturas te enamoren y te hagan olvidar todas tus preocupaciones? Entonces Cuba es tu sitio. Su capital, La Habana, es una de las ciudades mas encantadoras del mundo. Sus hermosos colores y sus vivas calles harán que tu visita a Cuba sea inolvidable.',
-    'PUBLISHED', 'SUMMER', 850.0, 5, '2021-02-26 10:14:17', 56, 3, 2),											       											-- 2
+    'PUBLISHED', 'SUMMER', 135.0, 5, '2021-02-26 10:14:17', 56, 3, 2),											       											-- 2
     ('Viaje a Tokio',
     'El continente asiatico siempre me ha parecido muy interesante, especialmente por su cultura. Viajar a Tokio fue una experiencia única para mi. Por eso, os traigo este itinerario que he creado para disfrutar al máximo dela ciudad durante cuatro días. Solo espero que Tokio os guste tanto como a mi.',
-    'PUBLISHED', 'ANYTIME', 1000.0, 5, '2021-01-25 12:06:06', 62, 4, 3),          										 											-- 3
+    'PUBLISHED', 'ANYTIME', 105.0, 5, '2021-01-25 12:06:06', 62, 4, 3),          										 											-- 3
     ('Múnich, un viaje para recordar',
     'La capital de Baviera es uno de los lugares con más interés histórico del mundo. Situada al sur de Alemania, atrae turistas de todo el mundo y se encuentra entre las ciudades más visitadas de Europa. Hoy os propongo un itinerario para visitar los lugares más interesantes de la ciudad en tan solo 4 días.',
-    'PUBLISHED', 'ANYTIME', 700.0, 5, '2021-02-10 17:52:10', 53, 5, 4),  												   	    									-- 4
+    'PUBLISHED', 'ANYTIME', 109.0, 5, '2021-02-10 17:52:10', 53, 5, 4),  												   	    									-- 4
     ('Enamorate de París',
     'Todo el mundo conoce los grandes atractivos turísticos de París: el Arco del Triunfo, el museo del Louvre y la Torre Eiffel son algunos de los más famosos. Sin embargo, el encanto de la capital francesa no solo reside en estos lugares mundialmente conocidos. Sus calles, su cultura y su gastronomía son algunos de los factores que te harán enamorarte de París.',
-    'PUBLISHED', 'ANYTIME', 1000.0, 5, '2021-01-12 14:48:45', 33, 2, 5), 										          											-- 5
+    'PUBLISHED', 'ANYTIME', 60.0, 5, '2021-01-12 14:48:45', 33, 2, 5), 										          											-- 5
     ('El encanto de Río de Janeiro',
     'La ciudad Brasileña es la segunda ciudad más habitada del país. Posee un gran interés turístico que atrae a miles de personas cada año. Los hermosos paisajes de la ciudad costera ofrecen unas vistas únicas y espectaculares. Sin embargo, Rio de Janeiro cuenta con muchos más atractivos, como su cultura y su gastronomía.',
-    'PUBLISHED', 'ANYTIME', 550.0, 4, '2021-02-21 11:03:34', 49, 3, 6),  																							-- 6
+    'PUBLISHED', 'ANYTIME', 25.0, 4, '2021-02-21 11:03:34', 49, 3, 6),  																							-- 6
     ('Siete días en Londres',
     'Cuando pensamos en Londres, imaginamos una ciudad fría, gris y triste. Nada más lejos de la realidad. La capital de Reino Unido fue fundada por los romanos hace casi dos milenios. Se encuentra a orillas del rio Támesis y atrae a millones de personas. En este itinerario descubriremos los encantos de la ciudad y lo que la hace un lugar extraordinario.',
-    'PUBLISHED', 'ANYTIME', 1350.0, 7, '2021-01-15 19:25:46', 24, 4, 7),											           											-- 7
+    'PUBLISHED', 'ANYTIME', 145.0, 7, '2021-01-15 19:25:46', 24, 4, 7),											           											-- 7
     ('Visita a Roma',
     'Como todos sabemos, la llamada Ciudad Eterna fue la capital de uno de los mayores imperios de la historia. Sin lugar a dudas, sus calles hacen justicia a su grandeza. Son muchos los monumentos y puntos de interés que podemos visitar en la capital italiana. En este itinerario veremos muchos de ellos y nos aseguraremos de lanzar una moneda a la Fontana di Trevi con el fin de volver a esta majestuosa ciudad.',
-    'PUBLISHED', 'ANYTIME', 1100.0, 6, '2021-02-09 20:05:56', 72, 3, 8),         								  													-- 8
+    'PUBLISHED', 'ANYTIME', 160.0, 6, '2021-02-09 20:05:56', 72, 3, 8),         								  													-- 8
     ('Invierno en Helsinki',
     'Pienso que los países nórdicos son lugares mágicos y enigmáticos que, en invierno, se cubren de un manto de nieve blanca que nos ofrece vistas extraordinarias. Por eso, decidí que ya era hora de visitar Helsinki, la capital de Finlandia. Fue una de las experiencias más bonitas de mi vida y me gustarí compartirla con vosotros en este itinerario.',
-    'PUBLISHED', 'WINTER', 1200.0, 9, '2021-01-18 16:19:23', 51, 2, 9),      										     										-- 9
+    'PUBLISHED', 'WINTER', 80.0, 9, '2021-01-18 16:19:23', 51, 2, 9),      										     										-- 9
     ('Sevilla, tierra de pasión',
     'Millones de turistas de todo el mundo visitan distintos lugares de España cada año. Andalucía es una de las regiones más visitadas y su capital nos da una idea de porqué. Monumentos históricos, calles encantadoras, temperaturas cálidas, una gastronomía sin igual y una cultura única hacen de Sevilla una ciudad llena de pasión.',
-    'PUBLISHED', 'SPRING', 900.0, 5, '2021-02-02 18:17:25', 75, 4, 10);  											        									-- 10
+    'PUBLISHED', 'SPRING', 65.0, 5, '2021-02-02 18:17:25', 75, 4, 10);  											        									-- 10
 
 
     
