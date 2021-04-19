@@ -20,12 +20,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.yourney.model.Image;
 import com.yourney.security.controller.AuthController;
 import com.yourney.security.model.Role;
 import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ImageService;
 
 
 @SpringBootTest
@@ -37,6 +40,7 @@ class AuthControllerTests {
 	private static final int TEST_USER_ID_2 = 2;
 	private static final String TEST_USERNAME = "user1";
 	private static final String TEST_USERNAME_NOT_FOUND = "unregistered";
+	private static final int TEST_DEFAULT_IMAGE_ID = 78;
 	
 
 	
@@ -48,6 +52,12 @@ class AuthControllerTests {
 	
 	@MockBean
 	private RoleService roleService;
+	
+	@Autowired
+	protected ImageController imageController;
+	
+	@MockBean
+	protected ImageService imageService;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -65,6 +75,12 @@ class AuthControllerTests {
 		Set<Role> roles = new HashSet<>();
 		roles.add(ro1);
 		
+		//IMAGES
+		Image defaultImage = new Image();
+		defaultImage.setId(TEST_DEFAULT_IMAGE_ID);
+		defaultImage.setName("Image test landmark");
+		defaultImage.setImageUrl("https://elviajista.com/wp-content/uploads/2020/06/habanacuba-730x487.jpg");
+		defaultImage.setCloudinaryId("1");
 		
 		// USUARIOS
 		
@@ -95,6 +111,7 @@ class AuthControllerTests {
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(Optional.of(us1));
 	    given(this.roleService.getByRoleType(RoleType.ROLE_USER)).willReturn(Optional.of(ro1));
+	    given(this.imageService.findById((long)TEST_DEFAULT_IMAGE_ID)).willReturn(Optional.of(defaultImage));
 	    doReturn(us1).when(this.userService).save(any());
 	    
 	    
