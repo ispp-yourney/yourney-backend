@@ -188,7 +188,7 @@ INSERT INTO roles(role_type) VALUES('ROLE_ADMIN');      -- 1
 INSERT INTO roles(role_type) VALUES('ROLE_USER');       -- 2
 
 INSERT INTO users (email,first_name,last_name,"password",username, plan, expiration_date, image_id) VALUES
-	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin','admin1password', 1, '2050-03-22 15:28:31', 79),                                -- 1
+	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin1password','admin', 1, '2050-03-22 15:28:31', 79),                                -- 1
 	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL, 80),     -- 2
 	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31', 81),      -- 3
      ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL, 82),                         -- 4
