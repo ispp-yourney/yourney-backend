@@ -7,12 +7,16 @@ import javax.validation.Valid;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Itinerary;
+import com.yourney.model.Landmark;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ActivityDto;
 import com.yourney.model.dto.Message;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ItineraryService;
+import com.yourney.service.LandmarkService;
 import com.yourney.utils.ValidationUtils;
 
 import org.springframework.beans.BeanUtils;
@@ -41,6 +45,9 @@ public class ActivityController {
 
     @Autowired
     private ItineraryService itineraryService;
+    
+    @Autowired
+    private LandmarkService landmarkService;
 
     @Autowired
     private UserService userService;
@@ -99,7 +106,7 @@ public class ActivityController {
 
         if (!findItinerary.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("El itinerario indicado para la actividad no existe");
+                    .body(new Message("El itinerario indicado para la actividad no existe"));
         }
 
         Itinerary itinerary = findItinerary.get();
@@ -114,6 +121,22 @@ public class ActivityController {
 
         newActivity.setItinerary(itinerary);
         newActivity.setCreateDate(LocalDateTime.now());
+        
+        if (activityDto.getLandmark() != 0) {
+        	
+        	Optional<Landmark> findLandmark = landmarkService.findById(activityDto.getLandmark());
+            
+            if (!findLandmark.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new Message("El punto de interés indicado para la actividad no existe"));
+            }
+            
+            Landmark landmark = findLandmark.get();
+            
+            newActivity.setLandmark(landmark);
+     
+        }
+        
         Activity createdActivity = activityService.save(newActivity);
         return ResponseEntity.ok(createdActivity);
     }
@@ -129,16 +152,17 @@ public class ActivityController {
 
         if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("La actividad indicada no existe");
+                    .body(new Message("La actividad indicada no existe"));
         }
 
         Activity activityToUpdate = foundActivity.get();
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
         if (!activityService.existsById(activityDto.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
-        if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername())) {
+        if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede añadir una actividad a un itinerario del que no es dueño."));
         }
@@ -155,12 +179,13 @@ public class ActivityController {
         Optional<Activity> foundActivity = activityService.findById(id);
 
         if (!foundActivity.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No exite la actividad indicada"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
         }
 
         Activity activityToDelete = foundActivity.get();
+        Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-        if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername())) {
+        if (!username.equals(activityToDelete.getItinerary().getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("No puede eliminar una actividad de un itinerario del que no es creador."));
         }

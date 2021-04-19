@@ -34,6 +34,7 @@ import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.ItineraryProjection;
+import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
@@ -78,6 +79,7 @@ public class ItineraryController {
 					.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 		} else if (!itinerary.getAuthor().getUsername().equals(currentUsername)) {
 			itinerary.setViews(itinerary.getViews() + 1);
+			itinerary.getActivities().stream().map(a->a.getLandmark()).forEach(l->l.setViews(l.getViews() + 1));
 			itineraryService.save(itinerary);
 		}
 
@@ -173,7 +175,7 @@ public class ItineraryController {
 		BeanUtils.copyProperties(itineraryDto, newItinerary, "id", "status", "createDate", "activities", "author",
 				"views", "image");
 
-		Optional<Image> defaultImage = imageService.findById(1);
+		Optional<Image> defaultImage = imageService.findById(78);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));
@@ -206,7 +208,7 @@ public class ItineraryController {
 
 		if (username.equals("anonymousUser")) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
-					.body(new Message("El usuario no tiene permiso de modficación sin registrarse."));
+					.body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
 		}
 
 		Optional<Itinerary> itineraryToUpdate = itineraryService.findById(itineraryDto.getId());
@@ -216,10 +218,11 @@ public class ItineraryController {
 		}
 
 		Itinerary itinerary = itineraryToUpdate.get();
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-		if (!itinerary.getAuthor().getUsername().equals(username)) {
+		if (!itinerary.getAuthor().getUsername().equals(username) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))){
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-					new Message("El usuario no tiene permiso de modficación de este itinerario, que no es suyo."));
+					new Message("El usuario no tiene permiso de modificación de este itinerario, que no es suyo."));
 		}
 		BeanUtils.copyProperties(itineraryDto, itinerary, "id", "createDate", "activities", "author", "views", "image");
 
@@ -241,8 +244,9 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ERROR_ITINERARIO_NO_EXISTE_STRING));
 		} else {
 			Itinerary itinerary = foundItinerary.get();
+			Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
-			if (!itinerary.getAuthor().getUsername().equals(userService.getCurrentUsername())) {
+			if (!itinerary.getAuthor().getUsername().equals(userService.getCurrentUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {

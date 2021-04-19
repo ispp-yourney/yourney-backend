@@ -1,6 +1,7 @@
 package com.yourney.model;
 
 import java.time.LocalDateTime;
+
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -22,6 +25,7 @@ import com.yourney.security.model.User;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import lombok.Data;
 
@@ -48,9 +52,11 @@ public class Itinerary {
 	@Column(nullable = false)
 	private StatusType status;
 
+	@Min(0)
 	private Double budget;
 
 	@Column(name = "estimated_days")
+	@Range(min = 1, max = 365)
 	private Integer estimatedDays;
 
 	@Column(name = "create_date", nullable = false)
@@ -68,6 +74,7 @@ public class Itinerary {
 	private SeasonType recommendedSeason;
 
 	@JsonManagedReference
+	@OrderBy("createDate")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
 	private Collection<Activity> activities;
 
@@ -81,7 +88,18 @@ public class Itinerary {
 	@Formula("(select case when u.expiration_date >= CURRENT_DATE then u.plan else 0 end from users u where u.id=author_id)")
 	private Integer calcPlan;
 
-	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.promoted)")
+	@Formula("(select count(ac.id) from activities ac left join landmarks land on ac.landmark_id=land.id where ac.itinerary_id=id and land.end_promotion_date >= CURRENT_DATE)")
 	private long calcPromotion;
+
+	@JsonManagedReference
+	@OrderBy("createDate desc")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "itinerary")
+	private Collection<Comment> comments;
+
+	@Formula("(select avg(c.rating) from comments c where c.itinerary_id = id)")
+	private Double avgRating;
+
+	@Formula("(select count(c.id) from comments c where c.itinerary_id = id)")
+	private Long countComments;
 
 }

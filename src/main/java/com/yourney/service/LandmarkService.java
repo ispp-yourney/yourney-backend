@@ -4,9 +4,12 @@ package com.yourney.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.yourney.model.Landmark;
+import com.yourney.model.projection.LandmarkProjection;
 import com.yourney.repository.LandmarkRepository;
 
 @Service
@@ -14,6 +17,10 @@ public class LandmarkService {
 
     @Autowired
     private LandmarkRepository landmarkRepository;
+
+    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size, Pageable pageable) {
+        return landmarkRepository.searchByProperties(country, city, name, pageable);
+    }
 
     public Iterable<Landmark> findAll() {
         return landmarkRepository.findAll();
@@ -27,16 +34,28 @@ public class LandmarkService {
         return landmarkRepository.existsActivityByLandmarkId(id);
     }
 
-    public Iterable<String> findAllCountries() {
-        return landmarkRepository.findAllCountries();
+    public Iterable<String> findAllCountries(boolean itinerary) {
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCountriesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCountries();
+    	}
+        return res;
     }
 
     public Iterable<String> findCitiesByCountry(String name) {
         return landmarkRepository.findCitiesByCountry(name);
     }
 
-    public Iterable<String> findAllCities() {
-        return landmarkRepository.findAllCities();
+    public Iterable<String> findAllCities(boolean itinerary) {
+    	Iterable<String> res = null;
+    	if(itinerary) {
+    		res = landmarkRepository.findManyCitiesWithItinerary();
+    	}else {
+    		res = landmarkRepository.findAllCities();
+    	}
+        return res;
     }
 
     public Landmark save(Landmark landmark) {

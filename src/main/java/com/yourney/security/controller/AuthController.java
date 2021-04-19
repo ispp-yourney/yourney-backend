@@ -2,6 +2,7 @@
 package com.yourney.security.controller;
 
 import java.time.LocalDateTime;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,11 +25,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yourney.model.Image;
 import com.yourney.model.dto.Message;
 import com.yourney.security.jwt.JwtProvider;
 import com.yourney.security.model.Role;
@@ -37,8 +40,10 @@ import com.yourney.security.model.User;
 import com.yourney.security.model.dto.JwtDto;
 import com.yourney.security.model.dto.LoginUser;
 import com.yourney.security.model.dto.NewUser;
+import com.yourney.security.model.dto.UpdateUser;
 import com.yourney.security.service.RoleService;
 import com.yourney.security.service.UserService;
+import com.yourney.service.ImageService;
 import com.yourney.utils.ValidationUtils;
 
 @RestController
@@ -59,6 +64,9 @@ public class AuthController {
 	RoleService roleService;
 
 	@Autowired
+	private ImageService imageService;
+
+	@Autowired
 	JwtProvider jwtProvider;
 
 	@PostMapping("/new")
@@ -69,11 +77,11 @@ public class AuthController {
 		}
 
 		if (this.userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("Existing username"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Nombre de usuario ya existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		if (this.userService.existsByEmail(newUser.getEmail())) {
-			return new ResponseEntity<>(new Message("Existing email"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Email ya existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		User user = new User(newUser.getUsername(), this.passwordEncoder.encode(newUser.getPassword()),
@@ -96,6 +104,13 @@ public class AuthController {
 		if (newUser.getRoles().contains("admin")) {
 			roles.add(adminRole.get());
 		}
+
+		Optional<Image> defaultImage = imageService.findById(78);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+		user.setImage(defaultImage.get());
 
 		user.setRoles(roles);
 		user.setPlan(0);
@@ -167,5 +182,35 @@ public class AuthController {
 		User updatedUser = userService.save(user);
 
 		return ResponseEntity.ok(updatedUser);
-	}	
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<?> updateUser(
+		@Valid @RequestBody final UpdateUser updateUser, final BindingResult result) {
+		
+		String username = userService.getCurrentUsername();
+		Optional<User> userToUpdate = this.userService.getByUsername(username);
+		
+		if (!userToUpdate.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el usuario indicado"));
+		}
+
+		User user = userToUpdate.get();
+
+		if (result.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
+		}
+
+		if (this.userService.existsByEmail(updateUser.getEmail()) &&  !(updateUser.getEmail().equals(user.getEmail()))) {
+			return new ResponseEntity<>(new Message("Email ya existente"), HttpStatus.BAD_REQUEST);
+		}
+
+		user.setFirstName(updateUser.getFirstName());
+		user.setLastName(updateUser.getLastName());
+		user.setEmail(updateUser.getEmail());
+		this.userService.save(user);
+
+		return new ResponseEntity<>(new Message("Usuario actualizado correctamente"), HttpStatus.OK);
+	}
+
 }

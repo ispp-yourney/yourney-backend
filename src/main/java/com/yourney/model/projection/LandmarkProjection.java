@@ -2,8 +2,6 @@ package com.yourney.model.projection;
 
 import java.time.LocalDateTime;
 
-import com.yourney.model.StatusType;
-
 public interface LandmarkProjection {
 
     Long getId();
@@ -34,11 +32,11 @@ public interface LandmarkProjection {
 
     String getTwitter();
 
-    StatusType getStatus();
-
     LocalDateTime getCreateDate();
 
     Long getViews();
 
     ImageProjection getImage();
+
+    LocalDateTime getEndPromotionDate();
 }
