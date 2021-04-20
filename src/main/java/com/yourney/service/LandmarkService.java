@@ -73,4 +73,9 @@ public class LandmarkService {
     public void deleteById(Long id) {
         landmarkRepository.deleteById(id);
     }
+
+    public Page<LandmarkProjection> searchOrderedByViews(String country, String city, Pageable pageable) {
+        return landmarkRepository.searchOrderedByViews(country, city, pageable);
+    }
+
 }
