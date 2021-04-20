@@ -1,5 +1,7 @@
 package com.yourney.repository;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +36,21 @@ public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
     @Query("select it from Itinerary it where it.author.username =:username order by it.calcPromotion desc, it.views desc")
     Page<ItineraryProjection> searchByCurrentUsername(Pageable pageable, String username);
+
+    @Query("select distinct i FROM Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) order by i.views desc")
+    Page<ItineraryProjection> searchOrderedByViews(String country, String city, Pageable pageable);
+
+    @Query("select distinct i from Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) order by i.countComments desc")
+    Page<ItineraryProjection> searchOrderedByComments(String country, String city, Pageable pageable);
+
+    @Query("select distinct i from Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) order by i.avgRating desc")
+    Page<ItineraryProjection> searchOrderedByRating(String country, String city, Pageable pageable);
+
+    @Query("select distinct i from Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) AND :date <= i.createDate order by i.countComments desc")
+    Page<ItineraryProjection> searchOrderedByCommentsLastMonth(String country, String city, LocalDateTime date, Pageable pageable);
+
+    @Query("select distinct i from Itinerary i left join i.activities a where i.status='PUBLISHED' and LOWER(a.landmark.country) like LOWER(:country) and LOWER(a.landmark.city) like LOWER(:city) AND :date <= i.createDate order by i.avgRating desc")
+    Page<ItineraryProjection> searchOrderedByRatingLastMonth(String country, String city, LocalDateTime date, Pageable pageable);
+
+
 }

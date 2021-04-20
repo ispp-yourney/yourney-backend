@@ -2,7 +2,9 @@ package com.yourney.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,8 @@ import com.yourney.model.Landmark;
 import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.LandmarkProjection;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
@@ -252,5 +256,24 @@ public class LandmarkController {
         }
         return ResponseEntity.ok(createdLandmark);
     }
+
+    @GetMapping("/searchOrderedByViews")
+	public ResponseEntity<?> searchOrderedByViews(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String city) {
+		
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<LandmarkProjection> landmarks = landmarkService.searchOrderedByViews("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<LandmarkProjection>>(landmarks, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para realizar esta consulta."));
+		}
+
+	}
 
 }

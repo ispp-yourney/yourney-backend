@@ -256,4 +256,105 @@ public class ItineraryController {
 		}
 		return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
 	}
+
+	@GetMapping("/searchOrderedByComments")
+	public ResponseEntity<?> searchOrderedByComments(@RequestParam(defaultValue = "0") int page, 
+	@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+	@RequestParam(defaultValue = "") String city) {
+
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchOrderedByComments("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+			
+		} else {
+
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para ver esta consulta"));
+		}
+		
+	}
+
+	@GetMapping("/searchOrderedByRating")
+	public ResponseEntity<?> searchOrderedByRating(@RequestParam(defaultValue = "0") int page, 
+	@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+	@RequestParam(defaultValue = "") String city) {
+
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<ItineraryProjection> itinerariesListOrdered = itineraryService.searchOrderedByRating("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<ItineraryProjection>>(itinerariesListOrdered, HttpStatus.OK);
+			
+		} else {
+
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para ver esta consulta"));
+		}
+		
+	}
+
+	@GetMapping("/searchOrderedByViews")
+	public ResponseEntity<?> searchOrderedByViews(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String city) {
+		
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<ItineraryProjection> itineraries = itineraryService.searchOrderedByViews("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para realizar esta consulta."));
+		}
+
+	}
+	
+
+	@GetMapping("/searchOrderedByComments/lastMonth")
+	public ResponseEntity<?> searchOrderedByCommentsLastMonth(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String city) {
+
+		Optional<User> foundUser =  userService.getByUsername(userService.getCurrentUsername());
+		
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<ItineraryProjection> itineraries = itineraryService.searchOrderedByCommentsLastMonth("%" + country + "%", "%" + city + "%", pageable);
+			
+			return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para ver esta consulta"));
+		}
+
+	}
+
+	@GetMapping("/searchOrderedByRating/lastMonth")
+	public ResponseEntity<?> searchOrderedByRatingLastMonth(@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+		@RequestParam(defaultValue = "") String city) {
+		
+		Optional<User> foundUser =  userService.getByUsername(userService.getCurrentUsername());
+		
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<ItineraryProjection> itineraries = itineraryService.searchOrderedByRatingLastMonth("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<ItineraryProjection>>(itineraries, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para ver esta consulta"));
+		}
+	}
+
+
 }
