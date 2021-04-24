@@ -1,5 +1,6 @@
 package com.yourney.security.service;
 
+import com.yourney.security.exception.UnverifiedUserException;
 import com.yourney.security.model.PrincipalUser;
 import com.yourney.security.model.User;
 
@@ -19,6 +20,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userService.getByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("No se ha encontrado el usuario"));
+
+		if (!user.isEnabled()) {
+			throw new UnverifiedUserException();
+		}
 		return PrincipalUser.build(user);
 	}
 }

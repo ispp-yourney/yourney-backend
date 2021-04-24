@@ -2,12 +2,10 @@
 package com.yourney.security.controller;
 
 import java.time.LocalDateTime;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yourney.model.Image;
 import com.yourney.model.dto.Message;
+import com.yourney.security.exception.UnverifiedUserException;
 import com.yourney.security.jwt.JwtProvider;
 import com.yourney.security.model.Role;
 import com.yourney.security.model.RoleType;
+import com.yourney.security.model.SecureToken;
 import com.yourney.security.model.User;
 import com.yourney.security.model.dto.JwtDto;
 import com.yourney.security.model.dto.LoginUser;
 import com.yourney.security.model.dto.NewUser;
 import com.yourney.security.model.dto.UpdateUser;
 import com.yourney.security.service.RoleService;
+import com.yourney.security.service.SecureTokenService;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ImageService;
 import com.yourney.utils.ValidationUtils;
@@ -61,17 +62,19 @@ public class AuthController {
 	UserService userService;
 
 	@Autowired
+	SecureTokenService secureTokenService;
+
+	@Autowired
 	RoleService roleService;
 
 	@Autowired
 	private ImageService imageService;
 
 	@Autowired
-	JwtProvider jwtProvider;
+	private JwtProvider jwtProvider;
 
 	@PostMapping("/new")
-	public ResponseEntity<Object> newUser(@Valid @RequestBody final NewUser newUser,
-			final BindingResult result) {
+	public ResponseEntity<Object> newUser(@Valid @RequestBody final NewUser newUser, final BindingResult result) {
 		if (result.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
 		}
@@ -90,11 +93,11 @@ public class AuthController {
 		Optional<Role> userRole = this.roleService.getByRoleType(RoleType.ROLE_USER);
 		Optional<Role> adminRole = this.roleService.getByRoleType(RoleType.ROLE_USER);
 
-		if(!userRole.isPresent()){
+		if (!userRole.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("El rol de usuario no se encuentra disponible."));
-		}		
-		if(!adminRole.isPresent()){
+		}
+		if (!adminRole.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("El rol de administrador no se encuentra disponible."));
 		}
@@ -116,12 +119,90 @@ public class AuthController {
 		user.setPlan(0);
 		this.userService.save(user);
 
+		try {
+			SecureToken secureToken = secureTokenService.createSecureToken(user);
+
+			if (secureToken == null) {
+				return new ResponseEntity<>(new Message("Error al crear el código de validación"),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			userService.sendConfirmationEmail(user.getEmail(), secureToken.getToken());
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message("Error al enviar el mensaje de confirmación"),
+					HttpStatus.BAD_REQUEST);
+		}
+
 		return new ResponseEntity<>(new Message("Usuario creado correctamente"), HttpStatus.CREATED);
 	}
 
+	@GetMapping("/confirmNewUser")
+	public ResponseEntity<?> confirmRegistration(@RequestParam("token") String token) {
+
+		Optional<SecureToken> findVerificationToken = secureTokenService.findByToken(token);
+		if (!findVerificationToken.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("No se ha encontrado el código de verificación indicado"));
+		}
+
+		SecureToken secureToken = findVerificationToken.get();
+		if (secureToken.isExpired()) {
+			secureTokenService.deleteToken(secureToken);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new Message("El código de verificación ha expirado"));
+		}
+
+		User user = secureToken.getUser();
+		user.setEnabled(true);
+		User registeredUser = userService.save(user);
+
+		if (registeredUser == null) {
+			secureTokenService.deleteToken(secureToken);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new Message("Error al actualizar la información de usuario"));
+		}
+
+		secureTokenService.deleteToken(secureToken);
+		return ResponseEntity.ok(new Message("El usuario ha sido verificado correctamente"));
+	}
+
+	@GetMapping("/requestConfirmation")
+	public ResponseEntity<?> newUserConfirmation(@RequestParam("email") String email) {
+
+		Optional<SecureToken> findVerificationToken = secureTokenService.findByEmail(email);
+		if (!findVerificationToken.isPresent()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new Message("No existe ningún token de verificación para el correo electrónico introducido"));
+		}
+
+		SecureToken oldVerificationToken = findVerificationToken.get();
+
+		if (!oldVerificationToken.isRefreshAvailable()) {
+			return new ResponseEntity<>(
+					new Message("Se debe esperar al menos 30 segundos antes de solicitar una nueva verificación"),
+					HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			SecureToken secureToken = secureTokenService.createSecureToken(oldVerificationToken.getUser());
+
+			if (secureToken == null) {
+				return new ResponseEntity<>(new Message("Error al crear el código de validación"),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			userService.sendConfirmationEmail(oldVerificationToken.getUser().getEmail(), secureToken.getToken());
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message("Error al enviar el mensaje de confirmación"),
+					HttpStatus.BAD_REQUEST);
+		}
+
+		secureTokenService.deleteToken(oldVerificationToken);
+		return ResponseEntity.ok(new Message("El correo de verificación ha sido enviado correctamente"));
+	}
+
 	@PostMapping("/login")
-	public ResponseEntity<Object> login(@RequestBody @Valid final LoginUser loginUser,
-			final BindingResult result) {
+	public ResponseEntity<Object> login(@RequestBody @Valid final LoginUser loginUser, final BindingResult result) {
 		if (result.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
 		}
@@ -129,9 +210,13 @@ public class AuthController {
 		Authentication authentication;
 		try {
 			authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-				loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
+					loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
 		} catch (AuthenticationException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message("El usuario o la contraseña es inválido"));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(new Message("El usuario o la contraseña es inválido"));
+		} catch (UnverifiedUserException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(new Message("La cuenta de usuario aun no ha sido verificada"));
 		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -158,39 +243,40 @@ public class AuthController {
 
 	@GetMapping("/upgrade")
 	public ResponseEntity<?> upgradeUser(
-		@RequestParam(name="subscriptionDays", defaultValue = "28") long subscriptionDays) {
+			@RequestParam(name = "subscriptionDays", defaultValue = "28") long subscriptionDays) {
 
 		String username = userService.getCurrentUsername();
 		Optional<User> foundUser = userService.getByUsername(username);
 
 		if (!foundUser.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No se encuentra con un usuario activo en la web, autentíquese."));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("No se encuentra con un usuario activo en la web, autentíquese."));
 		}
-		if(subscriptionDays<1){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("No puede subscribirse a días negativos o nulos"));
+		if (subscriptionDays < 1) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new Message("No puede subscribirse a días negativos o nulos"));
 		}
 
 		User user = foundUser.get();
-		if(user.getExpirationDate()!=null && user.getExpirationDate().isAfter(LocalDateTime.now())){
+		if (user.getExpirationDate() != null && user.getExpirationDate().isAfter(LocalDateTime.now())) {
 			user.setExpirationDate(user.getExpirationDate().plusDays(subscriptionDays));
 			user.setPlan(1);
 		} else {
 			user.setExpirationDate(LocalDateTime.now().plusDays(subscriptionDays));
 			user.setPlan(1);
 		}
-		
+
 		User updatedUser = userService.save(user);
 
 		return ResponseEntity.ok(updatedUser);
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<?> updateUser(
-		@Valid @RequestBody final UpdateUser updateUser, final BindingResult result) {
-		
+	public ResponseEntity<?> updateUser(@Valid @RequestBody final UpdateUser updateUser, final BindingResult result) {
+
 		String username = userService.getCurrentUsername();
 		Optional<User> userToUpdate = this.userService.getByUsername(username);
-		
+
 		if (!userToUpdate.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el usuario indicado"));
 		}
@@ -201,7 +287,7 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(result));
 		}
 
-		if (this.userService.existsByEmail(updateUser.getEmail()) &&  !(updateUser.getEmail().equals(user.getEmail()))) {
+		if (this.userService.existsByEmail(updateUser.getEmail()) && !(updateUser.getEmail().equals(user.getEmail()))) {
 			return new ResponseEntity<>(new Message("Email ya existente"), HttpStatus.BAD_REQUEST);
 		}
 

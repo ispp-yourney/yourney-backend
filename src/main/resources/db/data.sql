@@ -187,14 +187,14 @@ INSERT INTO images(name, cloudinary_id, image_url) VALUES
 INSERT INTO roles(role_type) VALUES('ROLE_ADMIN');      -- 1
 INSERT INTO roles(role_type) VALUES('ROLE_USER');       -- 2
 
-INSERT INTO users (email,first_name,last_name,"password",username, plan, expiration_date, image_id) VALUES
-	 ('admin@yourney.com','Eduardo Miguel','Botía Domingo','admin1password','admin', 1, '2050-03-22 15:28:31', 79),                                -- 1
-	 ('alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL, 80),     -- 2
-	 ('lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31', 81),      -- 3
-     ('ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL, 82),                         -- 4
-     ('luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01', 83),          -- 5
-     ('julia5domingo@gmail.com','Julia','Domingo Vázquez','julia5password','julia5domingo', 0, NULL, 84),                -- 6
-     ('antonio6romero@hotmail.com','Antonio','Romero Sánchez','antonio6password','antonio6sanchez', 0, NULL, 85);        -- 7
+INSERT INTO users (enabled, email,first_name,last_name,"password",username, plan, expiration_date, image_id) VALUES
+	 (true,'admin@yourney.com','Eduardo Miguel','Botía Domingo','admin1password','admin', 1, '2050-03-22 15:28:31', 79),                                -- 1
+	 (true,'alejandro1cortes@gmail.com','Alejandro','Cortés Gómez','alejandro1password','alejandro1cortes', 0, NULL, 80),     -- 2
+	 (true,'lidia2lopez@gmail.com','Lidia','López García','lidia2password','lidia2lopez', 1, '2040-03-22 15:28:31', 81),      -- 3
+     (true,'ana3tirado@hotmail.com','Ana','Tirado Sánchez','ana3password','ana3tirado', 0, NULL, 82),                         -- 4
+     (true,'luis4ruiz@hotmail.com','Luis','Ruiz Aguilar','luis4password','luis4ruiz', 1, '2030-01-20 12:25:01', 83),          -- 5
+     (true,'julia5domingo@gmail.com','Julia','Domingo Vázquez','julia5password','julia5domingo', 0, NULL, 84),                -- 6
+     (true,'antonio6romero@hotmail.com','Antonio','Romero Sánchez','antonio6password','antonio6sanchez', 0, NULL, 85);        -- 7
 
 INSERT INTO users_roles(user_id, role_id) VALUES
 	(1,1),
