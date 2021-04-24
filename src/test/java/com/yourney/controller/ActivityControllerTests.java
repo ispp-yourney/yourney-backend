@@ -46,6 +46,9 @@ class ActivityControllerTests {
 	private static final int TEST_ACTIVITY_ID_NOT_FOUND = 10;
 	private static final int TEST_ACTIVITY_ID_2 = 2;
 	private static final int TEST_ITINERARY_ID = 1;
+	private static final String ACTIVITY_NOT_FOUND = "No existe la actividad indicada";
+	private static final String ACTIVITY_UPDATED = "La actividad ha sido actualizada con éxito";
+	
 	
 	@Autowired
 	protected ActivityController activityController;
@@ -309,7 +312,7 @@ class ActivityControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("La actividad ha sido actualizada con éxito")));
+        .andExpect(jsonPath("$.text", is(ACTIVITY_UPDATED)));
 	}
 
 	@Test
@@ -332,7 +335,7 @@ class ActivityControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("La actividad ha sido actualizada con éxito")));
+        .andExpect(jsonPath("$.text", is(ACTIVITY_UPDATED)));
 	}
 	
 	@Test
@@ -355,7 +358,7 @@ class ActivityControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("La actividad indicada no existe")));
+        .andExpect(jsonPath("$.text", is(ACTIVITY_NOT_FOUND)));
 	}
 	
 	@Test
@@ -419,7 +422,7 @@ class ActivityControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("No existe la actividad indicada")));
+        .andExpect(jsonPath("$.text", is(ACTIVITY_NOT_FOUND)));
 	}
 	
 	@Test

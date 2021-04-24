@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ActivityController {
 
+	private static final String ACTIVITY_NOT_FOUND = "No existe la actividad indicada";
+	
     @Autowired
     private ActivityService activityService;
 
@@ -152,14 +154,14 @@ public class ActivityController {
 
         if (!foundActivity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Message("La actividad indicada no existe"));
+                    .body(new Message(ACTIVITY_NOT_FOUND));
         }
 
         Activity activityToUpdate = foundActivity.get();
         Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
 
         if (!activityService.existsById(activityDto.getId())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ACTIVITY_NOT_FOUND));
         }
 
         if (!username.equals(activityToUpdate.getItinerary().getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
@@ -179,7 +181,7 @@ public class ActivityController {
         Optional<Activity> foundActivity = activityService.findById(id);
 
         if (!foundActivity.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la actividad indicada"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ACTIVITY_NOT_FOUND));
         }
 
         Activity activityToDelete = foundActivity.get();

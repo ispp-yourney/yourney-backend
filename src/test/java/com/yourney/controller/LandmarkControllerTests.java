@@ -217,7 +217,7 @@ class LandmarkControllerTests {
 		given(this.landmarkService.findCitiesByCountry(TEST_LANDMARK_COUNTRY)).willReturn(cityByCountryList);
 		given(this.landmarkService.findAllCities(false)).willReturn(cityList);
 		given(this.landmarkService.searchByProperties("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%",
-				"%" + TEST_LANDMARK_NAME + "%", TEST_LANDMARK_SIZE, pageable)).willReturn(landmarksPage1);
+				"%" + TEST_LANDMARK_NAME + "%", pageable)).willReturn(landmarksPage1);
 		given(this.activityService.findById(1)).willReturn(Optional.of(activity_l4));
         given(this.landmarkService.searchOrderedByViews("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%", pageable))
             .willReturn(landmarksPage1);

@@ -1,6 +1,7 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,6 +78,11 @@ class ItineraryControllerTests {
 	private static final int TEST_COMMENT_ID = 1;
 	private static final int TEST_COMMENT_ID_2 = 2;
 	private static final int TEST_COMMENT_ID_3 = 3;
+	private static final String NOT_ALLOWED = "El usuario no tiene permiso para ver esta consulta";
+	private static final String ITINERARY_DELETED = "Itinerario eliminado correctamente";
+	private static final String ITINERARY_NOT_FOUND = "No existe el itinerario indicado";
+	
+
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -566,7 +572,7 @@ class ItineraryControllerTests {
 		.andExpect(status().is4xxClientError())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+        .andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
 	}
 	
 	@Test
@@ -603,7 +609,7 @@ class ItineraryControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
 		
-        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso para ver esta consulta")));
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
 	}
 	
 	@Test
@@ -640,7 +646,7 @@ class ItineraryControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
 		
-        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso para ver esta consulta")));
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
 	}
 	
 	@Test
@@ -677,7 +683,7 @@ class ItineraryControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
 		
-        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso para ver esta consulta")));
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
 	}
 		
 	@Test
@@ -714,7 +720,7 @@ class ItineraryControllerTests {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
 		
-        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso para ver esta consulta")));
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
 	}
 	
 	@Test
@@ -1209,7 +1215,7 @@ class ItineraryControllerTests {
 		.andExpect(status().is4xxClientError())
         
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
 	}
 	
 	@Test
@@ -1248,7 +1254,7 @@ class ItineraryControllerTests {
         
 
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_DELETED)));
 	}
 
 	@Test
@@ -1261,7 +1267,7 @@ class ItineraryControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_DELETED)));
 	}
 	
 	@Test
@@ -1276,7 +1282,7 @@ class ItineraryControllerTests {
         
 
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
 	}
 	
 	@Test
