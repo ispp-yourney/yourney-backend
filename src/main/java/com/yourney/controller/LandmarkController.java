@@ -44,6 +44,7 @@ import com.yourney.utils.ValidationUtils;
 @CrossOrigin
 public class LandmarkController {
 
+	private static final String NOT_REGISTERED = "El usuario no tiene permiso de modificación sin registrarse.";
     @Autowired
     private LandmarkService landmarkService;
 
@@ -82,7 +83,7 @@ public class LandmarkController {
 			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "") String name) {
 
 		Iterable<LandmarkProjection> landmarks = landmarkService.searchByProperties("%" + country + "%",
-				"%" + city + "%","%" + name + "%", size, PageRequest.of(page, size));
+				"%" + city + "%","%" + name + "%", PageRequest.of(page, size));
 
 		return new ResponseEntity<Iterable<LandmarkProjection>>(landmarks, HttpStatus.OK);
 	}
@@ -158,7 +159,7 @@ public class LandmarkController {
 
         if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
+                    .body(new Message(NOT_REGISTERED));
         }
 
 		if (!foundLandmark.isPresent()) {
@@ -185,7 +186,7 @@ public class LandmarkController {
 
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
+                        .body(new Message(NOT_REGISTERED));
         }
 
 		Optional<Landmark> foundLandmark = landmarkService.findById(landmarkId);

@@ -18,7 +18,7 @@ public class LandmarkService {
     @Autowired
     private LandmarkRepository landmarkRepository;
 
-    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size, Pageable pageable) {
+    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Pageable pageable) {
         return landmarkRepository.searchByProperties(country, city, name, pageable);
     }
 
