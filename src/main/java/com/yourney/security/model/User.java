@@ -35,22 +35,24 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	private boolean enabled;
+
 	@Column(unique = true, nullable = false)
-	@Length(max=50, message="No se permiten más de 50 caracteres")
+	@Length(max = 50, message = "No se permiten más de 50 caracteres")
 	private String username;
 
 	@JsonIgnore
-	@Length(max=50, message="No se permiten más de 50 caracteres")
+	@Length(max = 50, message = "No se permiten más de 50 caracteres")
 	@Column(nullable = false)
 	private String password;
 
 	private String email;
-	
+
 	@Column(name = "first_name")
-	@Length(max=50, message="No se permiten más de 50 caracteres")
+	@Length(max = 50, message = "No se permiten más de 50 caracteres")
 	private String firstName;
-	
-	@Length(max=50, message="No se permiten más de 50 caracteres")
+
+	@Length(max = 50, message = "No se permiten más de 50 caracteres")
 	@Column(name = "last_name")
 	private String lastName;
 
@@ -78,6 +80,8 @@ public class User {
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
+
+		this.enabled = false;
 	}
 
 }

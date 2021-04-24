@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -35,14 +35,21 @@ public class SecureToken {
 
     private LocalDateTime expiteAt;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Transient
     private boolean isExpired;
 
+    @Transient
+    private boolean isRefreshAvailable;
+
     public boolean isExpired() {
         return getExpiteAt().isBefore(LocalDateTime.now());
+    }
+
+    public boolean isRefreshAvailable() {
+        return LocalDateTime.now().isAfter(getTimestamp().toLocalDateTime().plusSeconds(30));
     }
 }

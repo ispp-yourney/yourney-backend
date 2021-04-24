@@ -4,8 +4,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.crypto.KeyGenerator;
-
 import com.yourney.security.model.SecureToken;
 import com.yourney.security.model.User;
 import com.yourney.security.repository.SecureTokenRepository;
@@ -22,7 +20,7 @@ public class SecureTokenService {
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private int tokenValidityInSeconds = 300;
+    private int tokenValidityInSeconds = 4 * 3600;
 
     @Autowired
     private SecureTokenRepository secureTokenRepository;
@@ -44,11 +42,23 @@ public class SecureTokenService {
     }
 
     public SecureToken save(SecureToken secureToken) {
-        return secureTokenRepository.save(secureToken);
+        SecureToken newToken = null;
+
+        try {
+            newToken = secureTokenRepository.save(secureToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newToken;
     }
 
     public Optional<SecureToken> findByToken(String token) {
         return secureTokenRepository.findByToken(token);
+    }
+
+    public Optional<SecureToken> findByEmail(String email) {
+        return secureTokenRepository.findByUserEmail(email);
     }
 
     public void deleteToken(SecureToken token) {
