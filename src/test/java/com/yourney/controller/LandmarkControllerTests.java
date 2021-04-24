@@ -218,6 +218,9 @@ class LandmarkControllerTests {
 		given(this.landmarkService.findAllCities(false)).willReturn(cityList);
 		given(this.landmarkService.searchByProperties("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%",
 				"%" + TEST_LANDMARK_NAME + "%", TEST_LANDMARK_SIZE, pageable)).willReturn(landmarksPage1);
+		given(this.activityService.findById(1)).willReturn(Optional.of(activity_l4));
+        given(this.landmarkService.searchOrderedByViews("%" + TEST_LANDMARK_COUNTRY + "%", "%" + TEST_LANDMARK_CITY + "%", pageable))
+            .willReturn(landmarksPage1);
 		doReturn(landmarkCreado).when(this.landmarkService).save(any());
 	}
 
@@ -602,6 +605,211 @@ class LandmarkControllerTests {
 				// Validate the response code and content type
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string("true"));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithErrors() throws Exception {
+		JSONObject activityJSON = new JSONObject();
+
+		this.mockMvc
+				.perform(post("/landmark/create")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(activityJSON.toString()))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithoutLatitude() throws Exception {
+		JSONObject landmarkJSON = new JSONObject();
+
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", null);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+(1) 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+
+		this.mockMvc
+		.perform(post("/landmark/create").contentType(MediaType.APPLICATION_JSON)
+				.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(jsonPath("$.text", is("Debe especificar la latitud.")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithoutLongitude() throws Exception {
+		JSONObject landmarkJSON = new JSONObject();
+
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", null);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+(1) 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+
+		this.mockMvc
+		.perform(post("/landmark/create").contentType(MediaType.APPLICATION_JSON)
+				.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+		.andExpect(jsonPath("$.text", is("Debe especificar la longitud.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithoutImage() throws Exception {
+		given(this.imageService.findById((long) LandmarkControllerTests.TEST_IMAGE_ID)).willReturn(Optional.empty());
+		
+		JSONObject landmarkJSON = new JSONObject();
+
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+(1) 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+
+		this.mockMvc
+		.perform(post("/landmark/create").contentType(MediaType.APPLICATION_JSON)
+				.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isNotFound())
+		.andExpect(jsonPath("$.text", is("La imagen seleccionada no ha sido encontrada.")));
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithActivity() throws Exception {
+		
+		JSONObject landmarkJSON = new JSONObject();
+
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+(1) 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+		landmarkJSON.put("activity", 1);
+
+		this.mockMvc
+		.perform(post("/landmark/create").contentType(MediaType.APPLICATION_JSON)
+				.content(landmarkJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.id", is(TEST_LANDMARK_ID3))).andExpect(jsonPath("$.city", is("Sevilla")))
+		.andExpect(jsonPath("$.country", is("Spain"))).andExpect(jsonPath("$.email", is("test@gmail.com")))
+		.andExpect(jsonPath("$.latitude", is(0.))).andExpect(jsonPath("$.longitude", is(0.)))
+		.andExpect(jsonPath("$.name", is("Landmark test")))
+		.andExpect(jsonPath("$.instagram", is("https://instagram.com/testlandmark")))
+		.andExpect(jsonPath("$.description", is("description test"))).andExpect(jsonPath("$.price", is(0.)))
+		.andExpect(jsonPath("$.twitter", is("https://twitter.com/testlandmark")))
+		.andExpect(jsonPath("$.website", is("https://www.testlandmark.com/")))
+		.andExpect(jsonPath("$.phone", is("+1 3234645145")));
+		
+	}
+
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testCreateLandmarkWithActivityNotFound() throws Exception {
+		
+		given(this.activityService.findById(2)).willReturn(Optional.empty());
+
+		JSONObject landmarkJSON = new JSONObject();
+
+		landmarkJSON.put("category", null);
+		landmarkJSON.put("city", "Sevilla");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("description", "description test");
+		landmarkJSON.put("email", "test@gmail.com");
+		landmarkJSON.put("country", "Spain");
+		landmarkJSON.put("instagram", "https://instagram.com/testlandmark");
+		landmarkJSON.put("latitude", 0);
+		landmarkJSON.put("longitude", 0);
+		landmarkJSON.put("name", "Landmark test");
+		landmarkJSON.put("twitter", "https://twitter.com/testlandmark");
+		landmarkJSON.put("phone", "+(1) 3234645145");
+		landmarkJSON.put("price", 0);
+		landmarkJSON.put("website", "https://www.testlandmark.com/");
+		landmarkJSON.put("activity", 2);
+
+		this.mockMvc
+		.perform(post("/landmark/create").contentType(MediaType.APPLICATION_JSON)
+				.content(landmarkJSON.toString()))
+		.andExpect(status().isForbidden())
+		.andExpect(jsonPath("$.text", is("No existe una actividad asociada.")));
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", password = "admin1password")
+	void testSearchLandMarksOrderedByViews() throws Exception {
+		this.mockMvc
+				.perform(get("/landmark/searchOrderedByViews?page={page}&size={size}&country={country}&city={city}",
+						TEST_LANDMARK_PAGE, TEST_LANDMARK_SIZE, TEST_LANDMARK_COUNTRY, TEST_LANDMARK_CITY))
+				// Validate the response code and content type
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+				// Validate the returned fields
+				.andExpect(jsonPath("$.content[0].id", is(1))).andExpect(jsonPath("$.content[0].name", is("Giralda")))
+				.andExpect(jsonPath("$.content[0].description", is("lorem ipsum")))
+				.andExpect(jsonPath("$.content[0].price", is(0.0)))
+				.andExpect(jsonPath("$.content[0].country", is("España")))
+				.andExpect(jsonPath("$.content[0].city", is("Sevilla")));
+	}
+	
+	@Test
+	@WithMockUser(username = "user1", password = "user1")
+	void testSearchLandMarksOrderedByViewsNonAuthorized() throws Exception {
+		this.mockMvc
+				.perform(get("/landmark/searchOrderedByViews?page={page}&size={size}&country={country}&city={city}",
+						TEST_LANDMARK_PAGE, TEST_LANDMARK_SIZE, TEST_LANDMARK_COUNTRY, TEST_LANDMARK_CITY))
+				.andExpect(status().isForbidden()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.text", is("El usuario no tiene permiso para realizar esta consulta.")));
+
+				
 	}
 
 }
