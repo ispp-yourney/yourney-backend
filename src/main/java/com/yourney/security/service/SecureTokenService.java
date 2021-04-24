@@ -1,6 +1,7 @@
 package com.yourney.security.service;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class SecureTokenService {
 
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     private int tokenValidityInSeconds = 4 * 3600;
 
