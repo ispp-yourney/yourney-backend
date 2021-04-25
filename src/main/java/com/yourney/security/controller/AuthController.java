@@ -193,6 +193,7 @@ public class AuthController {
 
 			userService.sendConfirmationEmail(oldVerificationToken.getUser().getEmail(), secureToken.getToken());
 		} catch (Exception e) {
+			secureTokenService.deleteToken(oldVerificationToken);
 			return new ResponseEntity<>(new Message("Error al enviar el mensaje de confirmación"),
 					HttpStatus.BAD_REQUEST);
 		}
