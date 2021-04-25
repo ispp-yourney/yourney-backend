@@ -2,6 +2,7 @@ package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +46,9 @@ class AuthControllerTests {
 	private static final String TEST_USERNAME = "user1";
 	private static final String TEST_USERNAME_NOT_FOUND = "unregistered";
 	private static final int TEST_DEFAULT_IMAGE_ID = 78;
+	private static final String TEST_TOKEN = "token";
+	private static final String TEST_TOKEN_2 = "token2";
+	private static final String EMAIL_ALREADY_EXISTS = "Email ya existente";
 
 	@Autowired
 	protected AuthController authController;
@@ -118,12 +122,25 @@ class AuthControllerTests {
 		us2.setRoles(roles);
 		us2.setUsername("user2");
 
+		SecureToken st2 = new SecureToken();
+		st2.setId(2l);
+		st2.setToken("token2");
+		st2.setTimestamp(Timestamp.from(Instant.now().minusSeconds(50)));
+		st2.setExpiteAt(LocalDateTime.now().minusDays(1));
+		st2.setUser(us2);
+
 		given(this.secureTokenService.createSecureToken(any())).willReturn(st1);
 		given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 		given(this.userService.getByUsername(us1.getUsername())).willReturn(Optional.of(us1));
 		given(this.roleService.getByRoleType(RoleType.ROLE_USER)).willReturn(Optional.of(ro1));
 		given(this.imageService.findById((long) TEST_DEFAULT_IMAGE_ID)).willReturn(Optional.of(defaultImage));
 		doReturn(us1).when(this.userService).save(any());
+
+		given(this.secureTokenService.findByToken(TEST_TOKEN)).willReturn(Optional.of(st1));
+		given(this.secureTokenService.findByToken(TEST_TOKEN_2)).willReturn(Optional.of(st2));
+		given(this.secureTokenService.findByEmail("testuser@email.com")).willReturn(Optional.of(st1));
+		given(this.secureTokenService.findByEmail("user2@email.com")).willReturn(Optional.of(st2));
+		given(this.secureTokenService.createSecureToken(st2.getUser())).willReturn(st2);
 
 	}
 
@@ -208,7 +225,7 @@ class AuthControllerTests {
 				.andExpect(status().is4xxClientError())
 
 				// // Validate the returned fields
-				.andExpect(jsonPath("$.text", is("Email ya existente")));
+				.andExpect(jsonPath("$.text", is(EMAIL_ALREADY_EXISTS)));
 	}
 
 	@Test
@@ -231,6 +248,109 @@ class AuthControllerTests {
 
 				// // Validate the returned fields
 				.andExpect(jsonPath("$.text", is("El rol de usuario no se encuentra disponible.")));
+	}
+
+	@Test
+	void testConfirmRegistration() throws Exception {
+
+		this.mockMvc.perform(get("/auth/confirmNewUser?token={token}", TEST_TOKEN))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+				// Validate the response code and content type
+				.andExpect(status().isOk())
+
+				// // Validate the returned fields
+				.andExpect(jsonPath("$.text", is("El usuario ha sido verificado correctamente")));
+	}
+
+	@Test
+	void testConfirmRegistrationWithoutToken() throws Exception {
+		given(this.secureTokenService.findByToken(TEST_TOKEN)).willReturn(Optional.empty());
+
+		this.mockMvc.perform(get("/auth/confirmNewUser?token={token}", TEST_TOKEN))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+				// Validate the response code and content type
+				.andExpect(status().is4xxClientError())
+
+				// // Validate the returned fields
+				.andExpect(jsonPath("$.text", is("No se ha encontrado el código de verificación indicado")));
+	}
+
+	@Test
+	void testConfirmRegistrationTokenExpired() throws Exception {
+
+		this.mockMvc.perform(get("/auth/confirmNewUser?token={token}", TEST_TOKEN_2))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+				// Validate the response code and content type
+				.andExpect(status().is4xxClientError())
+
+				// // Validate the returned fields
+				.andExpect(jsonPath("$.text", is("El código de verificación ha expirado")));
+	}
+
+	@Test
+	void testConfirmRegistrationNullUser() throws Exception {
+		doReturn(null).when(this.userService).save(any());
+
+		this.mockMvc.perform(get("/auth/confirmNewUser?token={token}", TEST_TOKEN))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+				// Validate the response code and content type
+				.andExpect(status().is5xxServerError())
+
+				// // Validate the returned fields
+				.andExpect(jsonPath("$.text", is("Error al actualizar la información de usuario")));
+	}
+
+	@Test
+	void testNewUserConfirmation() throws Exception {
+
+		this.mockMvc.perform(get("/auth/requestConfirmation?email=user2@email.com"))
+
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.text", is("El correo de verificación ha sido enviado correctamente")));
+	}
+
+	@Test
+	void testNewUserConfirmationWithoutToken() throws Exception {
+
+		this.mockMvc.perform(get("/auth/requestConfirmation?email=testuser1@email.com"))
+
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.text",
+						is("No existe ningún token de verificación para el correo electrónico introducido")));
+	}
+
+	@Test
+	void testNewUserWithout30SecondsDelay() throws Exception {
+
+		this.mockMvc.perform(get("/auth/requestConfirmation?email=testuser@email.com"))
+
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.text",
+						is("Se debe esperar al menos 30 segundos antes de solicitar una nueva verificación")));
+	}
+
+	@Test
+	void testNewUserWhitCreateErrorSecureToken() throws Exception {
+		given(this.secureTokenService
+				.createSecureToken(this.secureTokenService.findByEmail("user2@email.com").get().getUser()))
+						.willReturn(null);
+
+		this.mockMvc.perform(get("/auth/requestConfirmation?email=user2@email.com"))
+
+				.andExpect(status().isInternalServerError())
+				.andExpect(jsonPath("$.text", is("Error al crear el código de validación")));
+	}
+
+	@Test
+	void testNewUserWhitCreateErrorException() throws Exception {
+		doThrow(new RuntimeException()).when(userService).sendConfirmationEmail(any(), any());
+
+		this.mockMvc.perform(get("/auth/requestConfirmation?email=user2@email.com"))
+
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.text", is("Error al enviar el mensaje de confirmación")));
 	}
 
 	@Test
@@ -294,7 +414,7 @@ class AuthControllerTests {
 				.andExpect(status().is4xxClientError())
 
 				// // Validate the returned fields
-				.andExpect(jsonPath("$.text", is("Email ya existente")));
+				.andExpect(jsonPath("$.text", is(EMAIL_ALREADY_EXISTS)));
 	}
 
 	@Test
