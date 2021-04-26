@@ -248,218 +248,218 @@ INSERT INTO landmarks(name, description, price, country, city, latitude, longitu
     -- Itinerary 1
 	('Teatro Chino de Grauman',															-- 1
     'Famoso teatro que se ecuentra en Hollywood Boulevard. Grandes celebridades asisten a los estrenos que allí se realizan.', 
-    21.75, 'Estados Unidos', 'Los Ángeles', 34.1022362941, -118.3409068290, '2031-02-02 18:17:25', 'info@chinesetheatres.com', NULL, '+(01) 323464514', NULL, 'http://www.tclchinesetheatres.com/', 'Cine', 55, 11, '2021-01-01 00:00:01'),
+    21.75, 'Estados Unidos', 'Los Ángeles', 34.1022362941, -118.3409068290, '2031-02-02 18:17:25', 'info@chinesetheatres.com', NULL, '+(01) 323464514', NULL, 'http://www.tclchinesetheatres.com/', 'OTROS', 55, 11, '2021-01-01 00:00:01'),
     ('Chinatown',																		-- 2
     'ES uno de los barrios más típicos de la ciudad, donde se encuentra Olvera Street, la calle más antigua de Los Ángeles.', 
-    0.0, 'Estados Unidos', 'Los Ángeles', 34.0626806862, -118.2373501524, '2022-10-03 19:18:26', NULL, NULL, NULL, NULL, NULL, 'Barrio', 47, 12, '2021-01-01 00:00:01'),
+    0.0, 'Estados Unidos', 'Los Ángeles', 34.0626806862, -118.2373501524, '2022-10-03 19:18:26', NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 47, 12, '2021-01-01 00:00:01'),
     ('Santa Mónica',																	-- 3
     'El pier de Santa Mónica contiene un pequeño parque de atracciones y atrae a un gran número e turistas al año.', 
-    20.0, 'Estados Unidos', 'Los Ángeles', 34.0093749250, -118.4972278365, NULL, NULL, 'https://www.instagram.com/santamonicapier/', '+(1) 310458890', 'https://twitter.com/santamonicapier', 'https://www.santamonicapier.org/', 'Punto turístico', 53, 13, '2021-01-01 00:00:01'),
+    20.0, 'Estados Unidos', 'Los Ángeles', 34.0093749250, -118.4972278365, NULL, NULL, 'https://www.instagram.com/santamonicapier/', '+(1) 310458890', 'https://twitter.com/santamonicapier', 'https://www.santamonicapier.org/', 'PUNTO DE INTERÉS', 53, 13, '2021-01-01 00:00:01'),
     ('Playa de Venice',																	-- 4
     'Una de las playas más conocidas de Los Ángeles en la que disfrutaras de un día esplendido.', 
-    0.0, 'Estados Unidos', 'Los Ángeles', 33.9926203125, -118.4801820701, NULL, NULL, NULL, NULL, NULL, NULL, 'Playa', 60, 14, '2021-01-01 00:00:01'),
+    0.0, 'Estados Unidos', 'Los Ángeles', 33.9926203125, -118.4801820701, NULL, NULL, NULL, NULL, NULL, NULL, 'OTROS', 60, 14, '2021-01-01 00:00:01'),
     ('Observatorio Griffith',															-- 5
     'El Observatorio Griffith es uno de los puntos más visitados de la ciudad y las vistas del cielo nocturno desde allí son incomparables.', 
-    0.0, 'Estados Unidos', 'Los Ángeles', 34.1185051380, -118.3005651634, '2024-10-05 14:22:15', NULL, NULL, '+(1) 2134730800', NULL, 'https://griffithobservatory.org/', 'Punto turístico', 54, 15, '2021-01-01 00:00:01'),
+    0.0, 'Estados Unidos', 'Los Ángeles', 34.1185051380, -118.3005651634, '2024-10-05 14:22:15', NULL, NULL, '+(1) 2134730800', NULL, 'https://griffithobservatory.org/', 'PUNTO DE INTERÉS', 54, 15, '2021-01-01 00:00:01'),
     ('Centro de Música de Los Ángeles',													-- 6
     'Compuesto por cuatro edificios, el centro de música de Los Ángeles es uno de los lugares con más fama en el mundo de la música.', 
-    10.0, 'Estados Unidos', 'Los Ángeles', 34.0563596015, -118.2487866462, NULL, NULL, 'https://www.instagram.com/musiccenterla/', '+(1) 139727211', 'https://twitter.com/musiccenterla', 'https://www.musiccenter.org/tmc-offstage/', 'Punto turístico', 45, 16, '2021-01-01 00:00:01'),
+    10.0, 'Estados Unidos', 'Los Ángeles', 34.0563596015, -118.2487866462, NULL, NULL, 'https://www.instagram.com/musiccenterla/', '+(1) 139727211', 'https://twitter.com/musiccenterla', 'https://www.musiccenter.org/tmc-offstage/', 'PUNTO DE INTERÉS', 45, 16, '2021-01-01 00:00:01'),
     ('Beverly Boulevard',																-- 7
     'El lugar donde viven las estrellas se encuentra en Los Ángeles.', 
-    0.0, 'Estados Unidos', 'Los Ángeles', 34.0762235460, -118.3236376026, NULL, NULL, NULL, NULL, NULL, NULL, 'Barrio', 52, 17, '2021-01-01 00:00:01'),
+    0.0, 'Estados Unidos', 'Los Ángeles', 34.0762235460, -118.3236376026, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 52, 17, '2021-01-01 00:00:01'),
 	-- Itinerary 2
 	('Museo de La Revolución',															-- 8
     'El museo reúne un gran número de materiales y colecciones relativos a la revolución cubana.', 
-    15.0, 'Cuba', 'La Habana', 23.1415940643, -82.3567417310, NULL, NULL, NULL, '+(53) 786015254', NULL, NULL, 'Museo', 60, 18, '2021-01-01 00:00:01'),
+    15.0, 'Cuba', 'La Habana', 23.1415940643, -82.3567417310, NULL, NULL, NULL, '+(53) 786015254', NULL, NULL, 'OTROS', 60, 18, '2021-01-01 00:00:01'),
     ('Gran Teatro de La Habana',														-- 9
     'La sede del Ballet Nacional de Cuba es una de las principales instituciones culturales de la capital cubana.', 
-    50.0, 'Cuba', 'La Habana', 23.1369636143, -82.3592448022, NULL, NULL, NULL, '+(53) 786130577', NULL, 'https://www.entradas.com/city/la-habana-1637/venue/gran-teatro-alicia-alonso-22536/', 'Punto Turístico', 67, 19, '2021-01-01 00:00:01'),
+    50.0, 'Cuba', 'La Habana', 23.1369636143, -82.3592448022, NULL, NULL, NULL, '+(53) 786130577', NULL, 'https://www.entradas.com/city/la-habana-1637/venue/gran-teatro-alicia-alonso-22536/', 'PUNTO DE INTERÉS', 67, 19, '2021-01-01 00:00:01'),
     ('Castillo de San Salvador de la Punta',											-- 10
     'Situado al inicio del Malecón habanero, es una de las tres principales fortificaciones de La Habana junto con La Fuerza y El Morro.', 
-    15.0, 'Cuba', 'La Habana', 23.1459172790, -82.3586277173, NULL, NULL, NULL, NULL, NULL, NULL, 'Monumento', 64, 20, '2021-01-01 00:00:01'),
+    15.0, 'Cuba', 'La Habana', 23.1459172790, -82.3586277173, NULL, NULL, NULL, NULL, NULL, NULL, 'MONUMENTO', 64, 20, '2021-01-01 00:00:01'),
     ('Capitolio Nacional de Cuba',														-- 11
     'Abierto al público, es uno de los centros turísticos más visitados de la ciudad, habiéndose convertido en uno de los iconos arquitectónicos de La Habana.', 
-    5.0, 'Cuba', 'La Habana', 23.1355381666, -82.3597381403, NULL, NULL, NULL, NULL, NULL, NULL, 'Punto turístico', 69, 21, '2021-01-01 00:00:01'),
+    5.0, 'Cuba', 'La Habana', 23.1355381666, -82.3597381403, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 69, 21, '2021-01-01 00:00:01'),
     ('Restaurante La Concordia',														-- 12
     'Un restaurante situado en el centro de La Habana con una gran reputación y unos platos deliciosos.', 
-    50.0, 'Cuba', 'La Habana', 23.1382918358, -82.3684934554, '2023-12-10 11:08:02', NULL, NULL, '+(53) 786449677', NULL, NULL, 'Restaurante', 58, 22, '2021-01-01 00:00:01'),
+    50.0, 'Cuba', 'La Habana', 23.1382918358, -82.3684934554, '2023-12-10 11:08:02', NULL, NULL, '+(53) 786449677', NULL, NULL, 'RESTAURANTE', 58, 22, '2021-01-01 00:00:01'),
 	-- Itinerary 3
 	('Tokyo Skytree',																	-- 13
     'Una enorme torre con mirador desde el que se ve gran parte de la ciudad de Tokio.', 
-    0.0, 'Japón', 'Tokio', 35.7121544118, 139.8096797017, '2025-01-01 10:10:10', NULL, 'https://www.instagram.com/tokyoskytree_official/', '+(81) 570550634', 'https://twitter.com/skytreeofficial', 'https://www.tokyo-skytree.jp/', 'Punto turístico', 75, 23, '2021-01-01 00:00:01'),
+    0.0, 'Japón', 'Tokio', 35.7121544118, 139.8096797017, '2025-01-01 10:10:10', NULL, 'https://www.instagram.com/tokyoskytree_official/', '+(81) 570550634', 'https://twitter.com/skytreeofficial', 'https://www.tokyo-skytree.jp/', 'PUNTO DE INTERÉS', 75, 23, '2021-01-01 00:00:01'),
     ('Kokyo',																			-- 14
     'Residencia principal del emperador de Japón, con jardines paisajísticos y recorridos por la zona exterior.', 
-    30.0, 'Japón', 'Tokio', 35.6868624923, 139.7536632411, NULL, NULL, NULL, '+(81) 332131111', NULL, 'http://sankan.kunaicho.go.jp/', 'Punto turístico', 80, 24, '2021-01-01 00:00:01'),
+    30.0, 'Japón', 'Tokio', 35.6868624923, 139.7536632411, NULL, NULL, NULL, '+(81) 332131111', NULL, 'http://sankan.kunaicho.go.jp/', 'PUNTO DE INTERÉS', 80, 24, '2021-01-01 00:00:01'),
     ('Santuario Meiji',																	-- 15
     'Histórico santuario sintoísta en medio de un parque, con un jardín de lirios que florecen en temporada.', 
-    15.0, 'Japón', 'Tokio', 35.6765905463, 139.6997271260, NULL, NULL, NULL, '+(81) 333795511', NULL, 'https://www.meijijingu.or.jp/', 'Punto turístico', 67, 25, '2021-01-01 00:00:01'),
+    15.0, 'Japón', 'Tokio', 35.6765905463, 139.6997271260, NULL, NULL, NULL, '+(81) 333795511', NULL, 'https://www.meijijingu.or.jp/', 'PUNTO DE INTERÉS', 67, 25, '2021-01-01 00:00:01'),
     ('Senso-ji',																		-- 16
     'Templo más antiguo de Tokio, terminado en el año 645, en honor a Kannon, diosa de la misericordia.', 
-    0.0, 'Japón', 'Tokio', 35.7152327211, 139.7961879042, NULL, NULL, NULL, '+(81) 338420181', NULL, 'https://www.senso-ji.jp/', 'Punto turístico', 72, 26, '2021-01-01 00:00:01'),
+    0.0, 'Japón', 'Tokio', 35.7152327211, 139.7961879042, NULL, NULL, NULL, '+(81) 338420181', NULL, 'https://www.senso-ji.jp/', 'PUNTO DE INTERÉS', 72, 26, '2021-01-01 00:00:01'),
     ('Parque de Yumenoshima',															-- 17
     'Un parque situado en Tokio con grandes vistas y un ambiente relajante.', 
-    0.0, 'Japón', 'Tokio', 35.6516010064, 139.8277337508, NULL, NULL, NULL, '+(81) 335220281', NULL, 'https://www.yumenoshima.jp/english.html', 'Parque', 66, 27, '2021-01-01 00:00:01'),
+    0.0, 'Japón', 'Tokio', 35.6516010064, 139.8277337508, NULL, NULL, NULL, '+(81) 335220281', NULL, 'https://www.yumenoshima.jp/english.html', 'PARQUE NATURAL', 66, 27, '2021-01-01 00:00:01'),
     ('Torre de Tokio',																	-- 18
     'Emblemática torre similar a la torre Eiffel, con varios miradores y otras atracciones.', 
-    50.0, 'Japón', 'Tokio', 35.6626151065, 139.7443936491, NULL, NULL, NULL, '+(81) 334335111', NULL, 'https://www.tokyotower.co.jp/', 'Punto turístico', 73, 28, '2021-01-01 00:00:01'),
+    50.0, 'Japón', 'Tokio', 35.6626151065, 139.7443936491, NULL, NULL, NULL, '+(81) 334335111', NULL, 'https://www.tokyotower.co.jp/', 'PUNTO DE INTERÉS', 73, 28, '2021-01-01 00:00:01'),
     ('Togoshi Ginza',																	-- 19
     'Lugar de compras situado en la capital japonesa.', 
-    10.0, 'Japón', 'Tokio', 35.6154635850, 139.7168918115, NULL, NULL, NULL, '+(81) 337881474', NULL, 'http://www.togoshiginza.jp/', 'Barrio', 81, 29, '2021-01-01 00:00:01'),
+    10.0, 'Japón', 'Tokio', 35.6154635850, 139.7168918115, NULL, NULL, NULL, '+(81) 337881474', NULL, 'http://www.togoshiginza.jp/', 'PUNTO DE INTERÉS', 81, 29, '2021-01-01 00:00:01'),
 	-- Itinerary 4
     ('Leos Sports Club GmbH0',                                                         	-- 20
     'Leos Sports Club GmbH0',
-    20.0, 'Alemania', 'Munich', 48.1552339296, 11.5829143754, NULL, NULL, NULL, '+(49) 893838990', NULL, NULL, 'Entrenamiento', 58, 30, '2021-01-01 00:00:01'),
+    20.0, 'Alemania', 'Munich', 48.1552339296, 11.5829143754, NULL, NULL, NULL, '+(49) 893838990', NULL, NULL, 'OTROS', 58, 30, '2021-01-01 00:00:01'),
     ('Theresa Grill',                                                                   -- 21
     'Theresa Grill',
-    30.0, 'Alemania', 'Munich', 48.1480004636, 11.5755359983, NULL, NULL, NULL, '+(49) 892880330', NULL, 'http://www.theresa-restaurant.com/', 'Gastronomia', 62, 31, '2021-01-01 00:00:01'),
+    30.0, 'Alemania', 'Munich', 48.1480004636, 11.5755359983, NULL, NULL, NULL, '+(49) 892880330', NULL, 'http://www.theresa-restaurant.com/', 'RESTAURANTE', 62, 31, '2021-01-01 00:00:01'),
     ('Rumfordschlössl (Kreisjugendring München-Stadt)',                                 -- 22
     'Lugar de encuentro de naturaleza y cultura Rumfordschlössl (Kreisjugendring München-Stadt)',
-    4.0, 'Alemania', 'Munich', 48.1541891296, 11.5916785407, NULL, NULL, NULL, '+(49) 892880331', NULL, 'http://www.rumfordschloessl.de/', 'Parque', 65, 32, '2021-01-01 00:00:01'),
+    4.0, 'Alemania', 'Munich', 48.1541891296, 11.5916785407, NULL, NULL, NULL, '+(49) 892880331', NULL, 'http://www.rumfordschloessl.de/', 'PARQUE NATURAL', 65, 32, '2021-01-01 00:00:01'),
     ('MISSHA Cosmetics GmbH',                                                           -- 23
     'MISSHA Cosmetics GmbH',
-    10.0, 'Alemania', 'Munich', 48.7848240505, 11.4742907784, NULL, NULL, NULL, '+(49) 841132844', NULL, 'https://kbeautyhouse.de/', 'Cosmetica', 61, 33, '2021-01-01 00:00:01'),
+    10.0, 'Alemania', 'Munich', 48.7848240505, 11.4742907784, NULL, NULL, NULL, '+(49) 841132844', NULL, 'https://kbeautyhouse.de/', 'TIENDA', 61, 33, '2021-01-01 00:00:01'),
     ('Fendstüberl',                                                                     -- 24
     'Fendstüberl',
-    5.0, 'Alemania', 'Munich', 48.1599673164, 11.5867939830, NULL, NULL, NULL, '+(49) 893971580', NULL, NULL, 'Bar/Copas', 62, 34, '2021-01-01 00:00:01'),
+    5.0, 'Alemania', 'Munich', 48.1599673164, 11.5867939830, NULL, NULL, NULL, '+(49) 893971580', NULL, NULL, 'BAR', 62, 34, '2021-01-01 00:00:01'),
     ('Blue Nile One München',                                                           -- 25
     'Blue Nile One München',
-    40.0, 'Alemania', 'Munich', 48.1607008680, 11.5883371983, '2023-03-03 10:10:20', NULL, NULL, '+(49) 893423819', NULL, 'https://blue-nile-one.de/', 'Restaurante', 56, 35, '2021-01-01 00:00:01'),
+    40.0, 'Alemania', 'Munich', 48.1607008680, 11.5883371983, '2023-03-03 10:10:20', NULL, NULL, '+(49) 893423819', NULL, 'https://blue-nile-one.de/', 'RESTAURANTE', 56, 35, '2021-01-01 00:00:01'),
 	-- Itinerary 5
 	('Torre Eiffel',                                                           			-- 26
     'Emblemática torre de hierro forjado diseñada por Gustave Eiffel y construida en 1889, dispone de observatorio.',
-    0.0, 'Francia', 'París', 48.8624516518, 2.2948730154, NULL, NULL, NULL, '+(33) 892701239', NULL, 'https://www.toureiffel.paris/', 'Lugar de interés histórico', 43, 36, '2021-01-01 00:00:01'),
+    0.0, 'Francia', 'París', 48.8624516518, 2.2948730154, NULL, NULL, NULL, '+(33) 892701239', NULL, 'https://www.toureiffel.paris/', 'PUNTO DE INTERÉS', 43, 36, '2021-01-01 00:00:01'),
 	('Museo del Louvre',                                                           		-- 27
     'Antiguo palacio con una gran colección de arte, desde esculturas romanas hasta "La Mona Lisa" de da Vinci.',
-    40.0, 'Francia', 'París', 48.8620382702, 2.3375541557, NULL, NULL, NULL, '+(33) 140205050', NULL, 'https://www.louvre.fr/', 'Museo de arte', 37, 37, '2021-01-01 00:00:01'),
+    40.0, 'Francia', 'París', 48.8620382702, 2.3375541557, NULL, NULL, NULL, '+(33) 140205050', NULL, 'https://www.louvre.fr/', 'OTROS', 37, 37, '2021-01-01 00:00:01'),
 	('Catedral de Notre Dame',                                                          -- 28
     'Imponente catedral del siglo XIII con arbotantes y gárgolas y marco de la novela de Víctor Hugo.',
-    10.0, 'Francia', 'París', 48.8529930263, 2.3499133107, NULL, NULL, NULL, '+(33) 142345610', NULL, 'https://www.notredamedeparis.fr/', 'Catedral', 35, 38, '2021-01-01 00:00:01'),
+    10.0, 'Francia', 'París', 48.8529930263, 2.3499133107, NULL, NULL, NULL, '+(33) 142345610', NULL, 'https://www.notredamedeparis.fr/', 'PUNTO DE INTERÉS', 35, 38, '2021-01-01 00:00:01'),
 	('Arco de Triunfo de París',                                                        -- 29
     'Arco triunfal emblemático conmemorativo de las victorias de Napoleón, cuenta con observatorio.',
-    0.0, 'Francia', 'París', 48.8748049577, 2.2951044246, NULL, NULL, NULL, '+(33) 155377377', NULL, 'http://www.paris-arc-de-triomphe.fr/', 'Monumento', 39, 39, '2021-01-01 00:00:01'),
+    0.0, 'Francia', 'París', 48.8748049577, 2.2951044246, NULL, NULL, NULL, '+(33) 155377377', NULL, 'http://www.paris-arc-de-triomphe.fr/', 'MONUMENTO', 39, 39, '2021-01-01 00:00:01'),
 	('Panteón de París',                                                           		-- 30
     'Mausoleo del siglo  XVIII con fachada de columnas que contiene los restos de ciudadanos franceses ilustres.',
-    10.0, 'Francia', 'París', 48.8465758887, 2.3464873177, NULL, NULL, NULL, '+(33) 144321800', NULL, 'http://www.paris-pantheon.fr/', 'Monumento', 38, 40, '2021-01-01 00:00:01'),
+    10.0, 'Francia', 'París', 48.8465758887, 2.3464873177, NULL, NULL, NULL, '+(33) 144321800', NULL, 'http://www.paris-pantheon.fr/', 'MONUMENTO', 38, 40, '2021-01-01 00:00:01'),
 	-- Itinerary 6
 	('Santa Teresa',																	-- 31
     'Santa Teresa es un barrio situado en una colina que ofrece un ambiente rústico lleno de encanto.', 
-    0.0, 'Brasil', 'Río de Janeiro', -22.9235257097, -43.1905007042, NULL, NULL, NULL, NULL, NULL, NULL, 'Barrio', 56, 41, '2021-01-01 00:00:01'),
+    0.0, 'Brasil', 'Río de Janeiro', -22.9235257097, -43.1905007042, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 56, 41, '2021-01-01 00:00:01'),
 	('Cristo Redentor',																	-- 32
     'Estatua gigante de Jesucristo de 30 m en la cima de una montaña, con vistas a la ciudad y acceso en tren.', 
-    5.0, 'Brasil', 'Río de Janeiro', -22.9511121370, -43.2104134221, '2031-01-09 18:17:25', NULL, NULL, NULL, NULL, 'https://cristoredentoroficial.com.br/', 'Monumento', 62, 42, '2021-01-01 00:00:01'),
+    5.0, 'Brasil', 'Río de Janeiro', -22.9511121370, -43.2104134221, '2031-01-09 18:17:25', NULL, NULL, NULL, NULL, 'https://cristoredentoroficial.com.br/', 'MONUMENTO', 62, 42, '2021-01-01 00:00:01'),
 	('Copacabana',																		-- 33
     'Emblemática playa de 3,5 km con una extensa superficie de arena, un paseo bullicioso, puestos de comida y hoteles.', 
-    0.0, 'Brasil', 'Río de Janeiro', -22.9730334897, -43.1852832605, NULL, NULL, NULL, NULL, NULL, NULL, 'Playa', 60, 43, '2021-01-01 00:00:01'),
+    0.0, 'Brasil', 'Río de Janeiro', -22.9730334897, -43.1852832605, NULL, NULL, NULL, NULL, NULL, NULL, 'OTROS', 60, 43, '2021-01-01 00:00:01'),
     ('Feria hippie de Ipanema',															-- 34
     'Feria artesanal', 
-    20.0, 'Brasil', 'Río de Janeiro', -22.9847756018, -43.1985731475, NULL, NULL, NULL, NULL, NULL, 'https://www.feirarteipanema.com/', 'Punto turístico', 57, 44, '2021-01-01 00:00:01'),
+    20.0, 'Brasil', 'Río de Janeiro', -22.9847756018, -43.1985731475, NULL, NULL, NULL, NULL, NULL, 'https://www.feirarteipanema.com/', 'PUNTO DE INTERÉS', 57, 44, '2021-01-01 00:00:01'),
 	('Pedra da Gávea',																	-- 35
     'Monolito costero a 844 m de altitud con rutas de senderismo exigentes y vistas panorámicas de Río de Janeiro.', 
-    0.0, 'Brasil', 'Río de Janeiro', -22.9972396374, -43.2846794139, NULL, NULL, NULL, NULL, NULL, NULL, 'Pico de Montaña', 52, 45, '2021-01-01 00:00:01'),
+    0.0, 'Brasil', 'Río de Janeiro', -22.9972396374, -43.2846794139, NULL, NULL, NULL, NULL, NULL, NULL, 'OTROS', 52, 45, '2021-01-01 00:00:01'),
 	-- Itinerary 7
 	('Palacio de Westminster',															-- 36
     'Obra maestra neogótica y sede del gobierno nacional. Hay visitas guiadas los sábados y durante el verano.', 
-    20.0, 'Reino Unido', 'Londres', 51.4996329948, -0.1247770152, NULL, NULL, NULL, '+(44) 207219300', NULL, 'https://www.parliament.uk/about/living-heritage/building/palace/', 'Oficina de Administración', 32, 46, '2021-01-01 00:00:01'),
+    20.0, 'Reino Unido', 'Londres', 51.4996329948, -0.1247770152, NULL, NULL, NULL, '+(44) 207219300', NULL, 'https://www.parliament.uk/about/living-heritage/building/palace/', 'PUNTO DE INTERÉS', 32, 46, '2021-01-01 00:00:01'),
 	('Abadía de Westminster',															-- 37
     'Abadía protestante en la que se celebran misas y todas las coronaciones inglesas y británicas desde 1066.', 
-    0.0, 'Reino Unido', 'Londres', 51.4994116001, -0.1272959507, NULL, NULL, NULL, '+(44) 207225152', NULL, 'https://www.westminster-abbey.org/', 'Iglesia', 30, 47, '2021-01-01 00:00:01'),
+    0.0, 'Reino Unido', 'Londres', 51.4994116001, -0.1272959507, NULL, NULL, NULL, '+(44) 207225152', NULL, 'https://www.westminster-abbey.org/', 'PUNTO DE INTERÉS', 30, 47, '2021-01-01 00:00:01'),
 	('Piccadilly Circus',																-- 38
     'Piccadilly Circus', 
-    0.0, 'Reino Unido', 'Londres', 51.5100847856, -0.1350018017, NULL, NULL, NULL, NULL, NULL, NULL, 'Barrio', 37, 48, '2021-01-01 00:00:01'),
+    0.0, 'Reino Unido', 'Londres', 51.5100847856, -0.1350018017, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 37, 48, '2021-01-01 00:00:01'),
 	('Torre de Londres',																-- 39
     'Este castillo medieval, custodiado por Beefeaters y testigo de la Historia, alberga las joyas de la corona.', 
-    5.0, 'Reino Unido', 'Londres', 51.5081591232, -0.0759707594, NULL, NULL, NULL, '+(44) 203166600', NULL, 'https://www.hrp.org.uk/tower-of-london/', 'Castillo', 28, 49, '2021-01-01 00:00:01'),
+    5.0, 'Reino Unido', 'Londres', 51.5081591232, -0.0759707594, NULL, NULL, NULL, '+(44) 203166600', NULL, 'https://www.hrp.org.uk/tower-of-london/', 'PUNTO DE INTERÉS', 28, 49, '2021-01-01 00:00:01'),
 	('Puente de la Torre',																-- 40
     'Puente de la Torre', 
-    0.0, 'Reino Unido', 'Londres', 51.5055164821, -0.0753457729, NULL, NULL, NULL, '+(44) 207433761', NULL, 'http://www.towerbridge.org.uk/', 'Puente', 27, 50, '2021-01-01 00:00:01'),
+    0.0, 'Reino Unido', 'Londres', 51.5055164821, -0.0753457729, NULL, NULL, NULL, '+(44) 207433761', NULL, 'http://www.towerbridge.org.uk/', 'PUNTO DE INTERÉS', 27, 50, '2021-01-01 00:00:01'),
 	('Catedral de San Pablo de Londres',												-- 41
     'El patio y los jardines fuera de la catedral de San Pablo, con un plano de planta del edificio original', 
-    20.0, 'Reino Unido', 'Londres', 51.5139053710, -0.0983291440, NULL, NULL, NULL, '+(44) 272468350', NULL, 'https://www.stpauls.co.uk/', 'Catedral', 31, 51, '2021-01-01 00:00:01'),
+    20.0, 'Reino Unido', 'Londres', 51.5139053710, -0.0983291440, NULL, NULL, NULL, '+(44) 272468350', NULL, 'https://www.stpauls.co.uk/', 'PUNTO DE INTERÉS', 31, 51, '2021-01-01 00:00:01'),
 	('Ojo de Londres',																	-- 42
     'Enorme noria que permite disfrutar de vistas privilegiadas sobre los puntos de interés de la ciudad.', 
-    60.0, 'Reino Unido', 'Londres', 51.5033306714, -0.1195537017, NULL, NULL, NULL, '+(44) 279678021', NULL, 'https://www.londoneye.com/', 'Atracción turística', 30, 52, '2021-01-01 00:00:01'),
+    60.0, 'Reino Unido', 'Londres', 51.5033306714, -0.1195537017, NULL, NULL, NULL, '+(44) 279678021', NULL, 'https://www.londoneye.com/', 'PUNTO DE INTERÉS', 30, 52, '2021-01-01 00:00:01'),
 	('Museo Británico',																	-- 43
     'Enorme despliegue de antigüedades mundiales, incluidas momias egipcias y esculturas de la antigua Grecia.', 
-    40.0, 'Reino Unido', 'Londres', 51.5200320727, -0.1267261701, NULL, NULL, NULL, '+(44) 273238299', NULL, 'https://www.britishmuseum.org/', 'Museo', 28, 53, '2021-01-01 00:00:01'),
+    40.0, 'Reino Unido', 'Londres', 51.5200320727, -0.1267261701, NULL, NULL, NULL, '+(44) 273238299', NULL, 'https://www.britishmuseum.org/', 'OTROS', 28, 53, '2021-01-01 00:00:01'),
 	('Hyde Park',																		-- 44
     'Gran extensión verde con un monumento a Diana de Gales y con el Serpentine, un lago para nadar o ir en barca.', 
-    0.0, 'Reino Unido', 'Londres', 51.5074039863, -0.1655908685, NULL, NULL, NULL, '+(44) 300612000', NULL, 'https://www.royalparks.org.uk/parks/hyde-park', 'Edificio Multiusos', 29, 54, '2021-01-01 00:00:01'),
+    0.0, 'Reino Unido', 'Londres', 51.5074039863, -0.1655908685, NULL, NULL, NULL, '+(44) 300612000', NULL, 'https://www.royalparks.org.uk/parks/hyde-park', 'PARQUE NATURAL', 29, 54, '2021-01-01 00:00:01'),
 	-- Itinerary 8
 	('Castillo de San Ángelo',															-- 45
     'Castillo cilíndrico del siglo II que alberga una colección de muebles y cuadros en estancias renacentistas.', 
-    20.0, 'Italia', 'Roma', 41.9033203374, 12.4658073414, NULL, NULL, NULL, '+(39) 668191110', NULL, 'http://castelsantangelo.beniculturali.it/', 'Punto turístico', 80, 55, '2021-01-01 00:00:01'),
+    20.0, 'Italia', 'Roma', 41.9033203374, 12.4658073414, NULL, NULL, NULL, '+(39) 668191110', NULL, 'http://castelsantangelo.beniculturali.it/', 'PUNTO DE INTERÉS', 80, 55, '2021-01-01 00:00:01'),
     ('Foro Romano',																		-- 46
     'Extensa área excavada de templos, plazas y edificios del gobierno romanos, algunos de 2000 años de antigüedad.',
-    30.0, 'Italia', 'Roma', 41.8933001496, 12.4859144139, NULL, NULL, 'https://www.instagram.com/parcocolosseo/', '+(39) 669984452', 'https://twitter.com/parcocolosseo', 'https://parcocolosseo.it/area/foro-romano/', 'Monumento', 74, 56, '2021-01-01 00:00:01'),
+    30.0, 'Italia', 'Roma', 41.8933001496, 12.4859144139, NULL, NULL, 'https://www.instagram.com/parcocolosseo/', '+(39) 669984452', 'https://twitter.com/parcocolosseo', 'https://parcocolosseo.it/area/foro-romano/', 'MONUMENTO', 74, 56, '2021-01-01 00:00:01'),
     ('Restaurante Bar del Fico',														-- 47
     'Restaurante situado en el centro de Roma.', 
-    70.0, 'Italia', 'Roma', 41.8995146558, 12.4707454723, '2023-02-02 18:17:25', NULL, NULL, '+(39) 688657702', NULL, 'https://www.quandoo.it/place/ristorante-bar-del-fico-58507?aid=63', 'Restaurante', 92, 57, '2021-01-01 00:00:01'),
+    70.0, 'Italia', 'Roma', 41.8995146558, 12.4707454723, '2023-02-02 18:17:25', NULL, NULL, '+(39) 688657702', NULL, 'https://www.quandoo.it/place/ristorante-bar-del-fico-58507?aid=63', 'RESTAURANTE', 92, 57, '2021-01-01 00:00:01'),
     ('Basílica de San Pedro',															-- 48
     'Iglesia de finales del Renacimiento diseñada por arquitectos como Miguel Ángel con sitio para 20.000 devotos.', 
-    20.0, 'Italia', 'Roma', 41.9023873005, 12.4540704788, NULL, NULL, NULL, '+(39) 669825874', NULL, 'http://www.vatican.va/various/basiliche/san_pietro/index_it.htm', 'Punto turístico', 85, 58, '2021-01-01 00:00:01'),
+    20.0, 'Italia', 'Roma', 41.9023873005, 12.4540704788, NULL, NULL, NULL, '+(39) 669825874', NULL, 'http://www.vatican.va/various/basiliche/san_pietro/index_it.htm', 'PUNTO DE INTERÉS', 85, 58, '2021-01-01 00:00:01'),
     ('Coliseo Romano',																	-- 49
     'Monumental anfiteatro romano de 3 niveles que acogió luchas de gladiadores, que ofrece visitas guiadas.', 
-    20.0, 'Italia', 'Roma', 41.8905482393, 12.4925173454, NULL, NULL, NULL, '+(39) 639967700', NULL, 'https://parcocolosseo.it/', 'Monumento', 97, 59, '2021-01-01 00:00:01'),
+    20.0, 'Italia', 'Roma', 41.8905482393, 12.4925173454, NULL, NULL, NULL, '+(39) 639967700', NULL, 'https://parcocolosseo.it/', 'MONUMENTO', 97, 59, '2021-01-01 00:00:01'),
     ('Fontana Di Trevi',																-- 50
     'Fuente rococó de 1762 con figuras esculpidas diseñada por Nicola Salvi y abastecida por un acueducto.', 
-    0.0, 'Italia', 'Roma', 41.9011018265, 12.4829793756, NULL, NULL, NULL, '+(39) 606085874', NULL, 'https://www.turismoroma.it/it/node/1286', 'Monumento', 78, 60, '2021-01-01 00:00:01'),
+    0.0, 'Italia', 'Roma', 41.9011018265, 12.4829793756, NULL, NULL, NULL, '+(39) 606085874', NULL, 'https://www.turismoroma.it/it/node/1286', 'MONUMENTO', 78, 60, '2021-01-01 00:00:01'),
 	-- Itinerary 9
 	('Suomenlinna',																		-- 51
     'Fortaleza patrimonio de la humanidad accesible por ferri, con cañones, túneles, astillero, museos y bar.', 
-    0.0, 'Finlandia', 'Helsinki', 60.1454907757, 24.9882044715, NULL, 'info@suomenlinna.fi', 'https://www.instagram.com/suomenlinnaofficial/?hl=fi', '+(358) 295338410', 'https://twitter.com/suomenlinnawhs', 'https://www.suomenlinna.fi/', 'Punto turístico', 68, 61, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.1454907757, 24.9882044715, NULL, 'info@suomenlinna.fi', 'https://www.instagram.com/suomenlinnaofficial/?hl=fi', '+(358) 295338410', 'https://twitter.com/suomenlinnawhs', 'https://www.suomenlinna.fi/', 'PUNTO DE INTERÉS', 68, 61, '2021-01-01 00:00:01'),
     ('Parque Sibelius',																	-- 52
     'Parque urbano junto al mar con esculturas, estanque, fuente, bosque de abedules y senderos para pasear.', 
-    0.0, 'Finlandia', 'Helsinki', 60.1815708810, 24.9141010697, NULL, NULL, NULL, '+(358) 931039000', NULL, 'https://www.myhelsinki.fi/en/see-and-do/sights/sibelius-park', 'Parque', 54, 62, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.1815708810, 24.9141010697, NULL, NULL, NULL, '+(358) 931039000', NULL, 'https://www.myhelsinki.fi/en/see-and-do/sights/sibelius-park', 'PARQUE NATURAL', 54, 62, '2021-01-01 00:00:01'),
     ('Parque de aventuras Zippy',														-- 53
     'Parque de aventuras natural situado en Helsinki. ¡Pasa un día mágico junto a tu familia y amigos!.', 
-    0.0, 'Finlandia', 'Helsinki', 60.2118966102, 24.8774767430, NULL, NULL, 'https://www.instagram.com/seikkailupuistozippy/', '+(358) 600934568', NULL, 'https://www.zippy.fi/', 'Parque', 57, 63, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.2118966102, 24.8774767430, NULL, NULL, 'https://www.instagram.com/seikkailupuistozippy/', '+(358) 600934568', NULL, 'https://www.zippy.fi/', 'PARQUE NATURAL', 57, 63, '2021-01-01 00:00:01'),
     ('Parque natural Lammassaari',														-- 54
     'El parque natural de Lammassaari es una perfecta muestra de la importancia natural de los parques de Helsinki.', 
-    0.0, 'Finlandia', 'Helsinki', 60.2106607172, 24.9990691728, NULL, NULL, NULL, NULL, NULL, NULL, 'Parque', 60, 64, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.2106607172, 24.9990691728, NULL, NULL, NULL, NULL, NULL, NULL, 'PARQUE NATURAL', 60, 64, '2021-01-01 00:00:01'),
     ('Restaurante Gula Villan',															-- 55
     'Restaurante situado en Espoo, cerca de la capital finlandesa.', 
-    50.0, 'Finlandia', 'Helsinki', 60.1456218625, 24.7596247204, NULL, NULL, NULL, '+(358) 504363658', NULL, NULL, 'Restaurante', 59, 65, '2021-01-01 00:00:01'),
+    50.0, 'Finlandia', 'Helsinki', 60.1456218625, 24.7596247204, NULL, NULL, NULL, '+(358) 504363658', NULL, NULL, 'RESTAURANTE', 59, 65, '2021-01-01 00:00:01'),
     ('Kaapelipuisto',																	-- 56
     'Parque urbano del centro de Helsinki.', 
-    0.0, 'Finlandia', 'Helsinki', 60.1626602746, 24.9050412778, NULL, NULL, NULL, NULL, NULL, NULL, 'Parque', 64, 66, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.1626602746, 24.9050412778, NULL, NULL, NULL, NULL, NULL, NULL, 'PARQUE NATURAL', 64, 66, '2021-01-01 00:00:01'),
     ('Vallisaari',																		-- 57
     'Una hermosa isla al sur de Helsinki.', 
-    0.0, 'Finlandia', 'Helsinki', 60.1384807866, 25.0037841774, NULL, NULL, NULL, NULL, NULL, NULL, 'Parque', 63, 67, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.1384807866, 25.0037841774, NULL, NULL, NULL, NULL, NULL, NULL, 'PARQUE NATURAL', 63, 67, '2021-01-01 00:00:01'),
     ('Westendin ranta',																	-- 58
     'Hermosa playa natural al sur de Espoo. Disfruta de las maravillosas vistas en cualquier época del año.', 
-    0.0, 'Finlandia', 'Helsinki', 60.1583393309, 24.7971241922, NULL, NULL, NULL, NULL, NULL, NULL, 'Playa', 66, 68, '2021-01-01 00:00:01'),
+    0.0, 'Finlandia', 'Helsinki', 60.1583393309, 24.7971241922, NULL, NULL, NULL, NULL, NULL, NULL, 'OTROS', 66, 68, '2021-01-01 00:00:01'),
     ('Museo de Historia Natural Finlandés',												-- 59
     'Museo de Historia Natural Finlandés.', 
-    30.0, 'Finlandia', 'Helsinki', 60.1718354879, 24.9315029628, NULL, NULL, NULL, '+(358) 294128800', NULL, 'https://www.luomus.fi/fi/luonnontieteellinen-museo', 'Museo', 78, 69, '2021-01-01 00:00:01'),
+    30.0, 'Finlandia', 'Helsinki', 60.1718354879, 24.9315029628, NULL, NULL, NULL, '+(358) 294128800', NULL, 'https://www.luomus.fi/fi/luonnontieteellinen-museo', 'OTROS', 78, 69, '2021-01-01 00:00:01'),
 	-- Itinerary 10
     ('Torre del Oro',																	-- 60
     'Torre defensiva exterior construida alrededor de 1220, cuyo nombre responde a diversas teorías.', 
-    5.0, 'España', 'Sevilla', 37.3825698921, -5.9965161355, NULL, NULL, NULL, '+(34) 954222419', NULL, 'https://www.visitasevilla.es/monumentos-y-cultura/torre-del-oro', 'Punto turístico', 86, 70, '2021-01-01 00:00:01'),
+    5.0, 'España', 'Sevilla', 37.3825698921, -5.9965161355, NULL, NULL, NULL, '+(34) 954222419', NULL, 'https://www.visitasevilla.es/monumentos-y-cultura/torre-del-oro', 'PUNTO DE INTERÉS', 86, 70, '2021-01-01 00:00:01'),
     ('Real Alcázar de Sevilla',															-- 61
     'Emblemático palacio real de origen árabe con jardines, fuentes, arcos ornamentados y azulejos del siglo XVI.', 
-    10.0, 'España', 'Sevilla', 37.3832718833, -5.9902877628, NULL, NULL, NULL, '+(34) 954502324', NULL, 'https://www.alcazarsevilla.org/', 'Punto turístico', 92, 71, '2021-01-01 00:00:01'),
+    10.0, 'España', 'Sevilla', 37.3832718833, -5.9902877628, NULL, NULL, NULL, '+(34) 954502324', NULL, 'https://www.alcazarsevilla.org/', 'PUNTO DE INTERÉS', 92, 71, '2021-01-01 00:00:01'),
 	('Catedral de Sevilla',																-- 62
     'Gran catedral gótica con la tumba de Colón y un campanario de estilo árabe con vistas a la ciudad.', 
-    15.0, 'España', 'Sevilla', 37.3859088281, -5.9931288742, NULL, NULL, NULL, '+(34) 902099692', NULL, 'https://www.catedraldesevilla.es/', 'Punto turístico', 97, 72, '2021-01-01 00:00:01'),
+    15.0, 'España', 'Sevilla', 37.3859088281, -5.9931288742, NULL, NULL, NULL, '+(34) 902099692', NULL, 'https://www.catedraldesevilla.es/', 'PUNTO DE INTERÉS', 97, 72, '2021-01-01 00:00:01'),
 	('Avenida de la Costitución',														-- 63
     'Gran avenida situada en el centro de Sevilla.', 
-    0.0, 'España', 'Sevilla', 37.3854190904, -5.9940060633, NULL, NULL, NULL, NULL, NULL, NULL, 'Punto turístico', 84, 73, '2021-01-01 00:00:01'),
+    0.0, 'España', 'Sevilla', 37.3854190904, -5.9940060633, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 84, 73, '2021-01-01 00:00:01'),
 	('Calle Tetuán',																	-- 64
     'Calle de gran interés turístico de Sevilla.', 
-    0.0, 'España', 'Sevilla', 37.3893880592, -5.9949839948, NULL, NULL, NULL, NULL, NULL, NULL, 'Punto turístico', 77, 74, '2021-01-01 00:00:01'),
+    0.0, 'España', 'Sevilla', 37.3893880592, -5.9949839948, NULL, NULL, NULL, NULL, NULL, NULL, 'PUNTO DE INTERÉS', 77, 74, '2021-01-01 00:00:01'),
 	('Las Setas',																		-- 65
     'Estructura escultural de madera con museo arqueológico, pasarela en la azotea y mirador.', 
-    15.0, 'España', 'Sevilla', 37.3934856773, -5.9917002446, NULL, NULL, NULL, '+(34) 606635214', NULL, 'http://www.setasdesevilla.com/', 'Punto turístico', 86, 75, '2021-01-01 00:00:01'),
+    15.0, 'España', 'Sevilla', 37.3934856773, -5.9917002446, NULL, NULL, NULL, '+(34) 606635214', NULL, 'http://www.setasdesevilla.com/', 'PUNTO DE INTERÉS', 86, 75, '2021-01-01 00:00:01'),
 	('Parque de Maria Luisa',															-- 66
     'Amplio parque destacado con plazas pintorescas, jardines paisajísticos, fuentes y monumentos.', 
-    0.0, 'España', 'Sevilla', 37.3759781193, -5.9894467127, NULL, NULL, NULL, '+(34) 955473232', NULL, 'https://www.sevilla.org/ayuntamiento/competencias-areas/area-de-habitat-urbano-cultura-y-turismo/servicio-de-parques-y-jardines/parques/parques-y-jardines-historicos-1/parque-de-maria-luisa', 'Parque', 91, 76, '2021-01-01 00:00:01'),
+    0.0, 'España', 'Sevilla', 37.3759781193, -5.9894467127, NULL, NULL, NULL, '+(34) 955473232', NULL, 'https://www.sevilla.org/ayuntamiento/competencias-areas/area-de-habitat-urbano-cultura-y-turismo/servicio-de-parques-y-jardines/parques/parques-y-jardines-historicos-1/parque-de-maria-luisa', 'PARQUE NATURAL', 91, 76, '2021-01-01 00:00:01'),
 	('Isla Mágica',																		-- 67
     'Parque temático basado en el Nuevo Mundo con montañas rusas, toboganes acuáticos, espectáculos y un lago.', 
-    20.0, 'España', 'Sevilla', 37.4063285562, -5.9992556303, '2022-02-02 11:16:20', NULL, NULL, '+(34) 902161716', NULL, 'http://www.islamagica.es/', 'Parque', 88, 77, '2021-01-01 00:00:01'),
+    20.0, 'España', 'Sevilla', 37.4063285562, -5.9992556303, '2022-02-02 11:16:20', NULL, NULL, '+(34) 902161716', NULL, 'http://www.islamagica.es/', 'PARQUE NATURAL', 88, 77, '2021-01-01 00:00:01'),
 	-- EXTRA
     ('Museo Pushkin',																		
     'Museo en un edificio clásico, con antigüedades, esculturas, cuadros y exposiciones temporales.', 
-    20.0, 'Rusia', 'Moscú', 55.7473597284, 37.6050910408, NULL, NULL, NULL, '+(7) 4956979578', NULL, 'https://pushkinmuseum.art/', 'Museo de Arte', 0, 78, '2021-01-01 00:00:01');
+    20.0, 'Rusia', 'Moscú', 55.7473597284, 37.6050910408, NULL, NULL, NULL, '+(7) 4956979578', NULL, 'https://pushkinmuseum.art/', 'OTROS', 0, 78, '2021-01-01 00:00:01');
 
 
 -- ACTIVITIES
