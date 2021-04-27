@@ -23,4 +23,9 @@ public interface ItineraryProjection {
     Double getAvgRating();
     
     Long getCountComments();
+    
+	Integer getCalcPlan();
+
+	long getCalcPromotion();
+
 }
