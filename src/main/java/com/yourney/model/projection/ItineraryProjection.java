@@ -26,6 +26,6 @@ public interface ItineraryProjection {
     
 	Integer getCalcPlan();
 
-	long getCalcPromotion();
+	Long getCalcPromotion();
 
 }
