@@ -180,7 +180,8 @@ class CommentControllerTests {
 		
 		// PAGEABLE
 		
-		Optional<User> usuario = Optional.of(us1);
+		Optional<User> usuario1 = Optional.of(us1);
+		Optional<User> usuario2 = Optional.of(us2);
 		Optional<User> adminUser = Optional.of(admin);
 		Optional<Image> imagen = Optional.of(img);
 		
@@ -190,7 +191,8 @@ class CommentControllerTests {
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_2)).willReturn(Optional.of(it2));
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
-	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario);
+	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario1);
+	    given(this.userService.getByUsername(us2.getUsername())).willReturn(usuario2);
 		given(this.userService.getByUsername(admin.getUsername())).willReturn(adminUser);
 	    given(this.imageService.findById(78)).willReturn(imagen);
 	    given(this.commentService.save(any())).willReturn(c1);
@@ -200,6 +202,8 @@ class CommentControllerTests {
 
 	@Test
 	void testCreateComment() throws Exception {
+		
+		given(this.userService.getCurrentUsername()).willReturn("user2");
 		
 		JSONObject activityJSON = new JSONObject();
 		
@@ -215,7 +219,7 @@ class CommentControllerTests {
 		.andExpect(status().isOk())
         
 
-//		// Validate the returned fields
+		// Validate the returned fields
         .andExpect(jsonPath("$.id", is(TEST_COMMENT_ID_1)))
         .andExpect(jsonPath("$.content", is("Comentario de prueba")))
         .andExpect(jsonPath("$.rating", is(4)));
@@ -245,7 +249,8 @@ class CommentControllerTests {
 	
 	@Test
 	void testCreateCommentNotRegistered2() throws Exception {
-		given(this.userService.getByUsername(any())).willReturn(Optional.empty());
+		given(this.userService.getCurrentUsername()).willReturn("anonymousUser2");
+		given(this.userService.getByUsername("anonymousUser2")).willReturn(Optional.empty());
 		
 		JSONObject activityJSON = new JSONObject();
 		
@@ -289,6 +294,8 @@ class CommentControllerTests {
 	
 	@Test
 	void testCreateCommentItineraryDraft() throws Exception {
+		
+		given(this.userService.getCurrentUsername()).willReturn("user2");
 
 		JSONObject activityJSON = new JSONObject();
 		
