@@ -9,7 +9,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -116,12 +118,24 @@ class CommentControllerTests {
 		us2.setPlan(0);
 		us2.setRoles(roles);
 		us2.setUsername("user2");
+		
+		User us3 = new User();
+		
+		us3.setEmail("user3email.com");
+		us3.setExpirationDate(null);
+		us3.setFirstName("Firstname3");
+		us3.setId((long)3);
+		us3.setLastName("Lastname3");
+		us3.setPassword("password3");
+		us3.setPlan(0);
+		us3.setRoles(roles);
+		us3.setUsername("user3");
 
 		User admin = new User();
 		admin.setEmail("admin@email.com");
 		admin.setExpirationDate(null);
 		admin.setFirstName("admin");
-		admin.setId((long)3);
+		admin.setId((long)4);
 		admin.setLastName("admin");
 		admin.setPassword("admin");
 		admin.setPlan(0);
@@ -170,7 +184,12 @@ class CommentControllerTests {
 	  	c1.setContent("Comentario de prueba");
 	  	c1.setRating(4);
 		c1.setItinerary(it1);
-		c1.setAuthor(us1);
+		c1.setAuthor(us2);
+		
+		List<Comment> comments = new ArrayList<>();
+		comments.add(c1);
+		it1.setComments(comments);
+		
 	    
 	    
 		//IMAGE
@@ -182,6 +201,7 @@ class CommentControllerTests {
 		
 		Optional<User> usuario1 = Optional.of(us1);
 		Optional<User> usuario2 = Optional.of(us2);
+		Optional<User> usuario3 = Optional.of(us3);
 		Optional<User> adminUser = Optional.of(admin);
 		Optional<Image> imagen = Optional.of(img);
 		
@@ -193,6 +213,7 @@ class CommentControllerTests {
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 	    given(this.userService.getByUsername(us1.getUsername())).willReturn(usuario1);
 	    given(this.userService.getByUsername(us2.getUsername())).willReturn(usuario2);
+	    given(this.userService.getByUsername(us3.getUsername())).willReturn(usuario3);
 		given(this.userService.getByUsername(admin.getUsername())).willReturn(adminUser);
 	    given(this.imageService.findById(78)).willReturn(imagen);
 	    given(this.commentService.save(any())).willReturn(c1);
@@ -203,7 +224,7 @@ class CommentControllerTests {
 	@Test
 	void testCreateComment() throws Exception {
 		
-		given(this.userService.getCurrentUsername()).willReturn("user2");
+		given(this.userService.getCurrentUsername()).willReturn("user3");
 		
 		JSONObject activityJSON = new JSONObject();
 		
@@ -223,6 +244,51 @@ class CommentControllerTests {
         .andExpect(jsonPath("$.id", is(TEST_COMMENT_ID_1)))
         .andExpect(jsonPath("$.content", is("Comentario de prueba")))
         .andExpect(jsonPath("$.rating", is(4)));
+	}
+	
+	@Test
+	void testCreateCommentInOwnItinerary() throws Exception {
+		
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("content", "Comentario de prueba");
+		activityJSON.put("rating", 4);
+		activityJSON.put("itinerary", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(post("/comment/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+        
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("Un usuario no puede comentar sus propios itinerarios")));
+	}
+	
+	@Test
+	void testCreateCommentAlreadyCommented() throws Exception {
+		
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		JSONObject activityJSON = new JSONObject();
+		
+		activityJSON.put("content", "Comentario de prueba");
+		activityJSON.put("rating", 4);
+		activityJSON.put("itinerary", TEST_ITINERARY_ID_1);
+		
+		this.mockMvc.perform(post("/comment/create")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(activityJSON.toString()))
+
+		// Validate the response code and content type
+		.andExpect(status().isForbidden())
+        
+
+		// Validate the returned fields
+		.andExpect(jsonPath("$.text", is("El usuario ya ha realizado un comentario en este itinerario")));
 	}
 	
 	@Test
@@ -272,6 +338,7 @@ class CommentControllerTests {
 	
 	@Test
 	void testCreateCommentItineraryNotFound() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user3");
 		given(this.userService.getByUsername(any())).willReturn(Optional.empty());
 		
 		JSONObject activityJSON = new JSONObject();
@@ -318,6 +385,8 @@ class CommentControllerTests {
 	@Test
 	void testDeleteComment() throws Exception {
 		
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
 		this.mockMvc.perform(delete("/comment/delete/{id}", TEST_COMMENT_ID_1))
 		
 		// Validate the response code and content type
@@ -346,6 +415,7 @@ class CommentControllerTests {
 	@Test
 	void testDeleteCommentNotFound() throws Exception {
 		
+		given(this.userService.getCurrentUsername()).willReturn("user2");
 		this.mockMvc.perform(delete("/comment/delete/{id}", TEST_COMMENT_ID_NOT_FOUND))
 		
 		// Validate the response code and content type
