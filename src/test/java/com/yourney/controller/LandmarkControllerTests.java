@@ -293,16 +293,6 @@ class LandmarkControllerTests {
 	}
 
 	@Test
-	void testShowLandMarkNullViews() throws Exception {
-		this.mockMvc.perform(get("/landmark/show/{id}", TEST_LANDMARK_ID6))
-				// Validate the response code and content type
-				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-
-				// Validate the returned fields
-				.andExpect(jsonPath("$.views", is(1)));
-	}
-
-	@Test
 	@WithMockUser(username = "user1", password = "user1")
 	void testCreateLandmark() throws Exception {
 		JSONObject activityJSON = new JSONObject();
