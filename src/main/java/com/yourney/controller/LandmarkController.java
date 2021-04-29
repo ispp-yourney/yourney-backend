@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Image;
 import com.yourney.model.Landmark;
+import com.yourney.model.LandmarkVisit;
 import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.LandmarkProjection;
@@ -37,6 +39,7 @@ import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.LandmarkService;
+import com.yourney.service.LandmarkVisitService;
 import com.yourney.utils.ValidationUtils;
 
 @RestController
@@ -50,6 +53,9 @@ public class LandmarkController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private LandmarkVisitService landmarkVisitService;
 
     @Autowired
     private UserService userService;
@@ -125,22 +131,19 @@ public class LandmarkController {
     }
 
     @GetMapping("/show/{id}")
-    public ResponseEntity<?> showLandMark(@PathVariable("id") long id) {
+    public ResponseEntity<?> showLandMark(@PathVariable("id") long id, HttpServletRequest request) {
 
         Optional<Landmark> landmark = landmarkService.findById(id);
 
         if (landmark.isPresent()) {
             Landmark foundLandmark = landmark.get();
-
-            Long views = foundLandmark.getViews();
-            if (views != null) {
-                foundLandmark.setViews(views + 1);
-                landmarkService.save(foundLandmark);
-            } else {
-                foundLandmark.setViews((long) 1);
-                landmarkService.save(foundLandmark);
+            
+            if(!landmarkVisitService.existsByLandmarkIdAndIp(foundLandmark.getId(), request.getRemoteAddr())){
+                LandmarkVisit lv = new LandmarkVisit();
+                lv.setIp(request.getRemoteAddr());
+                lv.setLandmark(foundLandmark);
+                landmarkVisitService.save(lv);
             }
-            landmarkService.save(foundLandmark);
 
             return ResponseEntity.ok(foundLandmark);
         } else {
@@ -238,7 +241,6 @@ public class LandmarkController {
         Landmark newLandmark = new Landmark();
         BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "views", "image");
         newLandmark.setCreateDate(LocalDateTime.now());
-        newLandmark.setViews((long) 0);
         newLandmark.setImage(defaultImage.get());
         newLandmark.setEndPromotionDate(null);
         Landmark createdLandmark = landmarkService.save(newLandmark);

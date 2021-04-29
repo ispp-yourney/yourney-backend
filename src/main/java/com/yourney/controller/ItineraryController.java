@@ -26,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
+import com.yourney.model.ItineraryVisit;
+import com.yourney.model.LandmarkVisit;
 import com.yourney.model.StatusType;
 import com.yourney.model.dto.ItineraryDto;
 import com.yourney.model.dto.Message;
@@ -40,6 +43,8 @@ import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
+import com.yourney.service.ItineraryVisitService;
+import com.yourney.service.LandmarkVisitService;
 import com.yourney.utils.ValidationUtils;
 
 @RestController
@@ -53,6 +58,12 @@ public class ItineraryController {
 	@Autowired
 	private ItineraryService itineraryService;
 
+    @Autowired
+    private LandmarkVisitService landmarkVisitService;
+
+    @Autowired
+    private ItineraryVisitService itineraryVisitService;
+
 	@Autowired
 	private ActivityService activityService;
 
@@ -63,7 +74,7 @@ public class ItineraryController {
     private static final String ERROR_ITINERARIO_NO_EXISTE_STRING = "No existe el itinerario indicado";
 
 	@GetMapping("/show/{id}")
-	public ResponseEntity<?> showItinerary(@PathVariable("id") long id) {
+	public ResponseEntity<?> showItinerary(@PathVariable("id") long id, HttpServletRequest request) {
 		Optional<Itinerary> foundItinerary = itineraryService.findById(id);
 		String currentUsername = userService.getCurrentUsername();
 
@@ -78,8 +89,22 @@ public class ItineraryController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body(new Message("El itinerario solicitado no ha sido publicado por su autor."));
 		} else if (!itinerary.getAuthor().getUsername().equals(currentUsername)) {
-			itinerary.setViews(itinerary.getViews() + 1);
-			itinerary.getActivities().stream().map(a->a.getLandmark()).forEach(l->l.setViews(l.getViews() + 1));
+			
+			if(!itineraryVisitService.existsByLandmarkIdAndIp(itinerary.getId(), request.getRemoteAddr())){
+				ItineraryVisit iv = new ItineraryVisit();
+				iv.setIp(request.getRemoteAddr());
+				iv.setItinerary(itinerary);
+				itineraryVisitService.save(iv);
+			}
+
+			itinerary.getActivities().stream().map(a->a.getLandmark()).forEach(l-> {
+				if(!landmarkVisitService.existsByLandmarkIdAndIp(l.getId(), request.getRemoteAddr())){
+					LandmarkVisit lv = new LandmarkVisit();
+					lv.setIp(request.getRemoteAddr());
+					lv.setLandmark(l);
+					landmarkVisitService.save(lv);
+				}}
+			);
 			itineraryService.save(itinerary);
 		}
 
@@ -185,7 +210,6 @@ public class ItineraryController {
 		newItinerary.setCreateDate(LocalDateTime.now());
 		newItinerary.setActivities(new ArrayList<>());
 		newItinerary.setAuthor(usuario.get());
-		newItinerary.setViews(0);
 		newItinerary.setImage(defaultImage.get());
 
 		Itinerary createdItinerary = itineraryService.save(newItinerary);

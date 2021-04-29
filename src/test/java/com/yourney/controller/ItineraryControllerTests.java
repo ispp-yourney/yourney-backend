@@ -551,7 +551,7 @@ class ItineraryControllerTests {
         .andExpect(jsonPath("$.status", is("PUBLISHED")))
         .andExpect(jsonPath("$.budget", is(100.)))
         .andExpect(jsonPath("$.estimatedDays", is(3)))
-        .andExpect(jsonPath("$.views", is(51)));
+        .andExpect(jsonPath("$.views", is(50)));
 	}
 	
 	@Test

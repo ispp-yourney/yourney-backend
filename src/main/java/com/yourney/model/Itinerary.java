@@ -62,6 +62,7 @@ public class Itinerary {
 	@Column(name = "create_date", nullable = false)
 	private LocalDateTime createDate;
 
+	@Formula("(SELECT count(v.id) FROM itinerary_visits v WHERE v.itinerary_id=id)")
 	private Integer views;
 
 	@OneToOne(cascade = CascadeType.DETACH)
