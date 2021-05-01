@@ -7,11 +7,19 @@ services:
 before_install:
 - chmod +x mvnw
 addons:
-  postgresql: '9.4'
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
   sonarcloud:
     organization: "ispp-yourney"
     token:
       secure: "kbJa+WVp34iEr9nNloAZRM2TE1HWkg5ZQYXyEhXDV0fm4wYVo5fUb+K4WOA3aoOj/Q/c+r8myC2fZSq2Ja8l0xT2cEg/mrXpugMPHWGvKLm+oQGnmGFHjnf9bMBMQtdbQp+sT+uXEINVNPC7KjAdMlqFxqCl/udU6itvbCOgejipSln77PUW1fF6gjNybA9ahfPL3FM/UkyUUW8rrNbCYYJBUlf/FTGoj9ydKaiJ1ZMq+jwKLrpCQEwSgJlsm0lfu08EK5Flc1QGks14jV/fIyDjeIDFLeA9qWIeF1/D/OeRVuc76s8gbH36upFp6jNYiG08FhbSmg6vOpRSjl1pyO30kyie5cHLhyyOgE3olOjINTWpMVGf5IKlPQgE7i5lHcFC1H67ZPqL1VqT8Nu6LOPHdbABcTbsDfBIh16h+YWTo6BcN9QaJWMsLSGsWAFLbMFkrrPlmXYo5CoRFB1xg4fzfQI4Ffrs8pJ9Ux9PvGbCKx/1t705oIMeRUODN0wi9HZYiYaN56t3FkY2l0yfbHIWkXjwg1fvJGpiPVRK392zqXO37yzNuouEQX52cKmSs4kNI2u/ybdg9PlnR/rKWaoQaQ+4Gm6TWGHjzigM6XyqQYQqCh83m2+YT5zx5ijoR1mv6jQLHrNQAKyvsgXTBrvfiJhEonrKSRJ8c2+f9UU="
+env:
+  global:
+  - PGPORT=5432
+  - PGUSER=postgres
 before_script:
 - psql -U postgres -c "create database yourney_db owner postgres"
 script:
