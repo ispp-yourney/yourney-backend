@@ -65,11 +65,26 @@ public class CommentController {
         }
 
         Itinerary itinerary = findItinerary.get();
+        
+        if (username.equals(itinerary.getAuthor().getUsername())) {
+        	 return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                    .body(new Message("Un usuario no puede comentar sus propios itinerarios"));
+        }
+
+        if (itinerary.getComments() != null) {
+        	for (Comment comment : itinerary.getComments()) {
+    	        if (username.equals(comment.getAuthor().getUsername())) {
+    	            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+    	                    .body(new Message("El usuario ya ha realizado un comentario en este itinerario"));
+    	        }
+            }
+        }
+       
 
         if (!itinerary.getStatus().equals(StatusType.PUBLISHED)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).
             body(new Message("No tiene permisos para comentar este itinerario"));
-}
+        }
 
         Optional<User> findAuthor = userService.getByUsername(username);
         

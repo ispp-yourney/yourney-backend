@@ -17,3 +17,4 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query("select ac from Activity ac where ac.itinerary.id=:id")
     Iterable<Activity> findActivityByItinerary(@Param("id") long idItinerary);
 }
+	

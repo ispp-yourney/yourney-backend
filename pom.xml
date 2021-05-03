@@ -150,6 +150,18 @@
         	<artifactId>commons-fileupload</artifactId>
         	<version>1.4</version> <!-- makesure you put a correct version here -->
     	</dependency>
+
+		<!-- Email -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<!-- Flyway -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
     	
 	</dependencies>
 

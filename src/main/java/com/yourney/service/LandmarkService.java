@@ -18,7 +18,7 @@ public class LandmarkService {
     @Autowired
     private LandmarkRepository landmarkRepository;
 
-    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Integer size, Pageable pageable) {
+    public Page<LandmarkProjection> searchByProperties(String country, String city, String name, Pageable pageable) {
         return landmarkRepository.searchByProperties(country, city, name, pageable);
     }
 
@@ -73,4 +73,9 @@ public class LandmarkService {
     public void deleteById(Long id) {
         landmarkRepository.deleteById(id);
     }
+
+    public Page<LandmarkProjection> searchOrderedByViews(String country, String city, Pageable pageable) {
+        return landmarkRepository.searchOrderedByViews(country, city, pageable);
+    }
+
 }

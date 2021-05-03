@@ -1,5 +1,6 @@
 package com.yourney.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +73,30 @@ public class ItineraryService {
     public boolean existsById(long id) {
         return itineraryRepository.existsById(id);
     }
+
+    public Page<ItineraryProjection> searchOrderedByViews(String country, String city, Pageable pageable) {
+        return itineraryRepository.searchOrderedByViews(country, city, pageable);
+    }
+
+    public Page<ItineraryProjection> searchOrderedByComments(String country, String city, Pageable pageable) {
+        return itineraryRepository.searchOrderedByComments(country, city, pageable);
+    }
+
+    public Page<ItineraryProjection> searchOrderedByRating(String country, String city, Pageable pageable) {
+        return itineraryRepository.searchOrderedByRating(country, city, pageable);
+    }
+
+    public Page<ItineraryProjection> searchOrderedByCommentsLastMonth(String country, String city, Pageable pageable) {
+    	LocalDateTime date = LocalDateTime.now();
+    	date = date.minusMonths(1);
+        return itineraryRepository.searchOrderedByCommentsLastMonth(country, city, date, pageable);
+    }
+
+    public Page<ItineraryProjection> searchOrderedByRatingLastMonth(String country, String city, Pageable pageable) {
+    	LocalDateTime date = LocalDateTime.now();
+    	date = date.minusMonths(1);
+        return itineraryRepository.searchOrderedByRatingLastMonth(country, city, date, pageable);
+    }
+
 
 }

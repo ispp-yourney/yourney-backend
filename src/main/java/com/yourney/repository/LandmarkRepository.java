@@ -33,4 +33,7 @@ public interface LandmarkRepository extends CrudRepository<Landmark, Long> {
 
     @Query("select l.id as id, l.name as name, l.description as description, l.price as price, l.country as country, l.city as city, l.latitude as latitude, l.longitude as longitude, l.endPromotionDate as endPromotionDate, l.category as category, l.email as email, l.phone as phone, l.website as website, l.instagram as instagram, l.twitter as twitter, l.createDate as createDate, l.views as views, l.image as image, l.imageUrl as imageUrl, l.endPromotionDate >= CURRENT_DATE as p from Landmark l where LOWER(l.country) like LOWER(:country) and LOWER(l.city) like LOWER(:city) and LOWER(l.name) like LOWER(:name) order by p, l.views desc")
     Page<LandmarkProjection> searchByProperties(String country, String city, String name, Pageable pageable);
+
+    @Query("select l.id as id, l.name as name, l.description as description, l.price as price, l.country as country, l.city as city, l.latitude as latitude, l.longitude as longitude, l.endPromotionDate as endPromotionDate, l.category as category, l.email as email, l.phone as phone, l.website as website, l.instagram as instagram, l.twitter as twitter, l.createDate as createDate, l.views as views, l.image as image, l.imageUrl as imageUrl, l.endPromotionDate >= CURRENT_DATE as p from Landmark l where LOWER(l.country) like LOWER(:country) and LOWER(l.city) like LOWER(:city) order by l.views desc")
+    Page<LandmarkProjection> searchOrderedByViews(String country, String city, Pageable pageable);
 }

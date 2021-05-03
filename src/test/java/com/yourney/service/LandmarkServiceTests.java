@@ -173,6 +173,7 @@ class LandmarkServiceTests {
 	    given(this.landmarkRepository.findAllCities()).willReturn(cityList);
 	    given(this.landmarkRepository.findManyCitiesWithItinerary()).willReturn(cityListWithItinerary);
 	    given(this.landmarkRepository.findCitiesByCountry(l1.getCountry())).willReturn(cityByCountryList);
+	    given(this.landmarkRepository.searchOrderedByViews(l1.getCountry(), l1.getCity(), pageable)).willReturn(landmarksPage1);
 	    
 
 	}
@@ -293,6 +294,31 @@ class LandmarkServiceTests {
 
 		assertSame(expected, this.l1);
 	}
-	
+
+  @Test
+  void testFindByProperties() {
+
+      Iterable<LandmarkProjection> expected = this.landmarkService.searchByProperties("España", "Sevilla", "Monumento 1", PageRequest.of(TEST_LANDMARK_PAGE, TEST_LANDMARK_SIZE));
+      List<LandmarkProjection> result = new ArrayList<LandmarkProjection>();
+      expected.forEach(result::add);
+
+      assertEquals(1,result.size());
+      assertSame("Sevilla",result.get(0).getCity());
+      assertSame("España",result.get(0).getCountry());
+
+  }
+
+  @Test
+  void testFindOrderedByViews() {
+
+      Iterable<LandmarkProjection> expected = this.landmarkService.searchOrderedByViews("España", "Sevilla", PageRequest.of(TEST_LANDMARK_PAGE, TEST_LANDMARK_SIZE));
+      List<LandmarkProjection> result = new ArrayList<LandmarkProjection>();
+      expected.forEach(result::add);
+
+      assertEquals(1,result.size());
+      assertSame("Sevilla",result.get(0).getCity());
+      assertSame("España",result.get(0).getCountry());
+
+  }
 	
 }

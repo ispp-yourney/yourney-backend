@@ -2,7 +2,9 @@ package com.yourney.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,18 +23,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.yourney.model.Activity;
 import com.yourney.model.Image;
 import com.yourney.model.Landmark;
+import com.yourney.model.LandmarkVisit;
 import com.yourney.model.dto.LandmarkDto;
 import com.yourney.model.dto.Message;
 import com.yourney.model.projection.LandmarkProjection;
+import com.yourney.security.model.RoleType;
+import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
 import com.yourney.service.ImageService;
 import com.yourney.service.LandmarkService;
+import com.yourney.service.LandmarkVisitService;
 import com.yourney.utils.ValidationUtils;
 
 @RestController
@@ -40,11 +47,15 @@ import com.yourney.utils.ValidationUtils;
 @CrossOrigin
 public class LandmarkController {
 
+	private static final String NOT_REGISTERED = "El usuario no tiene permiso de modificación sin registrarse.";
     @Autowired
     private LandmarkService landmarkService;
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private LandmarkVisitService landmarkVisitService;
 
     @Autowired
     private UserService userService;
@@ -78,7 +89,7 @@ public class LandmarkController {
 			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "") String name) {
 
 		Iterable<LandmarkProjection> landmarks = landmarkService.searchByProperties("%" + country + "%",
-				"%" + city + "%","%" + name + "%", size, PageRequest.of(page, size));
+				"%" + city + "%","%" + name + "%", PageRequest.of(page, size));
 
 		return new ResponseEntity<Iterable<LandmarkProjection>>(landmarks, HttpStatus.OK);
 	}
@@ -120,22 +131,19 @@ public class LandmarkController {
     }
 
     @GetMapping("/show/{id}")
-    public ResponseEntity<?> showLandMark(@PathVariable("id") long id) {
+    public ResponseEntity<?> showLandMark(@PathVariable("id") long id, HttpServletRequest request) {
 
         Optional<Landmark> landmark = landmarkService.findById(id);
 
         if (landmark.isPresent()) {
             Landmark foundLandmark = landmark.get();
-
-            Long views = foundLandmark.getViews();
-            if (views != null) {
-                foundLandmark.setViews(views + 1);
-                landmarkService.save(foundLandmark);
-            } else {
-                foundLandmark.setViews((long) 1);
-                landmarkService.save(foundLandmark);
+            
+            if(!landmarkVisitService.existsByLandmarkIdAndIp(foundLandmark.getId(), request.getRemoteAddr())){
+                LandmarkVisit lv = new LandmarkVisit();
+                lv.setIp(request.getRemoteAddr());
+                lv.setLandmark(foundLandmark);
+                landmarkVisitService.save(lv);
             }
-            landmarkService.save(foundLandmark);
 
             return ResponseEntity.ok(foundLandmark);
         } else {
@@ -154,7 +162,7 @@ public class LandmarkController {
 
         if (username.equals(ANONYMOUS_USER_STRING)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
+                    .body(new Message(NOT_REGISTERED));
         }
 
 		if (!foundLandmark.isPresent()) {
@@ -181,7 +189,7 @@ public class LandmarkController {
 
         if (userService.getCurrentUsername().equals(ANONYMOUS_USER_STRING)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("El usuario no tiene permiso de modificación sin registrarse."));
+                        .body(new Message(NOT_REGISTERED));
         }
 
 		Optional<Landmark> foundLandmark = landmarkService.findById(landmarkId);
@@ -233,7 +241,6 @@ public class LandmarkController {
         Landmark newLandmark = new Landmark();
         BeanUtils.copyProperties(landmarkDto, newLandmark, "id", "views", "createDate", "views", "image");
         newLandmark.setCreateDate(LocalDateTime.now());
-        newLandmark.setViews((long) 0);
         newLandmark.setImage(defaultImage.get());
         newLandmark.setEndPromotionDate(null);
         Landmark createdLandmark = landmarkService.save(newLandmark);
@@ -252,5 +259,24 @@ public class LandmarkController {
         }
         return ResponseEntity.ok(createdLandmark);
     }
+
+    @GetMapping("/searchOrderedByViews")
+	public ResponseEntity<?> searchOrderedByViews(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String city) {
+		
+		Optional<User> foundUser = userService.getByUsername(userService.getCurrentUsername());
+
+		if (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN))) {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<LandmarkProjection> landmarks = landmarkService.searchOrderedByViews("%" + country + "%", "%" + city + "%", pageable);
+
+			return new ResponseEntity<Page<LandmarkProjection>>(landmarks, HttpStatus.OK);
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body(new Message("El usuario no tiene permiso para realizar esta consulta."));
+		}
+
+	}
 
 }

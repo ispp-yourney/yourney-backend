@@ -89,6 +89,7 @@ public class Landmark {
 
 	private LocalDateTime createDate;
 
+	@Formula("(SELECT count(v.id) FROM landmark_visits v WHERE v.landmark_id=id)")
 	private Long views;
 
 	@OneToOne(cascade = CascadeType.DETACH)

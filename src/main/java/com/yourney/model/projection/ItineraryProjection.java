@@ -20,5 +20,12 @@ public interface ItineraryProjection {
 
     StatusType getStatus();
 
-    Double getAvgRating();    
+    Double getAvgRating();
+    
+    Long getCountComments();
+    
+	Integer getCalcPlan();
+
+	Long getCalcPromotion();
+
 }

@@ -1,6 +1,7 @@
 package com.yourney.controller;
 
 import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -9,6 +10,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.yourney.model.Activity;
+import com.yourney.model.Comment;
 import com.yourney.model.Image;
 import com.yourney.model.Itinerary;
 import com.yourney.model.Landmark;
@@ -42,6 +45,7 @@ import com.yourney.security.model.RoleType;
 import com.yourney.security.model.User;
 import com.yourney.security.service.UserService;
 import com.yourney.service.ActivityService;
+import com.yourney.service.CommentService;
 import com.yourney.service.ImageService;
 import com.yourney.service.ItineraryService;
 import com.yourney.service.LandmarkService;
@@ -56,11 +60,14 @@ class ItineraryControllerTests {
 	private static final int TEST_ITINERARY_ID_4 = 4;
 	private static final int TEST_ITINERARY_ID_NOT_FOUND = 10;
 	private static final int TEST_ITINERARY_PAGE = 1;
+	private static final int TEST_ITINERARY_PAGE_2 = 0;
 	private static final int TEST_ITINERARY_SIZE = 10;
 	private static final String TEST_ITINERARY_COUNTRY_1 = "Brazil";
 	private static final String TEST_ITINERARY_CITY_1 = "Rio de Janeiro";
 	private static final String TEST_ITINERARY_COUNTRY_2 = "Francia";
 	private static final String TEST_ITINERARY_CITY_2 = "ParÃ­s";
+	private static final String TEST_ITINERARY_COUNTRY_3 = "";
+	private static final String TEST_ITINERARY_CITY_3 = "";
 	private static final Double TEST_ITINERARY_MAXBUDGET = 9000.;
 	private static final Double TEST_ITINERARY_LATITUDE = 60.0;
 	private static final Double TEST_ITINERARY_LONGITUDE = 60.0;
@@ -68,6 +75,14 @@ class ItineraryControllerTests {
 	private static final String TEST_ITINERARY_NAME = "itinerary test 1";
 	private static final int TEST_ITINERARY_USER_ID = 1;
 	private static final String TEST_ITINERARY_USERNAME = "user1";
+	private static final int TEST_COMMENT_ID = 1;
+	private static final int TEST_COMMENT_ID_2 = 2;
+	private static final int TEST_COMMENT_ID_3 = 3;
+	private static final String NOT_ALLOWED = "El usuario no tiene permiso para ver esta consulta";
+	private static final String ITINERARY_DELETED = "Itinerario eliminado correctamente";
+	private static final String ITINERARY_NOT_FOUND = "No existe el itinerario indicado";
+	
+
 	
 	@Autowired
 	protected ItineraryController itineraryController;
@@ -83,6 +98,9 @@ class ItineraryControllerTests {
 	
 	@MockBean
 	protected LandmarkService landmarkService;
+	
+	@MockBean
+	protected CommentService commentService;
 	
 	@MockBean
 	protected ImageService imageService;
@@ -214,9 +232,42 @@ class ItineraryControllerTests {
 	    it1Actualizado.setViews(0);
 	    it1Actualizado.setAuthor(us1);
 	    
-
+	    // COMMENTS
 	    
+	  	Comment c1 = new Comment();
+	  		
+	  	c1.setId(TEST_COMMENT_ID);
+	  	c1.setContent("Comentario de prueba");
+	  	c1.setRating(4);
+		c1.setItinerary(it1);
+		c1.setAuthor(us1);
+		
+		Comment c2 = new Comment();
+  		
+	  	c2.setId(TEST_COMMENT_ID_2);
+	  	c2.setContent("Comentario de prueba 2");
+	  	c2.setRating(3);
+		c2.setItinerary(it2);
+		c2.setAuthor(us1);
 	    
+		Comment c3 = new Comment();
+  		
+	  	c3.setId(TEST_COMMENT_ID_3);
+	  	c3.setContent("Comentario de prueba 3");
+	  	c3.setRating(4);
+		c3.setItinerary(it1);
+		c3.setAuthor(us1);
+	    
+		Collection<Comment> comments = new ArrayList<>();
+		comments.add(c1);
+		comments.add(c3);
+		
+		Collection<Comment> comments2 = new ArrayList<>();
+		comments.add(c2);
+		
+		it1.setComments(comments);
+		it2.setComments(comments2);
+		
 	    // LADNMARKS
 	    
 	    Landmark la1 = new Landmark();
@@ -373,6 +424,7 @@ class ItineraryControllerTests {
 		
 		// PAGEABLE
 		Pageable pageable = PageRequest.of(TEST_ITINERARY_PAGE, TEST_ITINERARY_SIZE);
+		Pageable pageable2 = PageRequest.of(TEST_ITINERARY_PAGE_2, TEST_ITINERARY_SIZE);
 		ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 		
 		List<ItineraryProjection> itineraries1 = new ArrayList<>();
@@ -404,7 +456,18 @@ class ItineraryControllerTests {
 		
 		List<ItineraryProjection> itineraries5 = new ArrayList<>();
 		itineraries5.add(itp2);
+		
 		Page<ItineraryProjection> itinerariesPage5 = new PageImpl<>(itineraries5);
+		
+		List<ItineraryProjection> itineraries6 = new ArrayList<>();
+		
+		ItineraryProjection itp4 = factory.createProjection(ItineraryProjection.class, it4);
+		itineraries6.add(itp2);
+		itineraries6.add(itp3);
+		itineraries6.add(itp4);
+		itineraries6.add(itp1);
+		
+		Page<ItineraryProjection> itinerariesPage6 = new PageImpl<>(itineraries6);
 		
 		List<Activity> activities = new ArrayList<>();
 		activities.add(ac1);
@@ -427,11 +490,21 @@ class ItineraryControllerTests {
 	    given(this.itineraryService.findById((long) TEST_ITINERARY_ID_NOT_FOUND)).willReturn(Optional.empty());
 	    given(this.userService.getCurrentUsername()).willReturn(us1.getUsername());
 		given(this.userService.getByUsername(us1.getUsername())).willReturn(Optional.of(us1));
+		given(this.userService.getByUsername(us2.getUsername())).willReturn(Optional.of(us2));
 		given(this.userService.getByUsername(admin.getUsername())).willReturn(Optional.of(admin));
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", TEST_ITINERARY_MAXBUDGET, TEST_ITINERARY_MAXDAYS, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByProperties("%" + TEST_ITINERARY_COUNTRY_1 + "%", "%" + TEST_ITINERARY_CITY_1 + "%", 1000000000., 1000000000, pageable)).willReturn(itinerariesPage1);
 	    given(this.itineraryService.searchByDistance(TEST_ITINERARY_LATITUDE, TEST_ITINERARY_LONGITUDE, pageable)).willReturn(itinerariesPage2);
 
+	    given(this.commentService.findById((long) TEST_COMMENT_ID)).willReturn(Optional.of(c1));
+	    given(this.commentService.findById((long) TEST_COMMENT_ID_2)).willReturn(Optional.of(c2));
+	    given(this.commentService.findById((long) TEST_COMMENT_ID_3)).willReturn(Optional.of(c3));
+	    given(this.itineraryService.searchOrderedByComments("%" + TEST_ITINERARY_COUNTRY_3 + "%", "%" + TEST_ITINERARY_CITY_3 + "%", pageable2)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchOrderedByCommentsLastMonth("%" + TEST_ITINERARY_COUNTRY_3 + "%", "%" + TEST_ITINERARY_CITY_3 + "%", pageable2)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchOrderedByRating("%" + TEST_ITINERARY_COUNTRY_3 + "%", "%" + TEST_ITINERARY_CITY_3 + "%", pageable2)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchOrderedByRatingLastMonth("%" + TEST_ITINERARY_COUNTRY_3 + "%", "%" + TEST_ITINERARY_CITY_3 + "%", pageable2)).willReturn(itinerariesPage1);
+	    given(this.itineraryService.searchOrderedByViews("%" + TEST_ITINERARY_COUNTRY_3 + "%", "%" + TEST_ITINERARY_CITY_3 + "%", pageable2)).willReturn(itinerariesPage6);
+	    
 	    given(this.itineraryService.searchByName(pageable, "%"+TEST_ITINERARY_NAME+"%")).willReturn(itinerariesPage3);
 	    given(this.itineraryService.searchByUserId(pageable, (long) TEST_ITINERARY_USER_ID)).willReturn(itinerariesPage4);
 	    given(this.itineraryService.searchByUsername(pageable, TEST_ITINERARY_USERNAME)).willReturn(itinerariesPage4);
@@ -478,7 +551,7 @@ class ItineraryControllerTests {
         .andExpect(jsonPath("$.status", is("PUBLISHED")))
         .andExpect(jsonPath("$.budget", is(100.)))
         .andExpect(jsonPath("$.estimatedDays", is(3)))
-        .andExpect(jsonPath("$.views", is(51)));
+        .andExpect(jsonPath("$.views", is(50)));
 	}
 	
 	@Test
@@ -499,7 +572,205 @@ class ItineraryControllerTests {
 		.andExpect(status().is4xxClientError())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		// Validate the returned fields
-        .andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+        .andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
+	}
+	
+	@Test
+	void testSearchOrderedByComments() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByComments"))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)));
+	}
+	
+	@Test
+	void testSearchOrderedByCommentsNotAllowed() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByComments"))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
+	}
+	
+	@Test
+	void testSearchOrderedByCommentsLastMonth() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByComments/lastMonth"))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)));
+	}
+	
+	@Test
+	void testSearchOrderedByCommentsLastMonthNotAllowed() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByComments/lastMonth"))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
+	}
+	
+	@Test
+	void testSearchOrderedByRating() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByRating"))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)));
+	}
+	
+	@Test
+	void testSearchOrderedByRatingNotAllowed() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByRating"))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
+	}
+		
+	@Test
+	void testSearchOrderedByRatingLastMonth() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByRating/lastMonth"))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].id", is(1)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[0].budget", is(10.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(0)))
+        .andExpect(jsonPath("$.content[1].id", is(2)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(50)));
+	}	
+	
+	@Test
+	void testSearchOrderedByRatingLastMonthLastMonth() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByRating/lastMonth"))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		
+        .andExpect(jsonPath("$.text", is(NOT_ALLOWED)));
+	}
+	
+	@Test
+	void testSearchOrderedByViews() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("admin");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByViews"))
+		// Validate the response code and content type
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		.andExpect(jsonPath("$.content", hasSize(4)))
+		.andExpect(jsonPath("$.content[0].id", is(2)))
+        .andExpect(jsonPath("$.content[0].name", is("itinerary test 2")))
+        .andExpect(jsonPath("$.content[0].description", is("lorem ipsum 2")))
+        .andExpect(jsonPath("$.content[0].budget", is(100.)))
+        .andExpect(jsonPath("$.content[0].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[0].views", is(50)))
+        .andExpect(jsonPath("$.content[1].id", is(3)))
+        .andExpect(jsonPath("$.content[1].name", is("itinerary test 3")))
+        .andExpect(jsonPath("$.content[1].description", is("lorem ipsum 3")))
+        .andExpect(jsonPath("$.content[1].budget", is(100.)))
+        .andExpect(jsonPath("$.content[1].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[1].views", is(15)))
+        .andExpect(jsonPath("$.content[2].id", is(4)))
+        .andExpect(jsonPath("$.content[2].name", is("itinerary test 4")))
+        .andExpect(jsonPath("$.content[2].description", is("lorem ipsum 4")))
+        .andExpect(jsonPath("$.content[2].budget", is(100.)))
+        .andExpect(jsonPath("$.content[2].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[2].views", is(15)))
+        .andExpect(jsonPath("$.content[3].id", is(1)))
+        .andExpect(jsonPath("$.content[3].name", is("itinerary test 1")))
+        .andExpect(jsonPath("$.content[3].description", is("lorem ipsum 1")))
+        .andExpect(jsonPath("$.content[3].budget", is(10.)))
+        .andExpect(jsonPath("$.content[3].estimatedDays").doesNotExist())
+        .andExpect(jsonPath("$.content[3].views", is(0)));
+        
+	}	
+	
+	@Test
+	void testSearchOrderedByViewsNotAllowed() throws Exception {
+		given(this.userService.getCurrentUsername()).willReturn("user2");
+		
+		this.mockMvc.perform(get("/itinerary/searchOrderedByViews"))
+		// Validate the response code and content type
+		.andExpect(status().is4xxClientError())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		// Validate the returned fields
+		
+        .andExpect(jsonPath("$.text", is("El usuario no tiene permiso para realizar esta consulta.")));
 	}
 	
 	@Test
@@ -944,7 +1215,7 @@ class ItineraryControllerTests {
 		.andExpect(status().is4xxClientError())
         
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
 	}
 	
 	@Test
@@ -983,7 +1254,7 @@ class ItineraryControllerTests {
         
 
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_DELETED)));
 	}
 
 	@Test
@@ -996,7 +1267,7 @@ class ItineraryControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("Itinerario eliminado correctamente")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_DELETED)));
 	}
 	
 	@Test
@@ -1011,7 +1282,7 @@ class ItineraryControllerTests {
         
 
 //		// Validate the returned fields
-		.andExpect(jsonPath("$.text", is("No existe el itinerario indicado")));
+		.andExpect(jsonPath("$.text", is(ITINERARY_NOT_FOUND)));
 	}
 	
 	@Test
