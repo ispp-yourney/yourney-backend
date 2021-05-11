@@ -165,7 +165,7 @@ INSERT INTO images(name, cloudinary_id, image_url) VALUES
      'https://elcorreoweb.es/documents/10157/0/675x413/0c7/675d400/none/10703/KRPT/image_content_19649564_20180308225211.jpg'),          						-- 76
 	 ('imagenIslaMagica', NULL,
      'https://static4-sevilla.abc.es/media/sevilla/2019/01/04/s/isla-magica-deudas-k4xH--1200x630@abc.jpg'),          											-- 77
-     ('Imagen por defecto', NULL, 'https://www.sinrumbofijo.com/wp-content/uploads/2016/05/default-placeholder.png'),                                           -- 78
+     ('Imagen por defecto', NULL, 'https://res.cloudinary.com/duriegi68/image/upload/v1620748277/yourney/default_image.png'),                                           -- 78
      -- Usuario
      ('adminPicture', NULL,
      'https://avatars.githubusercontent.com/u/55277082?s=400&u=3bd4eb1b8b279a9572945b0dcc020c64bfd42613&v=4'),                                                  -- 79
