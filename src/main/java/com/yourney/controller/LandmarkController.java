@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,6 +124,11 @@ public class LandmarkController {
         if (existsActivityFromLandmark) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new Message("El punto de interés se encuentra asociado con al menos una actividad."));
+        }
+
+        if (landmarkToDelete.getViews()>0) {
+            List<LandmarkVisit> visitsLandmarkToDelete = landmarkVisitService.findAllVisitsByLandmark(landmarkToDelete);
+            visitsLandmarkToDelete.stream().forEach(v-> landmarkVisitService.delete(v));
         }
 
         landmarkService.deleteById(landmarkToDelete.getId());
