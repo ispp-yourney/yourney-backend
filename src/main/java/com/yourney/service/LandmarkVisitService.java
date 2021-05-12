@@ -44,7 +44,6 @@ public class LandmarkVisitService {
 
     public List<LandmarkVisit> findAllVisitsByLandmark(Landmark landmark) {
         Long identificadorLandmark = landmark.getId();
-        System.out.println(identificadorLandmark);
         return landmarkVisitRepository.findAllVisitsByLandmarkId(identificadorLandmark);
     }
 }

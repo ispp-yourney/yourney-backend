@@ -1,7 +1,9 @@
 package com.yourney.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yourney.model.Itinerary;
 import com.yourney.model.ItineraryVisit;
 import com.yourney.repository.ItineraryVisitRepository;
 
@@ -30,5 +32,18 @@ public class ItineraryVisitService {
             e.printStackTrace();
         }
         return newLvisit;
+    }
+
+    public void delete(ItineraryVisit ivisit) {
+        try {
+            itineraryVisitRepository.delete(ivisit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<ItineraryVisit> findAllVisitsByItinerary(Itinerary itinerary) {
+        Long identificadorItinerary = itinerary.getId();
+        return itineraryVisitRepository.findAllVisitsByItineraryId(identificadorItinerary);
     }
 }
