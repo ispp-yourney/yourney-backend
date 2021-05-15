@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -274,6 +275,10 @@ public class ItineraryController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body(new Message("No puede borrar un itinerario que no es suyo"));
 			} else {
+				if (itinerary.getViews()>0) {
+					List<ItineraryVisit> visitsItineraryToDelete = itineraryVisitService.findAllVisitsByItinerary(itinerary);
+					visitsItineraryToDelete.stream().forEach(v-> itineraryVisitService.delete(v));
+				}
 				itinerary.getActivities().stream().forEach(a -> activityService.deleteById(a.getId()));
 				itineraryService.deleteById(id);
 			}

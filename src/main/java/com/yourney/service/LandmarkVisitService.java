@@ -1,7 +1,9 @@
 package com.yourney.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yourney.model.Landmark;
 import com.yourney.model.LandmarkVisit;
 import com.yourney.repository.LandmarkVisitRepository;
 
@@ -30,5 +32,18 @@ public class LandmarkVisitService {
             e.printStackTrace();
         }
         return newLvisit;
+    }
+
+    public void delete(LandmarkVisit lvisit) {
+        try {
+            landmarkVisitRepository.delete(lvisit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<LandmarkVisit> findAllVisitsByLandmark(Landmark landmark) {
+        Long identificadorLandmark = landmark.getId();
+        return landmarkVisitRepository.findAllVisitsByLandmarkId(identificadorLandmark);
     }
 }
