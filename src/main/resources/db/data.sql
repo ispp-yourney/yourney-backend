@@ -717,7 +717,7 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
     ('Roma es genial. Tiene muchos puntos de gran interés histórico, cultural y turístico, lo que hace que a veces sea dificil visitarlos todos en un tiempo limitado. Definitivamente, no podría haber disfrutado tanto de la ciudad si no fuese por este itinerario.', 5, '2021-02-17 12:56:01', 6, 8),                           -- 28
     ('Gran itinerario. Me ayudó mucho a visitar los distintos puntos de la ciudad. Sin embargo, hubiese preferido visitar otro monumento distinto a la Fontana Di Trevi.', 4, '2021-02-16 12:56:01', 4, 8),                           -- 29
     -- Itinerary 9
-    ('Un acierto el dedicar un día a la visita de la isla de Vallisaari, es un sitio espectacular.', 5, '2021-04-06 12:56:01', 7, 9),                                                                                              -- 30
+    ('Un acierto el dedicar un día a la visita de la isla de Vallisaari, es un sitio espectacular.', 5, '2021-04-06 12:56:01', 4, 9),                                                                                              -- 30
     ('Creo que hay demasiados parques a visitar, puede ser un poco monótono el viaje. Cambiaría por otro tipo de actividades más variadas.', 2, '2021-03-30 12:56:01', 6, 9),                                                       -- 31
     ('Me parece un viaje económico y bastante interesante.', 5, '2021-03-08 12:56:01', 2, 9),                                                                                                                                       -- 32
     -- Itinerary 10
