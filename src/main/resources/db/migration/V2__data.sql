@@ -719,7 +719,7 @@ INSERT INTO activities(day, create_date, description, title, itinerary_id, landm
     -- Itinerary 9
     ('Un acierto el dedicar un día a la visita de la isla de Vallisaari, es un sitio espectacular.', 5, '2021-04-06 12:56:01', 4, 9),                                                                                              -- 30
     ('Creo que hay demasiados parques a visitar, puede ser un poco monótono el viaje. Cambiaría por otro tipo de actividades más variadas.', 2, '2021-03-30 12:56:01', 6, 9),                                                       -- 31
-    ('Me parece un viaje económico y bastante interesante.', 5, '2021-03-08 12:56:01', 2, 9),                                                                                                                                       -- 32
+    ('Me parece un viaje económico y bastante interesante.', 5, '2021-03-08 12:56:01', 3, 9),                                                                                                                                       -- 32
     -- Itinerary 10
     ('Sevilla me ha encantado. Su cálido clima y su cultura han hecho que me enamore de ella. Sin duda, volvería a visitar la ciudad. Gran itinerario.', 5, '2021-02-22 18:17:25', 2, 10),                           -- 33
     ('La historia de Sevilla es apasionante. Me alegra ver que este itinerario resalta las visitas a estos puntos de interés histórico.', 5, '2021-02-20 18:17:25', 7, 10),                           -- 34
